@@ -1,0 +1,39 @@
+# Visual Studio
+.vscode/
+.vs/
+*.user
+*.suo
+
+# Build results
+bin/
+obj/
+out/
+
+# ASP.NET runtime files
+wwwroot/lib/
+
+# Logs
+*.log
+
+# User-specific files
+*.dbmdl
+*.bak
+*.sql
+*.pdb
+
+# dotnet artifacts
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Others
+*.swp
+*.tmp
+*.DS_Store
+Thumbs.db
+
+# Secrets
+secrets.json
+
+# Dependency packages
+packages/
