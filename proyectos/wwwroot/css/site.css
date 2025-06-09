@@ -8,6 +8,16 @@ html {
   }
 }
 
+@font-face {
+    font-family: 'Rancho';
+    src: url('../fonts/Rancho.ttf');
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../fonts/Inter.ttf');
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -18,5 +28,124 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-image: 
+        linear-gradient(rgba(38, 136, 228, 0.4), rgba(38, 136, 228, 0.4)), 
+        url('../img/fondo.png');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
+
+.barraHeader {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.letraRancho {
+    font-family: Rancho;
+    font-size: 64px;
+    color: white !important;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+.negraLetraRancho {
+    font-family: Rancho;
+    font-size: 52px;
+    color: black !important;
+    text-decoration: none;
+    margin: 10px;
+    text-shadow: 2px 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hotelesFooter {
+    background-color: #B9B9B9;
+    padding-top:20px;
+    padding-left:20px;
+    padding-bottom:5px;
+}
+
+.inter24 {
+    font-family: Inter;
+    color: black;
+    font-size: 24px;
+}
+
+.colorDerechosFooter {
+    color: #000000CC;
+}
+
+.navbar-brand,
+.nav-link {
+    color: white !important;
+}
+
+.textosBienvenida {
+    text-align: center;
+    font-size: 48px;
+    color: rgba(255, 255, 255, 0.75);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+}
+
+#textoBienvenida1 {
+    padding: 40px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+#textoBienvenida2 {
+    margin-top: 80px;
+}
+
+.inputRedondo {
+    border-radius: 30px;
+}
+
+#busquedaPrincipal {
+    padding: 20px 20px 20px 20px;
+    color: grey;
+    background-color: rgba(217, 217, 217, 0.8);
+}
+
+#busquedaPrincipal::placeholder {
+    color: gray;
+}
+
+.icono-busqueda {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: grey;
+    font-size: 28px;
+}
+
+.busqueda {
+    position: relative;
+}
+
+.icono-busqueda {
+    position: absolute;
+    right: 60px;
+    color: #6c757d;
+    font-size: 32px;
+    cursor: pointer;
+}
+
+.slogan {
+    text-align: center;
+    margin-top: 100px;
+    padding:0px;
+}
+
+.sloganRancho {
+    font-family: Rancho;
+    font-size: 64px;
+    color: rgba(255, 255, 255, 0.75) !important;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+}
+
+#textoSlogan {
+    padding: 0px;
+}
+
