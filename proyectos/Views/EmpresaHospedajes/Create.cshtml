@@ -1,0 +1,86 @@
+﻿@model HotelesCaribe.Models.EmpresaHospedaje
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container containerLogoInicioSolo">
+    <p class="container inter24" id="textoBienvenidaCliente">
+        Registro de hotel
+    </p>
+</div>
+
+<div class="cuadroVisual">
+    <div class="row">
+        <div class="col-md-12 mx-auto">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Nombre" class="control-label">Nombre:</label>
+                    <input asp-for="Nombre" class="form-control inputRegistroHotel" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CedulaJuridica" class="control-label">Cedula jurídica:</label>
+                    <input asp-for="CedulaJuridica" class="form-control inputRegistroHotel" />
+                    <span asp-validation-for="CedulaJuridica" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="IdTipoHospedaje" class="control-label">Tipo:</label>
+                    <select asp-for="IdTipoHospedaje" class ="form-control inputRegistroHotel" asp-items="ViewBag.IdTipoHospedaje"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Provincia" class="control-label">Provincia:</label>
+                    <input asp-for="Provincia" class="form-control inputRegistroHotel" />
+                    <span asp-validation-for="Provincia" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Canton" class="control-label">Cantón:</label>
+                    <input asp-for="Canton" class="form-control inputRegistroHotel" />
+                    <span asp-validation-for="Canton" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Distrito" class="control-label">Distrito:</label>
+                    <input asp-for="Distrito" class="form-control inputRegistroHotel" />
+                    <span asp-validation-for="Distrito" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Barrio" class="control-label">Barrio:</label>
+                    <input asp-for="Barrio" class="form-control inputRegistroHotel" />
+                    <span asp-validation-for="Barrio" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Senas" class="control-label">Señas:</label>
+                    <input asp-for="Senas" class="form-control inputRegistroHotel" />
+                    <span asp-validation-for="Senas" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Latitud" class="control-label">Latitud:</label>
+                    <input asp-for="Latitud" class="form-control inputRegistroHotel" />
+                    <span asp-validation-for="Latitud" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Longitud" class="control-label">Longitud:</label>
+                    <input asp-for="Longitud" class="form-control inputRegistroHotel" />
+                    <span asp-validation-for="Longitud" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Correo" class="control-label">Correo electrónico:</label>
+                    <input asp-for="Correo" class="form-control inputRegistroHotel" />
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Siguiente" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Volver</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
