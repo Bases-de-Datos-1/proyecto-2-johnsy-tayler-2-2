@@ -1,0 +1,65 @@
+﻿@model string
+
+@{
+    ViewData["Title"] = "Verificación de correo";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/codigoVerificacion.css" />
+}
+
+<div class="containerVerificacion">
+    <div class="tituloVerificacion">Verificación de correo</div>
+    <div class="descripcionVerificacion">
+        Te hemos enviado un código de seis dígitos a la dirección de correo electrónico que brindaste, para verificar tu cuenta. Por favor, ingrésalo a continuación:
+    </div>
+    <form asp-action="CodigoVerificacion" method="post" autocomplete="off">
+        <div class="panelesVerificacion">
+            <input maxlength="1" name="codigo1" class="inputCodigoVerificacion" type="text" pattern="[0-9]*" inputmode="numeric" required autofocus/>
+            <input maxlength="1" name="codigo2" class="inputCodigoVerificacion" type="text" pattern="[0-9]*" inputmode="numeric" required />
+            <input maxlength="1" name="codigo3" class="inputCodigoVerificacion" type="text" pattern="[0-9]*" inputmode="numeric" required />
+            <span class="guionVerificacion">-</span>
+            <input maxlength="1" name="codigo4" class="inputCodigoVerificacion" type="text" pattern="[0-9]*" inputmode="numeric" required />
+            <input maxlength="1" name="codigo5" class="inputCodigoVerificacion" type="text" pattern="[0-9]*" inputmode="numeric" required />
+            <input maxlength="1" name="codigo6" class="inputCodigoVerificacion" type="text" pattern="[0-9]*" inputmode="numeric" required />
+        </div>
+        <div class="expiraVerificacion">El código expira en 5 minutos.</div>
+        <button type="submit" class="botonVerificacion">Siguiente</button>
+    </form>
+    @if (!string.IsNullOrEmpty(ViewBag.Error))
+    {
+        <div class="text-danger mt-3">@ViewBag.Error</div>
+    }
+</div>
+
+<script>
+    document.querySelectorAll('.inputCodigoVerificacion').forEach((input, indice, listaInputs) => {
+        input.addEventListener('input', function () {
+            if (this.value.length === 1 && indice < listaInputs.length - 1) {
+                listaInputs[indice + 1].focus();
+            }
+        });
+        input.addEventListener('keydown', function (e) {
+            if (e.key === "Backspace" && indice > 0) {
+                listaInputs[indice - 1].focus();
+            }
+        });
+    });
+</script>
+
+<div>
+    <a asp-action="Index">Volver</a>
+</div>
+
+<div class="container slogan">
+    <p class="sloganRancho navbar-brand">HotelesCaribe</p>
+    <p class="container inter24 textosBienvenida" id="textoSlogan">
+        La mejor plataforma para tu negocio y tus viajes.
+    </p>
+    <div class="separacion200"></div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,96 @@
+﻿@font-face {
+    font-family: Inter;
+    src: url('../fonts/Inter.ttf');
+}
+
+.containerVerificacion {
+    margin: 40px auto 0 auto;
+    max-width: 800px;
+    padding: 64px 48px 48px 48px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 32px;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.12);
+    text-align: center;
+    font-family: Inter, Arial, sans-serif;
+}
+
+.tituloVerificacion {
+    font-family: Inter, Arial, sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    color: #767676;
+    margin-bottom: 28px;
+}
+
+.descripcionVerificacion {
+    font-family: Inter, Arial, sans-serif;
+    font-size: 24px;
+    color: #767676;
+    margin-bottom: 48px;
+    line-height: 1.4;
+}
+
+.panelesVerificacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 40px;
+}
+
+.inputCodigoVerificacion {
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+    text-align: center;
+    border: 2.5px solid #bbb;
+    border-radius: 16px;
+    background: transparent;
+    margin: 0 4px;
+    font-family: Inter, Arial, sans-serif;
+    color: #767676;
+}
+
+.inputCodigoVerificacion:focus {
+    border-color: #2688e4;
+    background: #f5faff;
+    color: #767676;
+}
+
+.guionVerificacion {
+    font-size: 2.8rem;
+    color: #767676;
+    margin: 0 12px;
+    user-select: none;
+}
+
+.expiraVerificacion {
+    font-family: Inter, Arial, sans-serif;
+    font-size: 24px;
+    color: #767676;
+    margin-bottom: 36px;
+}
+
+.botonVerificacion {
+    font-size: 1.7rem;
+    font-family: Inter, Arial, sans-serif;
+    padding: 12px 56px;
+    border-radius: 16px;
+    border: none;
+    background: rgba(255,255,255,0.85);
+    color: #767676;
+    font-weight: 600;
+    box-shadow: none;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.botonVerificacion:active, .botonVerificacion:focus {
+    background: #e6f0fa;
+    color: #155fa0;
+    outline: none;
+}

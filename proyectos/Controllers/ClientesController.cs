@@ -59,7 +59,7 @@ namespace HotelesCaribe.Controllers
             {
                 _context.Add(cliente);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(CodigoVerificacion));
             }
             return View(cliente);
         }
@@ -151,6 +151,22 @@ namespace HotelesCaribe.Controllers
         private bool ClienteExists(int id)
         {
             return _context.Clientes.Any(e => e.IdCliente == id);
+        }
+
+        public IActionResult CodigoVerificacion()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CodigoVerificacion(string codigo)
+        {
+            if (codigo == "123456")
+            {
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError("", "Código incorrecto");
+            return View();
         }
     }
 }
