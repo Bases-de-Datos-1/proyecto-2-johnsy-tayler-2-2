@@ -1,0 +1,448 @@
+﻿@model HotelesCaribe.Models.ModeloRecreativaActividades
+
+@{
+    ViewData["Title"] = "Registro de servicio de recreación";
+}
+
+<div class="container containerLogoInicioSolo">
+    <p class="container inter24" id="textoBienvenidaCliente">
+        Registro de servicio de recreación
+    </p>
+</div>
+
+<div class="panel-container">
+    <div class="panel-content">
+        <div class="actividades-header">
+            <h2 class="actividades-titulo">Agregar actividades recreativas</h2>
+        </div>
+
+        <form asp-action="AgregarActividades" asp-route-id="@Model.IdEmpresa" method="post">
+            <input type="hidden" asp-for="IdEmpresa" />
+
+            <div class="actividades-container">
+                <!-- Formulario principal -->
+                <div class="actividad-form">
+                    <div class="form-field">
+                        <label class="field-label">Nombre:</label>
+                        <input type="text" class="field-input" id="nombreActividad" placeholder="" required />
+                    </div>
+
+                    <div class="form-field">
+                        <label class="field-label">Descripción:</label>
+                        <textarea class="field-textarea" id="descripcionActividad" rows="3" placeholder="" required></textarea>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="field-label">Precio:</label>
+                        <input type="number" class="field-input" id="precioActividad" step="0.01" min="0" placeholder="" required />
+                    </div>
+
+                    <div class="agregar-btn-container">
+                        <button type="button" class="btn-agregar-actividad" id="btnAgregarActividad">
+                            <i class="fas fa-plus"></i>
+                            Agregar actividad
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Panel lateral de actividades agregadas -->
+                <div class="actividades-agregadas">
+                    <div class="actividades-lista" id="actividadesLista">
+                        <!-- Las actividades agregadas aparecerán aquí -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campos hidden para las actividades - CORREGIDO -->
+            <div id="camposActividades"></div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-siguiente">
+                    Siguiente
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container slogan">
+    <p class="sloganRancho navbar-brand">HotelesCaribe</p>
+    <p class="container inter24 textosBienvenida" id="textoSlogan">
+        La mejor plataforma para tu negocio.
+    </p>
+    <div class="separacion200"></div>
+</div>
+
+<style>
+    .panel-container {
+        background-color: rgba(181, 213, 255, 0.8);
+        border-radius: 15px;
+        padding: 30px;
+    }
+
+    .actividades-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .actividades-titulo {
+        font-family: Inter;
+        font-size: 24px;
+        color: #888;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .actividades-container {
+        display: flex;
+        gap: 30px;
+        min-height: 400px;
+    }
+
+    .actividad-form {
+        flex: 2;
+        background-color: rgba(217, 217, 217, 0.8);
+        border-radius: 15px;
+        padding: 15px;
+        margin: 20px;
+    }
+
+    .form-field {
+        margin-bottom: 25px;
+    }
+
+    .field-label {
+        display: block;
+        font-family: Inter;
+        font-size: 20px;
+        color: #888;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+
+    .field-input, .field-textarea {
+        width: 100%;
+        border: none;
+        border-bottom: 2px solid rgba(136, 136, 136, 0.3);
+        background-color: transparent;
+        padding: 10px 0;
+        font-family: Inter;
+        font-size: 18px;
+        color: #666;
+        outline: none;
+        border-radius: 0;
+        resize: none;
+    }
+
+        .field-input:focus, .field-textarea:focus {
+            border-bottom-color: #888;
+            box-shadow: none;
+        }
+
+    .agregar-btn-container {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .btn-agregar-actividad {
+        background-color: rgba(180, 180, 180, 0.7);
+        border: none;
+        border-radius: 20px;
+        padding: 15px 30px;
+        font-family: Inter;
+        font-size: 18px;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 auto;
+    }
+
+        .btn-agregar-actividad:hover {
+            background-color: rgba(160, 160, 160, 0.8);
+            transform: translateY(-2px);
+        }
+
+    .actividades-agregadas {
+        flex: 1;
+        background-color: transparent;
+        border-radius: 15px;
+        padding: 20px;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .actividades-lista {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .actividad-item {
+        background-color: rgba(220, 220, 220, 0.6);
+        border-radius: 10px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .actividad-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+    .actividad-icono {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+    }
+
+        .actividad-icono i {
+            font-size: 20px;
+            color: #666;
+        }
+
+    .actividad-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .actividad-nombre {
+        font-family: Inter;
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin: 0 0 5px 0;
+        word-break: break-word;
+    }
+
+    .actividad-precio {
+        font-family: Inter;
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+    }
+
+    .btn-eliminar-actividad {
+        background: #dc3545;
+        color: white;
+        border: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        font-size: 12px;
+    }
+
+        .btn-eliminar-actividad:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(136, 136, 136, 0.3);
+    }
+
+    .btn-siguiente {
+        background-color: rgba(180, 180, 180, 0.7);
+        border: none;
+        border-radius: 25px;
+        padding: 15px 40px;
+        font-family: Inter;
+        font-size: 18px;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .btn-siguiente:hover {
+            background-color: rgba(160, 160, 160, 0.8);
+            transform: translateY(-2px);
+        }
+
+    .estado-vacio {
+        text-align: center;
+        padding: 40px 20px;
+        color: #999;
+    }
+
+        .estado-vacio i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .estado-vacio p {
+            font-family: Inter;
+            font-size: 16px;
+            margin: 0;
+        }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let actividadesAgregadas = [];
+        let contadorActividades = 0;
+
+        // Mostrar estado vacío inicial
+        mostrarEstadoVacio();
+
+        // Agregar actividad
+        document.getElementById('btnAgregarActividad').addEventListener('click', function() {
+            const nombre = document.getElementById('nombreActividad').value.trim();
+            const descripcion = document.getElementById('descripcionActividad').value.trim();
+            const precio = document.getElementById('precioActividad').value.trim();
+
+            if (nombre && descripcion && precio) {
+                agregarActividad(nombre, descripcion, parseFloat(precio));
+                limpiarFormulario();
+            } else {
+                alert('Por favor completa todos los campos.');
+            }
+        });
+
+        function agregarActividad(nombre, descripcion, precio) {
+            contadorActividades++;
+            const idActividad = 'actividad_' + contadorActividades;
+
+            const actividadData = {
+                id: idActividad,
+                nombre: nombre,
+                descripcion: descripcion,
+                precio: precio,
+                numero: contadorActividades
+            };
+
+            actividadesAgregadas.push(actividadData);
+            renderizarActividad(actividadData);
+            actualizarCamposHidden();
+
+            // Ocultar estado vacío si es la primera actividad
+            if (actividadesAgregadas.length === 1) {
+                document.querySelector('.estado-vacio')?.remove();
+            }
+        }
+
+        function renderizarActividad(actividadData) {
+            const html = `
+                <div class="actividad-item" data-id="${actividadData.id}">
+                    <div class="actividad-icono">
+                        <i class="fas fa-swimming-pool"></i>
+                    </div>
+                    <div class="actividad-info">
+                        <p class="actividad-nombre">${actividadData.nombre}</p>
+                        <p class="actividad-precio">$${actividadData.precio.toFixed(2)}</p>
+                    </div>
+                    <button type="button" class="btn-eliminar-actividad" onclick="eliminarActividad('${actividadData.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            document.getElementById('actividadesLista').insertAdjacentHTML('beforeend', html);
+        }
+
+        function mostrarEstadoVacio() {
+            if (actividadesAgregadas.length === 0) {
+                const html = `
+                    <div class="estado-vacio">
+                        <i class="fas fa-swimmer"></i>
+                        <p>No hay actividades agregadas</p>
+                    </div>
+                `;
+                document.getElementById('actividadesLista').innerHTML = html;
+            }
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('nombreActividad').value = '';
+            document.getElementById('descripcionActividad').value = '';
+            document.getElementById('precioActividad').value = '';
+        }
+
+        // CORREGIDO: Función para actualizar campos hidden
+        function actualizarCamposHidden() {
+            const container = document.getElementById('camposActividades');
+            container.innerHTML = '';
+            actividadesAgregadas.forEach((actividad, index) => {
+                container.insertAdjacentHTML('beforeend', `
+                    <input type="hidden" name="Actividades[${index}].Nombre" value="${actividad.nombre}">
+                    <input type="hidden" name="Actividades[${index}].Descripcion" value="${actividad.descripcion}">
+                    <input type="hidden" name="Actividades[${index}].Precio" value="${actividad.precio}">
+                `);
+            });
+
+            // DEBUG: Mostrar en consola lo que se está enviando
+            console.log('Actividades a enviar:', actividadesAgregadas);
+            console.log('Campos hidden creados:', container.innerHTML);
+        }
+
+        // Función global para eliminar actividad
+        window.eliminarActividad = function(idActividad) {
+            // Remover del array
+            actividadesAgregadas = actividadesAgregadas.filter(act => act.id !== idActividad);
+
+            // Remover del DOM
+            const elemento = document.querySelector(`[data-id="${idActividad}"]`);
+            if (elemento) {
+                elemento.style.transition = 'opacity 0.3s ease';
+                elemento.style.opacity = '0';
+                setTimeout(() => {
+                    elemento.remove();
+
+                    // Mostrar estado vacío si no hay actividades
+                    if (actividadesAgregadas.length === 0) {
+                        mostrarEstadoVacio();
+                    }
+                }, 300);
+            }
+
+            // Actualizar campos hidden
+            actualizarCamposHidden();
+        };
+
+        // CORREGIDO: Validar antes de enviar
+        document.querySelector('form').addEventListener('submit', function(e) {
+            console.log('Formulario enviándose...');
+            console.log('Actividades agregadas:', actividadesAgregadas.length);
+
+            if (actividadesAgregadas.length === 0) {
+                e.preventDefault();
+                alert('Por favor agrega al menos una actividad antes de continuar.');
+                return false;
+            }
+
+            // DEBUG: Mostrar datos del formulario
+            const formData = new FormData(this);
+            console.log('Datos del formulario:');
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+        });
+    });
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -190,6 +190,13 @@ body {
     border-radius: 25px;
 }
 
+.cuadroVisual2 {
+    margin: 30px 30px 0px 30px;
+    padding: 50px;
+    background-color: rgba(181, 213, 255, 0.8);
+    border-radius: 25px;
+}
+
 #tituloRegistroCliente {
     font-family: Inter;
     font-size: 32px;
@@ -281,4 +288,50 @@ main {
     background-color: transparent;
     box-shadow: none;
     color: #767676 !important;
+}
+
+
+/* QUITAR */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    font-family: Inter;
+    font-size: 20px;
+    color: #767676;
+    margin-bottom: 5px;
+}
+
+.inputRegistroHotel {
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 0;
+    padding: 8px 0;
+    background-color: transparent;
+    font-family: Inter;
+    font-size: 20px;
+    color: #767676;
+}
+
+.inputRegistroHotel:focus {
+    outline: none;
+    box-shadow: none;
+    background-color: transparent;
+}
+
+.btn {
+    font-size: 18px;
+    font-family: Inter;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }

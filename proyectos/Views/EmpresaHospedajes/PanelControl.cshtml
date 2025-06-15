@@ -1,0 +1,66 @@
+﻿@model HotelesCaribe.Models.EmpresaHospedaje
+
+@{
+    ViewData["Title"] = "Panel de Control";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/panelControl.css" />
+}
+
+<div class="panel-container">
+    <div class="panel-header">
+        <h1 class="panel-title">Panel de control</h1>
+    </div>
+
+    <div class="panel-content">
+        <div class="service-info">
+            <div class="service-icon">
+                <i class="fas fa-building"></i>
+            </div>
+            <div class="service-text">
+                <span class="service-label">Servicio: </span>
+                <span class="service-name">@Model.Nombre</span>
+            </div>
+        </div>
+
+        <div class="panel-buttons">
+            <div class="button-row">
+                <div class="panel-button">
+                    <div class="button-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <span class="button-text">Administrar reservaciones</span>
+                </div>
+                <a asp-controller="EmpresaHospedajes" asp-action="PanelHabitaciones" asp-route-id="@Model.IdEmpresaHospedaje" class="panel-button">
+                    <div class="button-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <span class="button-text">Administrar habitaciones</span>
+                </a>
+            </div>
+            <div class="button-row">
+                <div class="panel-button">
+                    <div class="button-icon">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <span class="button-text">Facturación</span>
+                </div>
+                <div class="panel-button">
+                    <div class="button-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <span class="button-text">Administrar información</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container slogan">
+    <p class="sloganRancho navbar-brand">HotelesCaribe</p>
+    <p class="container inter24 textosBienvenida" id="textoSlogan">
+        La mejor plataforma para tu negocio.
+    </p>
+    <div class="separacion200"></div>
+</div>

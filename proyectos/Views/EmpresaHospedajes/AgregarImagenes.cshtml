@@ -1,0 +1,451 @@
+﻿@model HotelesCaribe.Models.ModeloEmpresaImagenes
+
+@{
+    ViewData["Title"] = "Agregar Imágenes";
+    Layout = "_Layout";
+}
+
+<div class="container containerLogoInicioSolo">
+    <p class="container inter24" id="textoBienvenidaCliente">
+        Agregar imágenes
+    </p>
+</div>
+
+<div class="container-fluid p-0">
+    <div class="container mt-5">
+        <div class="cuadroVisual cuadroImagenes">
+            <h2 class="titulo-imagenes">Agregar imágenes para tu servicio de alojamiento</h2>
+
+            <form asp-action="AgregarImagenes" asp-route-id="@Model.IdEmpresa" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="IdEmpresa" />
+
+                <div class="seccion-imagenes">
+                    <!-- Área principal de agregar imagen -->
+                    <div class="area-agregar-imagen" id="areaAgregarImagen">
+                        <div class="contenido-agregar">
+                            <p class="texto-instruccion">Ingrese el link a una imagen pública:</p>
+                            <div class="input-imagen-container">
+                                <input type="url" class="form-control input-url-imagen" id="inputUrlImagen"
+                                       placeholder="https://ejemplo.com/imagen.jpg">
+                                <button type="button" class="btn-agregar-url">
+                                    <i class="fas fa-plus"></i> Agregar imagen
+                                </button>
+                            </div>
+
+                            <div class="area-subir-archivo">
+                                <input type="file" id="inputArchivo" accept="image/*" multiple style="display: none;">
+                                <button type="button" class="btn-subir-archivo" onclick="document.getElementById('inputArchivo').click()">
+                                    <i class="fas fa-plus"></i> Agregar imagen
+                                </button>
+                                <p class="texto-archivo">Selecciona archivos desde tu dispositivo</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel lateral de imágenes agregadas -->
+                    <div class="panel-imagenes-agregadas">
+                        <div class="lista-imagenes" id="listaImagenes">
+                            <!-- Las imágenes agregadas aparecerán aquí -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campos hidden para las URLs de las imágenes -->
+                <div id="camposImagenes"></div>
+
+                <div class="botones-accion">
+                    <button type="submit" class="btn-siguiente">
+                        <span>Siguiente</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container text-center mt-5">
+        <p class="sloganRancho">Hoteles Caribe</p>
+        <p class="textosBienvenida">La mejor plataforma para tu negocio.</p>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .cuadroImagenes {
+            max-width: 1000px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .titulo-imagenes {
+            font-family: Inter;
+            font-size: 24px;
+            color: #767676;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+
+        .seccion-imagenes {
+            display: flex;
+            gap: 30px;
+            min-height: 400px;
+        }
+
+        .area-agregar-imagen {
+            flex: 2;
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px dashed #ccc;
+            border-radius: 15px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+            .area-agregar-imagen:hover {
+                border-color: #2688e4;
+                background: rgba(38, 136, 228, 0.05);
+            }
+
+        .contenido-agregar {
+            text-align: center;
+            width: 100%;
+        }
+
+        .texto-instruccion {
+            font-family: Inter;
+            font-size: 18px;
+            color: #767676;
+            margin-bottom: 20px;
+        }
+
+        .input-imagen-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+
+        .input-url-imagen {
+            flex: 1;
+            border: none;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+            border-radius: 0;
+            padding: 12px 5px;
+            background: transparent;
+            font-family: Inter;
+            font-size: 16px;
+            color: #767676;
+        }
+
+            .input-url-imagen:focus {
+                outline: none;
+                border-bottom-color: #2688e4;
+                background: transparent;
+                box-shadow: none;
+            }
+
+        .btn-agregar-url, .btn-subir-archivo {
+            background: linear-gradient(135deg, #2688e4, #1e7abc);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-family: Inter;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .btn-agregar-url:hover, .btn-subir-archivo:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(38, 136, 228, 0.3);
+            }
+
+        .area-subir-archivo {
+            text-align: center;
+        }
+
+        .texto-archivo {
+            font-family: Inter;
+            font-size: 14px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .panel-imagenes-agregadas {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .lista-imagenes {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .imagen-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+            .imagen-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            }
+
+        .imagen-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid #f0f0f0;
+        }
+
+        .imagen-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .imagen-nombre {
+            font-family: Inter;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin: 0;
+            word-break: break-all;
+        }
+
+        .imagen-numero {
+            font-family: Inter;
+            font-size: 12px;
+            color: #999;
+            margin: 0;
+        }
+
+        .btn-eliminar-imagen {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+            .btn-eliminar-imagen:hover {
+                background: #c82333;
+                transform: scale(1.1);
+            }
+
+        .botones-accion {
+            text-align: right;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-siguiente {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-family: Inter;
+            font-weight: 500;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+            .btn-siguiente:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+            }
+
+        .estado-vacio {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+            .estado-vacio i {
+                font-size: 48px;
+                margin-bottom: 15px;
+                opacity: 0.5;
+            }
+
+            .estado-vacio p {
+                font-family: Inter;
+                font-size: 16px;
+                margin: 0;
+            }
+    </style>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            let imagenesAgregadas = [];
+            let contadorImagenes = 0;
+
+            // Mostrar estado vacío inicial
+            mostrarEstadoVacio();
+
+            // Agregar imagen por URL
+            $('.btn-agregar-url').click(function() {
+                const url = $('#inputUrlImagen').val().trim();
+                if (url && esUrlValida(url)) {
+                    agregarImagen(url, 'URL');
+                    $('#inputUrlImagen').val('');
+                } else {
+                    alert('Por favor ingresa una URL válida de imagen.');
+                }
+            });
+
+            // Permitir agregar con Enter
+            $('#inputUrlImagen').keypress(function(e) {
+                if (e.which === 13) {
+                    $('.btn-agregar-url').click();
+                }
+            });
+
+            // Manejar archivos seleccionados
+            $('#inputArchivo').change(function(e) {
+                const archivos = e.target.files;
+                for (let i = 0; i < archivos.length; i++) {
+                    const archivo = archivos[i];
+                    if (archivo.type.startsWith('image/')) {
+                        const url = URL.createObjectURL(archivo);
+                        agregarImagen(url, archivo.name);
+                    }
+                }
+                // Limpiar el input
+                $(this).val('');
+            });
+
+            function esUrlValida(url) {
+                try {
+                    new URL(url);
+                    return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
+                } catch {
+                    return false;
+                }
+            }
+
+            function agregarImagen(url, origen) {
+                contadorImagenes++;
+                const idImagen = 'imagen_' + contadorImagenes;
+
+                const imagenData = {
+                    id: idImagen,
+                    url: url,
+                    origen: origen,
+                    numero: contadorImagenes
+                };
+
+                imagenesAgregadas.push(imagenData);
+                renderizarImagen(imagenData);
+                actualizarCamposHidden();
+
+                // Ocultar estado vacío si es la primera imagen
+                if (imagenesAgregadas.length === 1) {
+                    $('.estado-vacio').remove();
+                }
+            }
+
+            function renderizarImagen(imagenData) {
+                const html = `
+                    <div class="imagen-item" data-id="${imagenData.id}">
+                        <img src="${imagenData.url}" alt="Imagen ${imagenData.numero}" class="imagen-preview"
+                             onerror="this.src='data:image/svg+xml,<svg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"60\\" height=\\"60\\"><rect width=\\"60\\" height=\\"60\\" fill=\\"%23f0f0f0\\"/><text x=\\"30\\" y=\\"35\\" text-anchor=\\"middle\\" fill=\\"%23999\\" font-size=\\"10\\">Error</text></svg>'">
+                        <div class="imagen-info">
+                            <p class="imagen-nombre">Imagen ${imagenData.numero}</p>
+                            <p class="imagen-numero">${imagenData.origen}</p>
+                        </div>
+                        <button type="button" class="btn-eliminar-imagen" onclick="eliminarImagen('${imagenData.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                $('#listaImagenes').append(html);
+            }
+
+            function mostrarEstadoVacio() {
+                if (imagenesAgregadas.length === 0) {
+                    const html = `
+                        <div class="estado-vacio">
+                            <i class="fas fa-images"></i>
+                            <p>No hay imágenes agregadas</p>
+                        </div>
+                    `;
+                    $('#listaImagenes').html(html);
+                }
+            }
+
+            function actualizarCamposHidden() {
+                $('#camposImagenes').empty();
+                imagenesAgregadas.forEach((imagen, index) => {
+                    $('#camposImagenes').append(
+                        `<input type="hidden" name="ImagenesUrls[${index}]" value="${imagen.url}">`
+                    );
+                });
+            }
+
+            // Función global para eliminar imagen
+            window.eliminarImagen = function(idImagen) {
+                // Remover del array
+                imagenesAgregadas = imagenesAgregadas.filter(img => img.id !== idImagen);
+
+                // Remover del DOM
+                $(`.imagen-item[data-id="${idImagen}"]`).fadeOut(300, function() {
+                    $(this).remove();
+
+                    // Mostrar estado vacío si no hay imágenes
+                    if (imagenesAgregadas.length === 0) {
+                        mostrarEstadoVacio();
+                    }
+                });
+
+                // Actualizar campos hidden
+                actualizarCamposHidden();
+            };
+
+            // Validar antes de enviar
+            $('form').submit(function(e) {
+                if (imagenesAgregadas.length === 0) {
+                    e.preventDefault();
+                    alert('Por favor agrega al menos una imagen antes de continuar.');
+                    return false;
+                }
+            });
+        });
+    </script>
+}

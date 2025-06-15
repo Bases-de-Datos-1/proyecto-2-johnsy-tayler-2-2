@@ -1,0 +1,100 @@
+﻿@model IEnumerable<HotelesCaribe.Models.VwBusquedaHospedaje>
+
+@{
+    ViewData["Title"] = "Resultados de búsqueda";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/busqueda.css" />
+}
+
+<div class="barra-busqueda-resultados">
+    <form method="get" action="@Url.Action("Index", "Busqueda")" class="d-flex w-100">
+        <input type="text" name="ubicacion" class="busqueda-input" value="@ViewBag.Ubicacion" placeholder="Puerto Viejo, Limón" />
+        <div class="iconos-busqueda">
+            <div class="filtro-icono">
+                <i class="fas fa-filter"></i>
+            </div>
+            <button type="submit" class="btn-transparente">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="categorias-hospedaje">
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Hotel" })"
+       class="categoria-item @(ViewBag.TipoHospedaje == "Hotel" ? "active" : "")">
+        <i class="fas fa-building"></i>
+        <span>Hotel</span>
+    </a>
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Hostel" })"
+       class="categoria-item @(ViewBag.TipoHospedaje == "Hostel" ? "active" : "")">
+        <i class="fas fa-bed"></i>
+        <span>Hostel</span>
+    </a>
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Casa" })"
+       class="categoria-item @(ViewBag.TipoHospedaje == "Casa" ? "active" : "")">
+        <i class="fas fa-home"></i>
+        <span>Casa</span>
+    </a>
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Departamento" })"
+       class="categoria-item @(ViewBag.TipoHospedaje == "Departamento" ? "active" : "")">
+        <i class="fas fa-city"></i>
+        <span>Departamento</span>
+    </a>
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Cuarto compartido" })"
+       class="categoria-item @(ViewBag.TipoHospedaje == "Cuarto compartido" ? "active" : "")">
+        <i class="fas fa-users"></i>
+        <span>Cuarto compartido</span>
+    </a>
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Cabaña" })"
+       class="categoria-item @(ViewBag.TipoHospedaje == "Cabaña" ? "active" : "")">
+        <i class="fas fa-campground"></i>
+        <span>Cabaña</span>
+    </a>
+</div>
+
+<!-- Resultados de la búsqueda -->
+<div class="resultados-grid">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var hotel in Model)
+        {
+            <div class="resultado-card">
+                <div class="hotel-badge">
+                    <i class="fas fa-hotel"></i> @hotel.NombreHotel
+                </div>
+                <img src="/img/hotel-default.jpg" alt="@hotel.NombreHotel" class="hotel-img">
+                <div class="hotel-info">
+                    <div class="ubicacion">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>@hotel.Provincia, @hotel.Canton</span>
+                    </div>
+                    <div class="distancia">@hotel.Distrito kilómetros al norte</div>
+                </div>
+                <div class="ver-mas">
+                    <a href="#" class="btn-ver-mas">Ver más</a>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="no-resultados">
+            <p>No se encontraron resultados para tu búsqueda.</p>
+            <p>Prueba con otras palabras clave o filtros.</p>
+        </div>
+    }
+</div>
+
+<!-- Paginación -->
+<div class="paginacion">
+    <button class="btn-pagina prev">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <span class="info-pagina">Página 1 de 1</span>
+    <button class="btn-pagina next">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+</div>

@@ -13,9 +13,9 @@ public partial class Habitacion
 
     public int IdTipoHabitacion { get; set; }
 
-    public virtual EmpresaHospedaje IdEmpresaHospedajeNavigation { get; set; } = null!;
+    public virtual EmpresaHospedaje? IdEmpresaHospedajeNavigation { get; set; }
 
-    public virtual TipoHabitacion IdTipoHabitacionNavigation { get; set; } = null!;
+    public virtual TipoHabitacion? IdTipoHabitacionNavigation { get; set; }
 
     public virtual ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
 }

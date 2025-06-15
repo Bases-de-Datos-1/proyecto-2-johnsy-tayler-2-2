@@ -1,0 +1,103 @@
+@model HotelesCaribe.Models.ModeloEmpresaRedes
+
+@{
+    ViewData["Title"] = "Redes Sociales";
+    Layout = "_Layout";
+}
+
+
+<div class="container containerLogoInicioSolo">
+    <p class="container inter24" id="textoBienvenidaCliente">
+        ¿Con cuáles redes sociales cuenta tu empresa?
+    </p>
+</div>
+
+
+<div class="container-fluid p-0">
+    <div class="container mt-5">
+
+        <div class="cuadroVisual">
+            <form asp-action="RedesSociales" asp-route-id="@Model.IdEmpresa" method="post">
+                <input type="hidden" asp-for="IdEmpresa" />
+
+                <div class="form-group">
+                    <label class="d-flex align-items-center">
+                        <i class="fab fa-facebook fa-lg me-3" style="color: #3b5998; width: 30px; text-align: center;"></i>
+                        Facebook:
+                    </label>
+                    <input asp-for="Facebook" class="form-control inputRegistroHotel" />
+                </div>
+
+                <div class="form-group">
+                    <label class="d-flex align-items-center">
+                        <i class="fab fa-instagram fa-lg me-3" style="color: #c13584; width: 30px; text-align: center;"></i>
+                        Instagram:
+                    </label>
+                    <input asp-for="Instagram" class="form-control inputRegistroHotel" />
+                </div>
+
+                <div class="form-group">
+                    <label class="d-flex align-items-center">
+                        <i class="fab fa-youtube fa-lg me-3" style="color: #ff0000; width: 30px; text-align: center;"></i>
+                        YouTube:
+                    </label>
+                    <input asp-for="YouTube" class="form-control inputRegistroHotel" />
+                </div>
+
+                <div class="form-group">
+                    <label class="d-flex align-items-center">
+                        <i class="fab fa-tiktok fa-lg me-3" style="color: #000000; width: 30px; text-align: center;"></i>
+                        TikTok:
+                    </label>
+                    <input asp-for="TikTok" class="form-control inputRegistroHotel" />
+                </div>
+
+                <div class="form-group">
+                    <label class="d-flex align-items-center">
+                        <i class="fab fa-airbnb fa-lg me-3" style="color: #ff5a5f; width: 30px; text-align: center;"></i>
+                        Airbnb:
+                    </label>
+                    <input asp-for="Airbnb" class="form-control inputRegistroHotel" />
+                </div>
+
+                <div class="form-group">
+                    <label class="d-flex align-items-center">
+                        <i class="fab fa-threads fa-lg me-3" style="color: #000000; width: 30px; text-align: center;"></i>
+                        Threads:
+                    </label>
+                    <input asp-for="Threads" class="form-control inputRegistroHotel" />
+                </div>
+
+                <div class="form-group">
+                    <label class="d-flex align-items-center">
+                        <i class="fab fa-twitter fa-lg me-3" style="color: #1da1f2; width: 30px; text-align: center;"></i>
+                        X:
+                    </label>
+                    <input asp-for="X" class="form-control inputRegistroHotel" />
+                </div>
+
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn text-primary">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container text-center mt-5">
+        <p class="sloganRancho">Hoteles Caribe</p>
+        <p class="textosBienvenida">La mejor plataforma para tu negocio.</p>
+    </div>
+
+    <footer class="hotelesFooter border-top footer text-muted mt-5 fixed-bottom">
+        <div class="container">
+            <span class="negraLetraRancho">Hoteles Caribe</span>
+            <p class="inter24 colorDerechosFooter">Todos los derechos reservados 2025.</p>
+        </div>
+    </footer>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

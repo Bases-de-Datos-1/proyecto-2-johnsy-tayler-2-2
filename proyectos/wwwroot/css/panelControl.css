@@ -1,0 +1,122 @@
+﻿@font-face {
+    font-family: Inter;
+    src: url('../fonts/Inter.ttf');
+}
+
+.panel-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.panel-header {
+    margin-bottom: 40px;
+}
+
+.panel-title {
+    font-family: Inter;
+    font-size: 48px;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    margin: 0;
+}
+
+.panel-content {
+    background-color: rgba(181, 213, 255, 0.8);
+    border-radius: 25px;
+    padding: 40px;
+    width: 100%;
+    max-width: 1100px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.service-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: rgba(217, 217, 217, 0.8);
+    border-radius: 15px;
+}
+
+.service-icon {
+    margin-right: 20px;
+}
+
+.service-icon i {
+    font-size: 48px;
+    color: #767676;
+}
+
+.service-text {
+    display: flex;
+    align-items: flex-start;
+}
+
+.service-label {
+    display: flex;
+    font-family: Inter;
+    font-size: 28px;
+    color: #767676;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.service-name {
+    display: flex;
+    font-family: Inter;
+    font-size: 28px;
+    color: #767676;
+}
+
+.panel-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.button-row {
+    display: flex;
+    gap: 25px;
+    justify-content: space-between;
+}
+
+.panel-button {
+    display: flex;
+    align-items: center;
+    background-color: rgba(217, 217, 217, 0.8);
+    border-radius: 20px;
+    padding: 25px 35px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    height: 80px;
+    justify-content: flex-start;
+    text-decoration: none;
+}
+
+    .panel-button:hover {
+        background-color: rgba(217, 217, 217, 1);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+.button-icon {
+    margin-right: 20px;
+}
+
+    .button-icon i {
+        font-size: 32px;
+        color: #767676;
+    }
+
+.button-text {
+    font-family: Inter;
+    font-size: 20px;
+    color: #767676;
+    font-weight: 500;
+}

@@ -1,0 +1,200 @@
+﻿@model HotelesCaribe.Models.Habitacion
+@{
+    ViewData["Title"] = "Administración de habitaciones";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/panelControl.css" />
+}
+
+<div class="panel-container">
+    <div class="panel-header">
+        <h1 class="panel-title">Administración de habitaciones</h1>
+    </div>
+
+    <div class="panel-content cuadroVisual2">
+        <!-- Información del servicio -->
+        <div class="service-info">
+            <div class="service-icon">
+                <i class="fas fa-building"></i>
+            </div>
+            <div class="service-text">
+                <span class="service-label">Servicio:</span>
+                <span class="service-name">@ViewBag.EmpresaSeleccionada</span>
+            </div>
+        </div>
+
+        <!-- Formulario de habitación -->
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Campo oculto para la empresa si viene preseleccionada -->
+            @if (ViewBag.EmpresaPreseleccionada != null)
+            {
+                <input type="hidden" asp-for="IdEmpresaHospedaje" value="@ViewBag.EmpresaPreseleccionada" />
+            }
+            else
+            {
+                <input type="hidden" asp-for="IdEmpresaHospedaje" />
+            }
+
+            <!-- Número de habitación -->
+            <div class="habitacion-form-group">
+                <div class="form-icon">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <div class="form-content">
+                    <label class="form-label">Número de habitación:</label>
+                    <div class="form-input-container">
+                        <input asp-for="Numero" class="form-input" placeholder="Escriba el número de habitación..." type="number" min="1" required />
+                        <span asp-validation-for="Numero" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tipo de habitación -->
+            <div class="habitacion-form-group">
+                <div class="form-icon">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <div class="form-content">
+                    <label class="form-label">Tipo de habitación:</label>
+                    <div class="form-input-container">
+                        <select asp-for="IdTipoHabitacion" class="form-select" asp-items="ViewBag.IdTipoHabitacion" required>
+                            <option value="">Seleccione el tipo de habitación...</option>
+                        </select>
+                        <span asp-validation-for="IdTipoHabitacion" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Agregar -->
+            <div class="form-button-container">
+                <button type="submit" class="add-button">
+                    <i class="fas fa-plus"></i>
+                    Agregar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .habitacion-form-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        background-color: rgba(217, 217, 217, 0.8);
+        border-radius: 15px;
+        padding: 20px;
+    }
+
+    .form-icon {
+        margin-right: 20px;
+        min-width: 40px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-icon i {
+        font-size: 32px;
+        color: #888;
+    }
+
+    .form-content {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .form-label {
+        font-family: Inter;
+        font-size: 20px;
+        color: #888;
+        font-weight: 500;
+        margin: 0;
+        white-space: nowrap;
+        min-width: 200px;
+    }
+
+    .form-input-container {
+        flex: 1;
+        position: relative;
+    }
+
+    .form-input, .form-select {
+        border: none;
+        border-bottom: 2px solid rgba(136, 136, 136, 0.3);
+        background-color: transparent;
+        padding: 8px 0;
+        font-family: Inter;
+        font-size: 18px;
+        color: #666;
+        outline: none;
+        border-radius: 0;
+        width: 100%;
+    }
+
+    .form-input::placeholder {
+        color: #aaa;
+        font-style: italic;
+    }
+
+    .form-input:focus, .form-select:focus {
+        border-bottom-color: #888;
+        box-shadow: none;
+    }
+
+    .form-select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23888' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 10px center;
+        background-repeat: no-repeat;
+        background-size: 16px 12px;
+        padding-right: 40px;
+    }
+
+    .form-button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .add-button {
+        background-color: rgba(180, 180, 180, 0.7);
+        border: none;
+        border-radius: 20px;
+        padding: 15px 40px;
+        font-family: Inter;
+        font-size: 20px;
+        color: #666;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .add-button:hover {
+        background-color: rgba(160, 160, 160, 0.8);
+        transform: translateY(-2px);
+    }
+
+    .add-button i {
+        font-size: 18px;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+        font-family: Inter;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
