@@ -1,0 +1,75 @@
+﻿@font-face {
+    font-family: Inter;
+    src: url('../fonts/Inter.ttf');
+}
+
+.cuadroTipoEmpresa {
+    margin-top: 40px;
+}
+
+.tipo-empresa-group {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-tipo-empresa {
+    width: 300px;
+    height: 120px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(118, 118, 118, 0.3);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #767676;
+    font-family: Inter;
+    text-decoration: none;
+}
+
+.btn-tipo-empresa:hover {
+    background-color: rgba(181, 213, 255, 0.8);
+    border-color: rgba(38, 136, 228, 0.6);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    color: #767676;
+}
+
+.btn-tipo-empresa:focus,
+.btn-tipo-empresa:active {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(38, 136, 228, 0.25);
+    color: #767676;
+}
+
+.icono-empresa {
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.icono-empresa i {
+    font-size: 48px;
+}
+
+.texto-tipo-empresa {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.btn-siguiente {
+    padding: 12px 30px;
+    font-size: 18px;
+    border-radius: 25px;
+    font-family: Inter;
+    color: #767676;
+    border-color: #767676;
+}
+
+.btn-siguiente:hover {
+    background-color: #767676;
+    color: white;
+    border-color: #767676;
+}

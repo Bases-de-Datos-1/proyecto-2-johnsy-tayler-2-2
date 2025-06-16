@@ -5,14 +5,19 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/busqueda.css" />
+    <link rel="stylesheet" href="~/css/busqueda.css" asp-append-version="true" />
 }
 
 <div class="barra-busqueda-resultados">
     <form method="get" action="@Url.Action("Index", "Busqueda")" class="d-flex w-100">
         <input type="text" name="ubicacion" class="busqueda-input" value="@ViewBag.Ubicacion" placeholder="Puerto Viejo, Limón" />
+
+        <input type="text" name="nombreHotel" class="busqueda-input-nombre" value="@ViewBag.NombreHotel" placeholder="Nombre del hotel..." />
+
+        <input type="hidden" name="tipoHospedaje" value="@ViewBag.TipoHospedaje" />
+
         <div class="iconos-busqueda">
-            <div class="filtro-icono">
+            <div class="filtro-icono" onclick="toggleFiltros()">
                 <i class="fas fa-filter"></i>
             </div>
             <button type="submit" class="btn-transparente">
@@ -20,35 +25,128 @@
             </button>
         </div>
     </form>
+
+    <div id="panel-filtros" class="panel-filtros-flotante" style="display: none;">
+        <div class="filtros-header">
+            <h4><i class="fas fa-sliders-h"></i> Filtros</h4>
+            <button class="btn-cerrar-filtros" onclick="toggleFiltros()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="filtros-content">
+            <div class="filtros-row">
+                <div class="filtro-compacto">
+                    <label><i class="fas fa-map-marked-alt"></i> Provincia</label>
+                    <select class="filtro-select-small">
+                        <option value="">Todas</option>
+                        <option value="Limón">Limón</option>
+                        <option value="San José">San José</option>
+                        <option value="Puntarenas">Puntarenas</option>
+                        <option value="Guanacaste">Guanacaste</option>
+                    </select>
+                </div>
+
+                <div class="filtro-compacto">
+                    <label><i class="fas fa-money-bill-wave"></i> Precio máx.</label>
+                    <select class="filtro-select-small">
+                        <option value="">Sin límite</option>
+                        <option value="25000">₡25,000</option>
+                        <option value="50000">₡50,000</option>
+                        <option value="100000">₡100,000</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filtros-row">
+                <div class="servicios-compactos">
+                    <label><i class="fas fa-concierge-bell"></i> Servicios</label>
+                    <div class="servicios-pills">
+                        <span class="servicio-pill" onclick="toggleServicio(this)" data-servicio="wifi">
+                            <i class="fas fa-wifi"></i> WiFi
+                        </span>
+                        <span class="servicio-pill" onclick="toggleServicio(this)" data-servicio="piscina">
+                            <i class="fas fa-swimming-pool"></i> Piscina
+                        </span>
+                        <span class="servicio-pill" onclick="toggleServicio(this)" data-servicio="aire">
+                            <i class="fas fa-snowflake"></i> A/C
+                        </span>
+                        <span class="servicio-pill" onclick="toggleServicio(this)" data-servicio="parking">
+                            <i class="fas fa-parking"></i> Parking
+                        </span>
+                        <span class="servicio-pill" onclick="toggleServicio(this)" data-servicio="playa">
+                            <i class="fas fa-umbrella-beach"></i> Playa
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filtros-row">
+                <div class="rating-compacto">
+                    <label><i class="fas fa-star"></i> Valoración mín.</label>
+                    <div class="rating-pills">
+                        <span class="rating-pill active" onclick="setRatingCompact(this, 0)">Todas</span>
+                        <span class="rating-pill" onclick="setRatingCompact(this, 3)">★★★+</span>
+                        <span class="rating-pill" onclick="setRatingCompact(this, 4)">★★★★+</span>
+                        <span class="rating-pill" onclick="setRatingCompact(this, 5)">★★★★★</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filtros-acciones-compactas">
+                <button type="button" class="btn-limpiar-compacto" onclick="limpiarFiltros()">
+                    <i class="fas fa-undo"></i> Limpiar
+                </button>
+                <button type="button" class="btn-aplicar-compacto" onclick="aplicarFiltros()">
+                    <i class="fas fa-search"></i> Aplicar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="filtros-overlay" class="filtros-overlay" onclick="toggleFiltros()" style="display: none;"></div>
 </div>
 
+
+@if (!string.IsNullOrEmpty(ViewBag.NombreHotel))
+{
+    <div class="info-busqueda">
+        <p><strong>Buscando hoteles con nombre:</strong> "@ViewBag.NombreHotel"</p>
+        <p><strong>Resultados encontrados:</strong> @ViewBag.TotalResultados</p>
+        <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = ViewBag.TipoHospedaje })"
+           class="limpiar-busqueda">
+            <i class="fas fa-times"></i> Limpiar búsqueda por nombre
+        </a>
+    </div>
+}
+
 <div class="categorias-hospedaje">
-    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Hotel" })"
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Hotel", nombreHotel = ViewBag.NombreHotel })"
        class="categoria-item @(ViewBag.TipoHospedaje == "Hotel" ? "active" : "")">
         <i class="fas fa-building"></i>
         <span>Hotel</span>
     </a>
-    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Hostel" })"
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Hostel", nombreHotel = ViewBag.NombreHotel })"
        class="categoria-item @(ViewBag.TipoHospedaje == "Hostel" ? "active" : "")">
         <i class="fas fa-bed"></i>
         <span>Hostel</span>
     </a>
-    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Casa" })"
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Casa", nombreHotel = ViewBag.NombreHotel })"
        class="categoria-item @(ViewBag.TipoHospedaje == "Casa" ? "active" : "")">
         <i class="fas fa-home"></i>
         <span>Casa</span>
     </a>
-    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Departamento" })"
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Departamento", nombreHotel = ViewBag.NombreHotel })"
        class="categoria-item @(ViewBag.TipoHospedaje == "Departamento" ? "active" : "")">
         <i class="fas fa-city"></i>
         <span>Departamento</span>
     </a>
-    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Cuarto compartido" })"
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Cuarto compartido", nombreHotel = ViewBag.NombreHotel })"
        class="categoria-item @(ViewBag.TipoHospedaje == "Cuarto compartido" ? "active" : "")">
         <i class="fas fa-users"></i>
         <span>Cuarto compartido</span>
     </a>
-    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Cabaña" })"
+    <a href="@Url.Action("Index", "Busqueda", new { ubicacion = ViewBag.Ubicacion, tipoHospedaje = "Cabaña", nombreHotel = ViewBag.NombreHotel })"
        class="categoria-item @(ViewBag.TipoHospedaje == "Cabaña" ? "active" : "")">
         <i class="fas fa-campground"></i>
         <span>Cabaña</span>
@@ -62,19 +160,40 @@
         foreach (var hotel in Model)
         {
             <div class="resultado-card">
-                <div class="hotel-badge">
-                    <i class="fas fa-hotel"></i> @hotel.NombreHotel
-                </div>
-                <img src="/img/hotel-default.jpg" alt="@hotel.NombreHotel" class="hotel-img">
-                <div class="hotel-info">
-                    <div class="ubicacion">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>@hotel.Provincia, @hotel.Canton</span>
+                <!-- Header con icono y nombre del hotel -->
+                <div class="hotel-header">
+                    <div class="hotel-badge">
+                        <i class="fas fa-hotel"></i>
+                        <span class="hotel-nombre">@hotel.NombreHotel</span>
                     </div>
-                    <div class="distancia">@hotel.Distrito kilómetros al norte</div>
                 </div>
-                <div class="ver-mas">
-                    <a href="#" class="btn-ver-mas">Ver más</a>
+
+                <!-- Imagen del hotel -->
+                <div class="hotel-imagen-container">
+                    <img src="/img/hotel-default.jpg" alt="@hotel.NombreHotel" class="hotel-img">
+                    <div class="imagen-overlay"></div>
+                </div>
+
+                <!-- Información del hotel -->
+                <div class="hotel-info">
+                    <div class="ubicacion-info">
+                        <div class="ubicacion-principal">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="ubicacion-texto">@hotel.Provincia, @hotel.Canton, @hotel.Distrito</span>
+                        </div>
+                        <div class="ubicacion-detalle">@hotel.Distrito</div>
+                    </div>
+
+
+                </div>
+
+                <!-- Botón de acción -->
+                <div class="hotel-acciones">
+                    <a asp-controller="Hospedaje" asp-action="Detalles" asp-route-id="@hotel.IdEmpresaHospedaje"
+                           class="btn-ver-mas">
+                        <span>Ver más</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         }
@@ -82,8 +201,16 @@
     else
     {
         <div class="no-resultados">
-            <p>No se encontraron resultados para tu búsqueda.</p>
-            <p>Prueba con otras palabras clave o filtros.</p>
+            @if (!string.IsNullOrEmpty(ViewBag.NombreHotel))
+            {
+                <p>No se encontraron hoteles con el nombre "@ViewBag.NombreHotel".</p>
+                <p>Verifica la ortografía o intenta con otro nombre.</p>
+            }
+            else
+            {
+                <p>No se encontraron resultados para tu búsqueda.</p>
+                <p>Prueba con otras palabras clave o filtros.</p>
+            }
         </div>
     }
 </div>
@@ -98,3 +225,697 @@
         <i class="fas fa-chevron-right"></i>
     </button>
 </div>
+
+<style>
+    /* Estilos para la barra de búsqueda */
+    .barra-busqueda-resultados form {
+        gap: 10px;
+    }
+
+    .busqueda-input-nombre {
+        flex: 0 0 200px;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 25px;
+        font-size: 14px;
+        outline: none;
+    }
+
+        .busqueda-input-nombre:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+    .info-busqueda {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 10px 0;
+        border-left: 4px solid #007bff;
+    }
+
+        .info-busqueda p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+    .limpiar-busqueda {
+        color: #dc3545;
+        text-decoration: none;
+        font-size: 14px;
+        margin-top: 10px;
+        display: inline-block;
+    }
+
+        .limpiar-busqueda:hover {
+            text-decoration: underline;
+        }
+
+    /* Estilos mejorados para las cards de hoteles */
+    .resultado-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 248, 255, 0.95) 100%);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        position: relative;
+    }
+
+        .resultado-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+    /* Header del hotel */
+    .hotel-header {
+        position: relative;
+        z-index: 2;
+        padding: 15px 20px 10px 20px;
+    }
+
+    .hotel-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #555;
+        font-weight: 600;
+    }
+
+        .hotel-badge i {
+            color: #007bff;
+            font-size: 16px;
+        }
+
+    .hotel-nombre {
+        font-size: 16px;
+        color: #333;
+    }
+
+    /* Contenedor de imagen */
+    .hotel-imagen-container {
+        position: relative;
+        height: 200px;
+        margin: 0 15px;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .hotel-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .resultado-card:hover .hotel-img {
+        transform: scale(1.05);
+    }
+
+    .imagen-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+        pointer-events: none;
+    }
+
+    /* Información del hotel */
+    .hotel-info {
+        padding: 20px;
+        position: relative;
+    }
+
+    .ubicacion-info {
+        margin-bottom: 20px;
+    }
+
+    .ubicacion-principal {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 5px;
+    }
+
+        .ubicacion-principal i {
+            color: #007bff;
+            font-size: 14px;
+        }
+
+    .ubicacion-texto {
+        font-weight: 500;
+        color: #333;
+        font-size: 14px;
+    }
+
+    .ubicacion-detalle {
+        color: #666;
+        font-size: 13px;
+        margin-left: 22px;
+    }
+
+
+
+    /* Botón de acción */
+    .hotel-acciones {
+        padding: 0 20px 20px 20px;
+    }
+
+    .btn-ver-mas {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 12px 20px;
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+        .btn-ver-mas:hover {
+            background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-ver-mas i {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-ver-mas:hover i {
+            transform: translateX(3px);
+        }
+
+    /* Grid de resultados */
+    .resultados-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 25px;
+        padding: 20px 0;
+    }
+
+    /* Estilos para cuando no hay resultados */
+    .no-resultados {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+        grid-column: 1 / -1;
+    }
+
+        .no-resultados p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+    /* ===== ESTILOS PARA PANEL DE FILTROS ===== */
+    .panel-filtros {
+        position: fixed;
+        top: 0;
+        right: -400px;
+        width: 400px;
+        height: 100vh;
+        background: white;
+        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        transition: right 0.3s ease;
+        overflow-y: auto;
+    }
+
+        .panel-filtros.active {
+            right: 0;
+        }
+
+    .filtros-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+    }
+
+        .filtros-header h4 {
+            margin: 0;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    .btn-cerrar-filtros {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 50%;
+        transition: background 0.3s ease;
+    }
+
+        .btn-cerrar-filtros:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+    .filtros-content {
+        padding: 20px;
+    }
+
+    .filtros-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .filtro-grupo {
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 20px;
+    }
+
+        .filtro-grupo:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+    .filtro-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+        .filtro-label i {
+            color: #007bff;
+            width: 16px;
+        }
+
+    .filtro-select {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        background: white;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+    }
+
+        .filtro-select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+    /* Servicios Grid */
+    .servicios-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .checkbox-custom {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: background 0.3s ease;
+        font-size: 13px;
+    }
+
+        .checkbox-custom:hover {
+            background: #f8f9fa;
+        }
+
+        .checkbox-custom input[type="checkbox"] {
+            display: none;
+        }
+
+    .checkmark {
+        width: 16px;
+        height: 16px;
+        border: 2px solid #ddd;
+        border-radius: 3px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .checkbox-custom input:checked + .checkmark {
+        background: #007bff;
+        border-color: #007bff;
+    }
+
+        .checkbox-custom input:checked + .checkmark::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+    .checkbox-custom i {
+        color: #666;
+        font-size: 12px;
+        width: 14px;
+    }
+
+    /* Filtros de Precio */
+    .precio-grupo {
+        border-bottom: 1px solid #f0f0f0 !important;
+    }
+
+    .precio-inputs {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .precio-input-grupo {
+        flex: 1;
+    }
+
+        .precio-input-grupo label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+    .input-precio {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .precio-simbolo {
+        position: absolute;
+        left: 12px;
+        color: #666;
+        font-size: 14px;
+        z-index: 1;
+    }
+
+    .precio-input {
+        width: 100%;
+        padding: 10px 15px 10px 25px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+        .precio-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+    .precio-separador {
+        font-weight: bold;
+        color: #666;
+        margin-top: 20px;
+    }
+
+    .precios-predefinidos {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .precio-preset {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background: white;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .precio-preset:hover {
+            border-color: #007bff;
+            background: #f8f9fa;
+        }
+
+        .precio-preset.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+    /* Rating Filter */
+    .rating-filter {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .rating-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+        .rating-option:hover {
+            background: #f8f9fa;
+        }
+
+        .rating-option.active {
+            background: #007bff;
+            color: white;
+        }
+
+    .stars {
+        color: #ffc107;
+        font-size: 14px;
+        min-width: 80px;
+    }
+
+    .rating-option span {
+        font-size: 13px;
+        color: #666;
+    }
+
+    .rating-option.active span {
+        color: white;
+    }
+
+    /* Botones de Acción */
+    .filtros-acciones {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn-limpiar-filtros, .btn-aplicar-filtros {
+        flex: 1;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-limpiar-filtros {
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        color: #666;
+    }
+
+        .btn-limpiar-filtros:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+    .btn-aplicar-filtros {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border: none;
+        color: white;
+    }
+
+        .btn-aplicar-filtros:hover {
+            background: linear-gradient(135deg, #0056b3, #004085);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+
+    /* Overlay para cerrar filtros */
+    /* Overlay */
+    .filtros-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    /* Icono de filtro activo */
+    .filtro-icono.active {
+        background: #007bff;
+        color: white;
+    }
+
+    .filtro-icono {
+        padding: 12px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .filtro-icono:hover {
+            background: #f8f9fa;
+        }
+</style>
+
+<script>
+    // Funciones para el panel de filtros
+    function toggleFiltros() {
+        const panel = document.getElementById('panel-filtros');
+        const overlay = document.getElementById('filtros-overlay');
+        const icono = document.querySelector('.filtro-icono');
+
+        if (panel && overlay) {
+            const isVisible = panel.style.display === 'block';
+
+            if (isVisible) {
+                // Cerrar con animación
+                panel.style.opacity = '0';
+                panel.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                overlay.style.opacity = '0';
+
+                // Ocultar después de la animación
+                setTimeout(() => {
+                    panel.style.display = 'none';
+                    overlay.style.display = 'none';
+                }, 300);
+
+                icono?.classList.remove('active');
+                console.log('❌ Panel cerrado');
+            } else {
+                // Mostrar y animar entrada
+                panel.style.display = 'block';
+                overlay.style.display = 'block';
+
+                // Forzar reflow
+                panel.offsetHeight;
+
+                // Animar entrada
+                panel.style.opacity = '1';
+                panel.style.transform = 'translate(-50%, -50%) scale(1)';
+                overlay.style.opacity = '1';
+
+                icono?.classList.add('active');
+                console.log('✅ Panel abierto');
+            }
+        }
+    }
+
+    // Limpiar estados al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+        const panel = document.getElementById('panel-filtros');
+        const overlay = document.getElementById('filtros-overlay');
+
+        if (panel) {
+            panel.style.display = 'none';
+            panel.style.opacity = '0';
+            panel.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        }
+        if (overlay) {
+            overlay.style.display = 'none';
+            overlay.style.opacity = '0';
+        }
+
+        console.log('🎯 Filtros inicializados correctamente');
+    });
+
+    function toggleServicio(element) {
+        element.classList.toggle('active');
+    }
+
+    function setRatingCompact(element, rating) {
+        // Limpiar otras selecciones
+        document.querySelectorAll('.rating-pill').forEach(pill => pill.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    function limpiarFiltros() {
+        // Limpiar selects
+        document.querySelectorAll('.filtro-select-small').forEach(select => select.selectedIndex = 0);
+
+        // Limpiar servicios
+        document.querySelectorAll('.servicio-pill.active').forEach(pill => pill.classList.remove('active'));
+
+        // Limpiar rating
+        document.querySelectorAll('.rating-pill.active').forEach(pill => pill.classList.remove('active'));
+
+        console.log('Filtros limpiados');
+    }
+
+    function aplicarFiltros() {
+        // Recopilar filtros seleccionados
+        const provincia = document.querySelector('.filtro-select-small').value;
+        const precioMax = document.querySelectorAll('.filtro-select-small')[1].value;
+        const servicios = Array.from(document.querySelectorAll('.servicio-pill.active')).map(pill => pill.dataset.servicio);
+        const ratingElement = document.querySelector('.rating-pill.active');
+        const rating = ratingElement ? ratingElement.textContent.trim() : null;
+
+        console.log('Aplicando filtros:', {
+            provincia,
+            precioMax,
+            servicios,
+            rating
+        });
+
+        // Cerrar panel
+        toggleFiltros();
+
+        // Aquí harías la búsqueda con los filtros
+        alert('Filtros aplicados! (Funcionalidad no implementada aún)');
+    }
+
+    // Cerrar filtros con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const panel = document.getElementById('panel-filtros');
+            if (panel.classList.contains('active')) {
+                toggleFiltros();
+            }
+        }
+    });
+</script>

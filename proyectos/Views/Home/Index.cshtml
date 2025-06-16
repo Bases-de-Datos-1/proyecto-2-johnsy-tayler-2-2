@@ -9,9 +9,9 @@
 </div>
 
 <nav class="container">
-    <form class="busqueda form-inline position-relative">
+    <form class="busqueda form-inline position-relative" asp-controller="Busqueda" asp-action="Index" method="get">
         <div class="position-relative w-100">
-            <input class="inputRedondo form-control mr-sm-2 inter24 pr-5" id="busquedaPrincipal" type="search" placeholder="Buscar hospedaje..." aria-label="Search">
+            <input class="inputRedondo form-control mr-sm-2 inter24 pr-5" id="busquedaPrincipal" name="nombreHotel" type="search" placeholder="Buscar hospedaje..." aria-label="Search">
             <i class="fas fa-search icono-busqueda"></i>
         </div>   
     </form>

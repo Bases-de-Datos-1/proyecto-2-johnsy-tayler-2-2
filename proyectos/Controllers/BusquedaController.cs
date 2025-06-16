@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 using HotelesCaribe.Models;
 
 namespace HotelesCaribe.Controllers
@@ -18,22 +19,56 @@ namespace HotelesCaribe.Controllers
         }
 
         // GET: Busqueda
-        public async Task<IActionResult> Index(string ubicacion = null, string tipoHospedaje = "Hotel")
+        public async Task<IActionResult> Index(string ubicacion = null, string tipoHospedaje = "Hotel", string nombreHotel = null)
         {
             ubicacion = string.IsNullOrEmpty(ubicacion) ? "Puerto Viejo, Limón" : ubicacion;
+            List<VwBusquedaHospedaje> resultados = new List<VwBusquedaHospedaje>();
 
-            var resultados = await _context.VwBusquedaHospedajes
-                .Where(h => string.IsNullOrEmpty(ubicacion) ||
-                       h.Provincia.Contains(ubicacion) ||
-                       h.Canton.Contains(ubicacion) ||
-                       h.Distrito.Contains(ubicacion))
-                .Where(h => string.IsNullOrEmpty(tipoHospedaje) ||
-                       h.TipoHospedaje == tipoHospedaje)
-                .Take(9)
-                .ToListAsync();
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(nombreHotel))
+                {
+
+                    var parametro = new SqlParameter("@nombreHotel", nombreHotel);
+                    resultados = await _context.VwBusquedaHospedajes
+                        .FromSqlRaw("EXEC SP_BuscarHospedajesPorNombre @nombreHotel", parametro)
+                        .ToListAsync();
+                }
+                /*
+                else
+                {
+                    resultados = await _context.VwBusquedaHospedajes
+                        .Where(h => string.IsNullOrEmpty(ubicacion) ||
+                               h.Provincia.Contains(ubicacion) ||
+                               h.Canton.Contains(ubicacion) ||
+                               h.Distrito.Contains(ubicacion))
+                        .Where(h => string.IsNullOrEmpty(tipoHospedaje) ||
+                               h.TipoHospedaje == tipoHospedaje)
+                        .Take(9)
+                        .ToListAsync();
+                }
+                */
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error en búsqueda: {ex.Message}");
+                /*
+                resultados = await _context.VwBusquedaHospedajes
+                    .Where(h => string.IsNullOrEmpty(ubicacion) ||
+                           h.Provincia.Contains(ubicacion) ||
+                           h.Canton.Contains(ubicacion) ||
+                           h.Distrito.Contains(ubicacion))
+                    .Where(h => string.IsNullOrEmpty(tipoHospedaje) ||
+                           h.TipoHospedaje == tipoHospedaje)
+                    .Take(9)
+                    .ToListAsync();
+                */
+            }
 
             ViewBag.Ubicacion = ubicacion;
             ViewBag.TipoHospedaje = tipoHospedaje;
+            ViewBag.NombreHotel = nombreHotel;
+            ViewBag.TotalResultados = resultados.Count;
 
             return View(resultados);
         }

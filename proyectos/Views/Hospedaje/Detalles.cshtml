@@ -1,0 +1,324 @@
+﻿@model HotelesCaribe.Models.HospedajeDetallesModel
+
+@{
+    ViewData["Title"] = Model.Hotel.Nombre;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/detallesHotel.css" asp-append-version="true" />
+}
+
+<div class="hotel-detail-container">
+    <!-- Header del Hotel -->
+    <div class="hotel-header">
+        <div class="row">
+            <!-- Imagen Principal -->
+            <div class="col-md-6">
+                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                     alt="@Model.Hotel.Nombre" class="hotel-main-image">
+            </div>
+
+            <!-- Galería de Imágenes -->
+            <div class="col-md-3">
+                <div class="hotel-gallery">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Piscina">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Piscina">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Piscina">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Piscina">
+                        <div class="gallery-more">+7</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información del Hotel -->
+            
+        </div>
+        <div class="row">
+            <div class="hotel-info">
+                <div class="hotel-title">
+                    <i class="fas fa-hotel hotel-icon"></i>
+                    <h1 class="hotel-name">@Model.Hotel.Nombre</h1>
+                </div>
+
+                <div class="hotel-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>@Model.Hotel.Senas, @Model.Hotel.Distrito, @Model.Hotel.Canton, @Model.Hotel.Provincia</span>
+                </div>
+
+                <div class="amenities-tags">
+                    <span class="amenity-tag">WiFi gratuito</span>
+                    <span class="amenity-tag">Parqueo incluido</span>
+                    <span class="amenity-tag">Desayuno incluido</span>
+                    <span class="amenity-tag">Con aire acondicionado</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="social-media">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                    </div>
+
+                    <a href="#" class="btn-ver-mapa">
+                        <i class="fas fa-map"></i>
+                        Ver mapa
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Habitaciones -->
+    <div class="habitaciones-section">
+        <div class="habitaciones-header">
+            <h2 class="habitaciones-title">Habitaciones disponibles:</h2>
+            <button class="btn-filtrar" data-bs-toggle="modal" data-bs-target="#filtrosModal">
+                <i class="fas fa-filter"></i>
+                Filtrar
+            </button>
+        </div>
+
+        <table class="habitaciones-table">
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Comodidades</th>
+                    <th>Precio</th>
+                    <th>Reservación</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var habitacion in Model.Habitaciones)
+                {
+                    <tr class="habitacion-row">
+                        <td>
+                            <div class="d-flex gap-3">
+                                <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                                     alt="@habitacion.IdTipoHabitacionNavigation.Nombre" class="habitacion-imagen">
+                                <div class="habitacion-info">
+                                    <h4>@habitacion.IdTipoHabitacionNavigation.Nombre - Habitación @habitacion.Numero</h4>
+                                    <p class="habitacion-descripcion">
+                                        @habitacion.IdTipoHabitacionNavigation.Descripcion
+                                    </p>
+                                    <p class="habitacion-descripcion">
+                                        <strong>Tipo de cama:</strong> @habitacion.IdTipoHabitacionNavigation.TipoCama
+                                    </p>
+                                    <a href="#" class="ver-mas-link">Ver más fotos</a>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="comodidades-list">
+                                <!-- Comodidades fijas por ahora -->
+                                <span class="comodidad-item">WiFi</span>
+                                <span class="comodidad-item">A/C</span>
+                                <span class="comodidad-item">TV</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="precio-info">
+                                <p class="precio-principal">₡@habitacion.IdTipoHabitacionNavigation.Precio.ToString("N0")</p>
+                                <p class="precio-detalle">por noche</p>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="reservacion-form">
+                                <form asp-controller="Hospedaje" asp-action="Reservar" method="get">
+                                    <input type="hidden" name="id" value="@habitacion.IdHabitacion" />
+
+                                    <div class="mb-2">
+                                        <label class="form-label" style="font-size: 12px;">Fecha entrada:</label>
+                                        <input type="date" name="fechaEntrada" class="form-control form-control-sm"
+                                               value="@(Model.Filtros?.FechaEntrada?.ToString("yyyy-MM-dd") ?? DateTime.Today.AddDays(1).ToString("yyyy-MM-dd"))" />
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label" style="font-size: 12px;">Fecha salida:</label>
+                                        <input type="date" name="fechaSalida" class="form-control form-control-sm"
+                                               value="@(Model.Filtros?.FechaSalida?.ToString("yyyy-MM-dd") ?? DateTime.Today.AddDays(2).ToString("yyyy-MM-dd"))" />
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label" style="font-size: 12px;">Huéspedes:</label>
+                                        <select name="numeroPersonas" class="form-control form-control-sm">
+                                            @for (int i = 1; i <= 4; i++)
+                                            {
+                                                <option value="@i" selected="@(i == (Model.Filtros?.NumeroPersonas ?? 1))">@i</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label" style="font-size: 12px;">Habitaciones:</label>
+                                        <select class="form-control form-control-sm">
+                                            <option>1</option>
+                                        </select>
+                                    </div>
+
+                                    <p style="font-size: 12px; color: #666; margin: 8px 0;">Total a pagar</p>
+                                    <p style="font-size: 14px; font-weight: bold; margin-bottom: 12px;">₡@habitacion.IdTipoHabitacionNavigation.Precio.ToString("N0")</p>
+
+                                    <button type="submit" class="btn-reservar">Quiero reservar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Paginación -->
+        <div class="pagination-container">
+            <div class="pagination-info">Página 1 de 15</div>
+            <div class="pagination-nav">
+                <a href="#" class="pagination-btn">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                <a href="#" class="pagination-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Filtros -->
+<div class="modal fade" id="filtrosModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Filtrar habitaciones</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-action="Detalle" method="get">
+                <input type="hidden" name="id" value="@Model.Hotel.IdEmpresaHospedaje" />
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Fecha entrada:</label>
+                            <input type="date" name="filtros.FechaEntrada" class="form-control"
+                                   value="@Model.Filtros.FechaEntrada?.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Fecha salida:</label>
+                            <input type="date" name="filtros.FechaSalida" class="form-control"
+                                   value="@Model.Filtros.FechaSalida?.ToString("yyyy-MM-dd")" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Precio mínimo:</label>
+                            <input type="number" name="filtros.PrecioMinimo" class="form-control"
+                                   value="@Model.Filtros.PrecioMinimo" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Precio máximo:</label>
+                            <input type="number" name="filtros.PrecioMaximo" class="form-control"
+                                   value="@Model.Filtros.PrecioMaximo" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Número de personas:</label>
+                        <input type="number" name="filtros.NumeroPersonas" class="form-control"
+                               value="@Model.Filtros.NumeroPersonas" min="1" max="10" />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="filtros.WiFiGratuito"
+                                       value="true" @(Model.Filtros.WiFiGratuito == true ? "checked" : "") />
+                                <label class="form-check-label">WiFi gratuito</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="filtros.DesayunoIncluido"
+                                       value="true" @(Model.Filtros.DesayunoIncluido == true ? "checked" : "") />
+                                <label class="form-check-label">Desayuno incluido</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="filtros.ParqueoIncluido"
+                                       value="true" @(Model.Filtros.ParqueoIncluido == true ? "checked" : "") />
+                                <label class="form-check-label">Parqueo incluido</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="filtros.ConAireAcondicionado"
+                                       value="true" @(Model.Filtros.ConAireAcondicionado == true ? "checked" : "") />
+                                <label class="form-check-label">Aire acondicionado</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Aplicar filtros</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Validación de fechas
+    document.addEventListener('DOMContentLoaded', function() {
+        const fechaEntradaInputs = document.querySelectorAll('input[name="fechaEntrada"]');
+        const fechaSalidaInputs = document.querySelectorAll('input[name="fechaSalida"]');
+
+        fechaEntradaInputs.forEach(function(input) {
+            input.addEventListener('change', function() {
+                const fechaEntrada = new Date(this.value);
+                const fechaSalida = new Date(fechaSalidaInputs[0].value);
+
+                if (fechaSalida <= fechaEntrada) {
+                    const nuevaFechaSalida = new Date(fechaEntrada);
+                    nuevaFechaSalida.setDate(nuevaFechaSalida.getDate() + 1);
+                    fechaSalidaInputs.forEach(function(salidaInput) {
+                        salidaInput.value = nuevaFechaSalida.toISOString().split('T')[0];
+                    });
+                }
+
+                // Actualizar precio total
+                actualizarPrecioTotal(this);
+            });
+        });
+
+        fechaSalidaInputs.forEach(function(input) {
+            input.addEventListener('change', function() {
+                actualizarPrecioTotal(this);
+            });
+        });
+    });
+
+    function actualizarPrecioTotal(input) {
+        const form = input.closest('form');
+        const fechaEntrada = new Date(form.querySelector('input[name="fechaEntrada"]').value);
+        const fechaSalida = new Date(form.querySelector('input[name="fechaSalida"]').value);
+        const precioNoche = parseFloat(form.closest('tr').querySelector('.precio-principal').textContent.replace('₡', '').replace(',', ''));
+
+        if (fechaEntrada && fechaSalida && fechaSalida > fechaEntrada) {
+            const noches = Math.ceil((fechaSalida - fechaEntrada) / (1000 * 60 * 60 * 24));
+            const total = noches * precioNoche;
+
+            const totalElement = form.querySelector('.precio-total');
+            if (totalElement) {
+                totalElement.textContent = '₡' + total.toLocaleString();
+            }
+        }
+    }
+</script>

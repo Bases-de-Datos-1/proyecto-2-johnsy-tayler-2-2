@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.OcultarHeader = false;
+}
+
+@{
+    ViewData["Title"] = "Tipo de Empresa";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/agregarServicios.css" asp-append-version="true" />
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<div class="container containerLogoInicioSolo">
+    <p class="container inter24" id="textoBienvenidaCliente">
+        ¿Qué tipo de empresa deseas registrar?
+    </p>
+</div>
+
+<div class="cuadroTipoEmpresa">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <form method="post" asp-action="SeleccionarTipoEmpresa">
+                
+                <div class="form-group tipo-empresa-group">
+                    <button type="submit" name="tipoEmpresa" value="Alojamiento" class="btn-tipo-empresa">
+                        <div class="icono-empresa">
+                            <i class="fas fa-hotel"></i>
+                        </div>
+                        <span class="texto-tipo-empresa">Alojamiento</span>
+                    </button>
+                </div>
+
+                <div class="form-group tipo-empresa-group">
+                    <button type="submit" name="tipoEmpresa" value="Recreacion" class="btn-tipo-empresa">
+                        <div class="icono-empresa">
+                            <i class="fas fa-volleyball-ball"></i>
+                        </div>
+                        <span class="texto-tipo-empresa">Recreación</span>
+                    </button>
+                </div>
+
+                <div class="form-group text-center mt-4">
+                    <button type="button" class="btn btn-outline-secondary btn-siguiente" onclick="window.location.href='@Url.Action("Index")'">
+                        <span>← Volver</span>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container slogan">
+    <p class="sloganRancho navbar-brand">HotelesCaribe</p>
+    <p class="container inter24 textosBienvenida" id="textoSlogan">
+        La mejor plataforma para tu negocio y tus viajes.
+    </p>
+    <div class="separacion200"></div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,184 @@
+﻿@model HotelesCaribe.Models.ReservaModel
+
+@{
+    ViewData["Title"] = "Reservar - " + Model.Hotel.Nombre;
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/reservar.css" asp-append-version="true" />
+}
+
+
+<div class="reserva-container">
+    <!-- Panel Izquierdo - Información del Hotel y Habitación -->
+    <div class="panel-izquierdo">
+        <!-- Header del Hotel -->
+        <div class="hotel-header-info">
+            <div class="hotel-info-header">
+                <i class="fas fa-hotel hotel-icon"></i>
+                <h1 class="hotel-name">@Model.Hotel.Nombre</h1>
+            </div>
+
+            <div class="hotel-location">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>@Model.Hotel.Senas, @Model.Hotel.Distrito, @Model.Hotel.Canton</span>
+            </div>
+
+            <div class="amenities-pills">
+                <span class="amenity-pill">WiFi gratuito</span>
+                <span class="amenity-pill">Parqueo incluido</span>
+                <span class="amenity-pill">Desayuno incluido</span>
+                <span class="amenity-pill">Con aire acondicionado</span>
+            </div>
+        </div>
+
+        <!-- Información de la Habitación -->
+        <div class="habitacion-section">
+            <h3 class="section-title">Detalles de la habitación:</h3>
+
+            <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                 alt="@Model.TipoHabitacion.Nombre" class="habitacion-image">
+
+            <h4 class="habitacion-title">@Model.TipoHabitacion.Nombre</h4>
+            <p class="habitacion-descripcion">@Model.TipoHabitacion.Descripcion</p>
+
+            <div class="habitacion-amenities">
+                <span class="habitacion-amenity">WiFi</span>
+                <span class="habitacion-amenity">TV Cable</span>
+                <span class="habitacion-amenity">A/C</span>
+                <span class="habitacion-amenity">Minibar</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel Derecho - Formulario de Reserva -->
+    <div class="panel-derecho">
+        <form asp-controller="Hospedaje" asp-action="ConfirmarReserva" method="post" class="formulario-reserva">
+            <input type="hidden" asp-for="IdHabitacion" />
+
+            <!-- Identificación -->
+            <div class="form-group full-width identification-field">
+                <label class="form-label">Identificación:</label>
+                <input asp-for="Identificacion" class="form-control" placeholder="101110111" />
+                <i class="fas fa-id-card id-icon"></i>
+            </div>
+
+            <!-- Fechas -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Fecha entrada:</label>
+                    <input asp-for="FechaEntrada" type="date" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fecha salida:</label>
+                    <input asp-for="FechaSalida" type="date" class="form-control" />
+                </div>
+            </div>
+
+            <!-- Horas -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Hora entrada:</label>
+                    <input asp-for="HoraEntrada" type="time" class="form-control" value="12:00" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hora salida:</label>
+                    <input asp-for="HoraSalida" type="time" class="form-control" value="12:00" />
+                </div>
+            </div>
+
+            <!-- Habitaciones y Personas -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Habitaciones:</label>
+                    <select asp-for="NumeroHabitaciones" class="form-control dropdown-control">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Personas:</label>
+                    <select asp-for="NumeroPersonas" class="form-control dropdown-control">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Vehículo -->
+            <div class="vehiculo-section">
+                <div class="vehiculo-question">¿Posee vehículo?</div>
+                <div class="vehiculo-options">
+                    <button type="button" class="vehiculo-btn active" data-value="true">Sí</button>
+                    <button type="button" class="vehiculo-btn" data-value="false">No</button>
+                </div>
+                <input type="hidden" asp-for="TieneVehiculo" value="true" />
+            </div>
+
+            <!-- Precio Total -->
+            <div class="precio-total">
+                <div class="precio-amount" id="precioTotal">₡@Model.PrecioTotal.ToString("N2")</div>
+                <div class="precio-label">Total a pagar</div>
+            </div>
+
+            <!-- Botón Confirmar -->
+            <button type="submit" class="btn-confirmar">Confirmar reservación</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Manejo de botones de vehículo
+        const vehiculoBtns = document.querySelectorAll('.vehiculo-btn');
+        const vehiculoInput = document.querySelector('input[name="TieneVehiculo"]');
+
+        vehiculoBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                vehiculoBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                vehiculoInput.value = this.dataset.value;
+            });
+        });
+
+        // Cálculo de precio total
+        const fechaEntrada = document.querySelector('input[name="FechaEntrada"]');
+        const fechaSalida = document.querySelector('input[name="FechaSalida"]');
+        const numeroHabitaciones = document.querySelector('select[name="NumeroHabitaciones"]');
+        const precioNoche = @Model.TipoHabitacion.Precio;
+
+        function calcularTotal() {
+            if (fechaEntrada.value && fechaSalida.value) {
+                const entrada = new Date(fechaEntrada.value);
+                const salida = new Date(fechaSalida.value);
+                const noches = Math.ceil((salida - entrada) / (1000 * 60 * 60 * 24));
+                const habitaciones = parseInt(numeroHabitaciones.value);
+
+                if (noches > 0) {
+                    const total = noches * precioNoche * habitaciones;
+                    document.getElementById('precioTotal').textContent = '₡' + total.toLocaleString('es-CR', {minimumFractionDigits: 2});
+                }
+            }
+        }
+
+        fechaEntrada.addEventListener('change', calcularTotal);
+        fechaSalida.addEventListener('change', calcularTotal);
+        numeroHabitaciones.addEventListener('change', calcularTotal);
+
+        // Validación de fechas
+        fechaEntrada.addEventListener('change', function() {
+            if (fechaSalida.value && new Date(fechaSalida.value) <= new Date(this.value)) {
+                const nuevaFechaSalida = new Date(this.value);
+                nuevaFechaSalida.setDate(nuevaFechaSalida.getDate() + 1);
+                fechaSalida.value = nuevaFechaSalida.toISOString().split('T')[0];
+            }
+        });
+
+        // Establecer fecha mínima como hoy
+        const hoy = new Date().toISOString().split('T')[0];
+        fechaEntrada.min = hoy;
+        fechaSalida.min = hoy;
+    });
+</script>
