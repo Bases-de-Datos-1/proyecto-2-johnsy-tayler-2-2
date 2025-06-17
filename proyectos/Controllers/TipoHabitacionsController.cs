@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HotelesCaribe.Models;
+using Microsoft.Data.SqlClient;
 
 namespace HotelesCaribe.Controllers
 {
@@ -57,8 +58,17 @@ namespace HotelesCaribe.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(tipoHabitacion);
-                await _context.SaveChangesAsync();
+                var parameters = new[]
+                    {
+                        new SqlParameter("@p_nombre", tipoHabitacion.Nombre),
+                        new SqlParameter("@p_descripcion", tipoHabitacion.Descripcion),
+                        new SqlParameter("@p_tipoCama", tipoHabitacion.TipoCama),
+                        new SqlParameter("@p_precio", tipoHabitacion.Precio),
+                    };
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC SP_InsertarTipoHabitacion @p_nombre, @p_descripcion, @p_tipoCama, @p_precio",
+                    parameters);
                 return RedirectToAction(nameof(Index));
             }
             return View(tipoHabitacion);

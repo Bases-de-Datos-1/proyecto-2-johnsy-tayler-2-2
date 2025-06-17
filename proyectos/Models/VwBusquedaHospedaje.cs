@@ -15,6 +15,8 @@ public partial class VwBusquedaHospedaje
 
     public string Distrito { get; set; } = null!;
 
+    public string Senas { get; set; } = null!;
+
     public string TipoHospedaje { get; set; } = null!;
 
     public string? Correo { get; set; }

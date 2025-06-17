@@ -1,11 +1,13 @@
-﻿using System;
+﻿using HotelesCaribe.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using HotelesCaribe.Models;
 
 namespace HotelesCaribe.Controllers
 {
@@ -61,30 +63,64 @@ namespace HotelesCaribe.Controllers
         }
 
         // GET: Habitacions/Create
-        public IActionResult Create()
+        public IActionResult Create(int? empresaId)
         {
+            if (empresaId.HasValue)
+            {
+                ViewBag.EmpresaIdPreseleccionada = empresaId.Value;
+                var empresa = _context.EmpresaHospedajes.Find(empresaId.Value);
+                ViewBag.EmpresaSeleccionada = empresa?.Nombre;
+            }
             ViewData["IdEmpresaHospedaje"] = new SelectList(_context.EmpresaHospedajes, "IdEmpresaHospedaje", "Nombre");
             ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitacions, "IdTipo", "Nombre");
             return View();
         }
 
-        // POST: Habitacions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdHabitacion,IdEmpresaHospedaje,Numero,IdTipoHabitacion")] Habitacion habitacion)
+        public async Task<IActionResult> Create([Bind("IdHabitacion,IdEmpresaHospedaje,Numero,IdTipoHabitacion")] Habitacion habitacion, int? empresaId)
         {
+            if (empresaId.HasValue)
+            {
+                habitacion.IdEmpresaHospedaje = empresaId.Value;
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(habitacion);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { id = habitacion?.IdEmpresaHospedaje });
+                var parameters = new[]
+                    {
+                        new SqlParameter("@p_idEmpresaHospedaje", habitacion.IdEmpresaHospedaje),
+                        new SqlParameter("@p_numero", habitacion.Numero),
+                        new SqlParameter("@p_idTipoHabitacion", habitacion.IdTipoHabitacion),
+                    };
+
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC SP_InsertarHabitacion @p_idEmpresaHospedaje, @p_numero, @p_idTipoHabitacion",
+                    parameters);
+
+                return RedirectToAction(nameof(Index), new { empresaId = habitacion.IdEmpresaHospedaje });
             }
+            else
+            {
+                foreach (var campo in ModelState)
+                {
+                    foreach (var error in campo.Value.Errors)
+                    {
+                        ModelState.AddModelError("", $"Campo: {campo.Key}, Error: {error.ErrorMessage}");
+                    }
+                }
+            }
+
+            ViewBag.EmpresaIdPreseleccionada = habitacion.IdEmpresaHospedaje;
+            var empresa = _context.EmpresaHospedajes.Find(habitacion.IdEmpresaHospedaje);
+            ViewBag.EmpresaSeleccionada = empresa?.Nombre;
+
             ViewData["IdEmpresaHospedaje"] = new SelectList(_context.EmpresaHospedajes, "IdEmpresaHospedaje", "Nombre", habitacion.IdEmpresaHospedaje);
             ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitacions, "IdTipo", "Nombre", habitacion?.IdTipoHabitacion);
             return View(habitacion);
         }
+
 
         // GET: Habitacions/Edit/5
         public async Task<IActionResult> Edit(int? id)

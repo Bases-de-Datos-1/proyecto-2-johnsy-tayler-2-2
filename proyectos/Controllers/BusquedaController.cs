@@ -29,7 +29,7 @@ namespace HotelesCaribe.Controllers
                 if (!string.IsNullOrWhiteSpace(nombreHotel))
                 {
 
-                    var parametro = new SqlParameter("@nombreHotel", nombreHotel);
+                    var parametro = new SqlParameter("@nombreHotel", nombreHotel.ToLower());
                     resultados = await _context.VwBusquedaHospedajes
                         .FromSqlRaw("EXEC SP_BuscarHospedajesPorNombre @nombreHotel", parametro)
                         .ToListAsync();

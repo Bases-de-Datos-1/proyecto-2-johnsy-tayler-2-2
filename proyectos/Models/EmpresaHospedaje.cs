@@ -31,7 +31,7 @@ public partial class EmpresaHospedaje
 
     public virtual ICollection<Habitacion> Habitacions { get; set; } = new List<Habitacion>();
 
-    public virtual TipoHospedaje? IdTipoHospedajeNavigation { get; set; } //= null!;
+    public virtual TipoHospedaje? IdTipoHospedajeNavigation { get; set; }
 
     public virtual ICollection<Rede> Redes { get; set; } = new List<Rede>();
 

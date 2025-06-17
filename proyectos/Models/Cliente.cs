@@ -15,9 +15,9 @@ public partial class Cliente
 
     public DateOnly FechaNacimiento { get; set; }
 
-    public string TipoIdentIficacion { get; set; } = null!;
+    public string TipoIdentificacion { get; set; } = null!;
 
-    public string IdentIficacion { get; set; } = null!;
+    public string Identificacion { get; set; } = null!;
 
     public string Pais { get; set; } = null!;
 

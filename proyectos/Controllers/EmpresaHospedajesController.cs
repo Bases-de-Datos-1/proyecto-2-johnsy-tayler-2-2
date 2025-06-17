@@ -1,11 +1,12 @@
-﻿using System;
+﻿using HotelesCaribe.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using HotelesCaribe.Models;
 
 namespace HotelesCaribe.Controllers
 {
@@ -168,49 +169,82 @@ namespace HotelesCaribe.Controllers
 
             if (ModelState.IsValid)
             {
-                // Aquí puedes guardar la información de redes sociales
-                // Dependiendo de tu modelo de datos, podrías necesitar crear una tabla Redes
-                // o agregar campos a la tabla EmpresaHospedaje
 
-                // Por ejemplo, si tienes una tabla Redes:
-                /*
-                var empresa = await _context.EmpresaHospedajes.FindAsync(id);
+                var empresa = await _context.EmpresaHospedajes.FindAsync(id); //CAMBIAR DESPUES
                 if (empresa != null)
                 {
-                    // Eliminar redes existentes
-                    var redesExistentes = _context.Redes.Where(r => r.IdEmpresaHospedaje == id);
-                    _context.Redes.RemoveRange(redesExistentes);
-
-                    // Agregar nuevas redes
-                    var nuevasRedes = new List<Rede>();
-
+                    // Facebook (1)
                     if (!string.IsNullOrEmpty(modelo.Facebook))
-                        nuevasRedes.Add(new Rede { IdEmpresaHospedaje = id, TipoRed = "Facebook", Url = modelo.Facebook });
+                    {
+                        var parameters = new[]
+                        {
+                            new SqlParameter("@p_idEmpresaHospedaje", modelo.IdEmpresa), new SqlParameter("@p_idTipoRed", 1), new SqlParameter("@p_url", modelo.Facebook),
+                        };
+                        await _context.Database.ExecuteSqlRawAsync(
+                            "EXEC SP_InsertarRedSocial @p_idEmpresaHospedaje, @p_idTipoRed, @p_url", parameters);
+                    }
 
+                    // Instagram (2)
                     if (!string.IsNullOrEmpty(modelo.Instagram))
-                        nuevasRedes.Add(new Rede { IdEmpresaHospedaje = id, TipoRed = "Instagram", Url = modelo.Instagram });
+                    {
+                        var parameters = new[]
+                        {
+                            new SqlParameter("@p_idEmpresaHospedaje", modelo.IdEmpresa), new SqlParameter("@p_idTipoRed", 2), new SqlParameter("@p_url", modelo.Instagram)
+                        };
+                        await _context.Database.ExecuteSqlRawAsync("EXEC SP_InsertarRedSocial @p_idEmpresaHospedaje, @p_idTipoRed, @p_url", parameters);
+                    }
 
+                    // YouTube (3)
                     if (!string.IsNullOrEmpty(modelo.YouTube))
-                        nuevasRedes.Add(new Rede { IdEmpresaHospedaje = id, TipoRed = "YouTube", Url = modelo.YouTube });
+                    {
+                        var parameters = new[]
+                        {
+                            new SqlParameter("@p_idEmpresaHospedaje", modelo.IdEmpresa), new SqlParameter("@p_idTipoRed", 3), new SqlParameter("@p_url", modelo.YouTube)
+                        };
+                        await _context.Database.ExecuteSqlRawAsync("EXEC SP_InsertarRedSocial @p_idEmpresaHospedaje, @p_idTipoRed, @p_url", parameters);
+                    }
 
+                    // TikTok (4)
                     if (!string.IsNullOrEmpty(modelo.TikTok))
-                        nuevasRedes.Add(new Rede { IdEmpresaHospedaje = id, TipoRed = "TikTok", Url = modelo.TikTok });
+                    {
+                        var parameters = new[]
+                        {
+                            new SqlParameter("@p_idEmpresaHospedaje", modelo.IdEmpresa), new SqlParameter("@p_idTipoRed", 4), new SqlParameter("@p_url", modelo.TikTok)
+                        };
+                        await _context.Database.ExecuteSqlRawAsync("EXEC SP_InsertarRedSocial @p_idEmpresaHospedaje, @p_idTipoRed, @p_url", parameters);
+                    }
 
+                    // Airbnb (5)
                     if (!string.IsNullOrEmpty(modelo.Airbnb))
-                        nuevasRedes.Add(new Rede { IdEmpresaHospedaje = id, TipoRed = "Airbnb", Url = modelo.Airbnb });
+                    {
+                        var parameters = new[]
+                        {
+                            new SqlParameter("@p_idEmpresaHospedaje", modelo.IdEmpresa), new SqlParameter("@p_idTipoRed", 5), new SqlParameter("@p_url", modelo.Airbnb)
+                        };
+                        await _context.Database.ExecuteSqlRawAsync("EXEC SP_InsertarRedSocial @p_idEmpresaHospedaje, @p_idTipoRed, @p_url", parameters);
+                    }
 
+                    // Threads (6)
                     if (!string.IsNullOrEmpty(modelo.Threads))
-                        nuevasRedes.Add(new Rede { IdEmpresaHospedaje = id, TipoRed = "Threads", Url = modelo.Threads });
+                    {
+                        var parameters = new[]
+                        {
+                            new SqlParameter("@p_idEmpresaHospedaje", modelo.IdEmpresa), new SqlParameter("@p_idTipoRed", 6), new SqlParameter("@p_url", modelo.Threads)
+                        };
+                        await _context.Database.ExecuteSqlRawAsync("EXEC SP_InsertarRedSocial @p_idEmpresaHospedaje, @p_idTipoRed, @p_url", parameters);
+                    }
 
+                    // X (7)
                     if (!string.IsNullOrEmpty(modelo.X))
-                        nuevasRedes.Add(new Rede { IdEmpresaHospedaje = id, TipoRed = "X", Url = modelo.X });
-
-                    _context.Redes.AddRange(nuevasRedes);
-                    await _context.SaveChangesAsync();
+                    {
+                        var parameters = new[]
+                        {
+                            new SqlParameter("@p_idEmpresaHospedaje", modelo.IdEmpresa), new SqlParameter("@p_idTipoRed", 7), new SqlParameter("@p_url", modelo.X)
+                        };
+                        await _context.Database.ExecuteSqlRawAsync("EXEC SP_InsertarRedSocial @p_idEmpresaHospedaje, @p_idTipoRed, @p_url", parameters);
+                    }
                 }
-                */
 
-                // Redirigir a la página de servicios CON EL ID
                 return RedirectToAction("Servicios", new { id = id });
             }
 
@@ -275,6 +309,20 @@ namespace HotelesCaribe.Controllers
                         };
                         _context.ImagenesEmpresas.Add(nuevaImagen);
                     }
+                    */
+
+                    /*
+                        @p_idTipoHabitacion int,
+                        @p_url varchar(200)
+                     */
+
+                    /*
+                    var parameters = new[]
+                    {
+                        new SqlParameter("@p_idTipoHabitacion", modelo.IdEmpresa), new SqlParameter("@p_url", 1),
+                    };
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC SP_InsertarRedSocial @p_idTipoHabitacion, @p_url", parameters);
                     */
 
                     await _context.SaveChangesAsync();
@@ -364,11 +412,52 @@ namespace HotelesCaribe.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(empresaHospedaje);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    var parameters = new[]
+                    {
+                        new SqlParameter("@p_nombre", empresaHospedaje.Nombre),
+                        new SqlParameter("@p_cedulaJuridica", empresaHospedaje.CedulaJuridica),
+                        new SqlParameter("@p_idTipoHospedaje", empresaHospedaje.IdTipoHospedaje),
+                        new SqlParameter("@p_provincia", empresaHospedaje.Provincia),
+                        new SqlParameter("@p_canton", empresaHospedaje.Canton),
+                        new SqlParameter("@p_distrito", empresaHospedaje.Distrito),
+                        new SqlParameter("@p_barrio", empresaHospedaje.Barrio),
+                        new SqlParameter("@p_senas", empresaHospedaje.Senas),
+                        new SqlParameter("@p_latitud", empresaHospedaje.Latitud),
+                        new SqlParameter("@p_longitud", empresaHospedaje.Longitud),
+                        new SqlParameter("@p_correo", empresaHospedaje.Correo)
+                    };
 
-                // Redirigir a la página de redes sociales en lugar de Index
-                return RedirectToAction("RedesSociales", new { id = empresaHospedaje?.IdEmpresaHospedaje });
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC SP_InsertarEmpresaHospedaje @p_nombre, @p_cedulaJuridica, @p_idTipoHospedaje, @p_provincia, @p_canton, @p_distrito, @p_barrio, @p_senas, @p_latitud, @p_longitud, @p_correo",
+                        parameters);
+
+                    return RedirectToAction("RedesSociales", new { id = empresaHospedaje?.IdEmpresaHospedaje });
+                }
+                catch (Exception ex)
+                {
+                    // Manejo de errores, por ejemplo, mostrar un mensaje al usuario
+                    ModelState.AddModelError("", $"Error al crear la empresa de hospedaje: {ex.Message}");
+                }
+            }
+            else
+            {
+                var errores = new List<string>();
+
+                foreach (var key in ModelState.Keys)
+                {
+                    var state = ModelState[key];
+                    foreach (var error in state.Errors)
+                    {
+                        errores.Add($"Error en '{key}': {error.ErrorMessage}");
+                    }
+                }
+
+                foreach (var mensaje in errores)
+                {
+                    ModelState.AddModelError("", mensaje);
+                }
             }
             ViewData["IdTipoHospedaje"] = new SelectList(_context.TipoHospedajes, "IdTipoHospedaje", "Nombre", empresaHospedaje?.IdTipoHospedaje);
             return View(empresaHospedaje);

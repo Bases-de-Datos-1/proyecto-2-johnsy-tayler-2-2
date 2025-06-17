@@ -120,6 +120,7 @@
             });
 
             function esUrlValida(url) {
+                return true;
                 try {
                     new URL(url);
                     return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);

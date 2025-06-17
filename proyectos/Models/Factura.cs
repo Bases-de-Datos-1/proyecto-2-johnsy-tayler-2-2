@@ -13,7 +13,7 @@ public partial class Factura
 
     public decimal ImporteTotal { get; set; }
 
-    public string FormaPaGo { get; set; } = null!;
+    public string FormaPago { get; set; } = null!;
 
     public virtual Reserva IdReservaNavigation { get; set; } = null!;
 }

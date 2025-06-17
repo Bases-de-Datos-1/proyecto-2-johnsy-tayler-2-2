@@ -15,13 +15,15 @@ public partial class Reserva
 
     public DateTime FechaIngreso { get; set; }
 
-    public int CantidadPersonAs { get; set; }
+    public int CantidadPersonas { get; set; }
 
     public bool TieneVehiculo { get; set; }
 
-    public DateOnly FechAsalida { get; set; }
+    public DateOnly FechaSalida { get; set; }
 
-    public TimeOnly HorAsalida { get; set; }
+    public TimeOnly HoraSalida { get; set; }
+
+    public string Estado { get; set; } = null!;
 
     public virtual ICollection<Factura> Facturas { get; set; } = new List<Factura>();
 
