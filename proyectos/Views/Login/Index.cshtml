@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.OcultarHeader = true;
+    ViewBag.OcultarFooter = true;
+}
+
+@model HotelesCaribe.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+}
+
+<div class="login-container">
+    <div class="login-content">
+        <div class="header-section">
+            <h1 class="logo-title">Hoteles Caribe</h1>
+            <p class="welcome-subtitle">te da la bienvenida</p>
+        </div>
+
+        <div class="login-form-container">
+            <h2 class="login-title">Inicio de sesión de cliente</h2>
+
+            <form asp-action="Index" method="post" class="login-form">
+                <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
+
+                <div class="form-group">
+                    <div class="input-container">
+                        <span class="input-icon">✉</span>
+                        <input asp-for="Correo"
+                               type="email"
+                               class="form-control login-input"
+                               placeholder="Correo electrónico:"
+                               required />
+                    </div>
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-container">
+                        <span class="input-icon">🔒</span>
+                        <input asp-for="Password"
+                               type="password"
+                               class="form-control login-input"
+                               placeholder="Contraseña:"
+                               required />
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-siguiente">
+                        <span>Siguiente</span>
+                        <span class="arrow">→</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="additional-links">
+                <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                <div class="register-link">
+                    ¿No tienes cuenta? <a asp-action="Create" asp-controller="Clientes">Regístrate aquí</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-section">
+            <h3 class="footer-logo">Hoteles Caribe</h3>
+            <p class="footer-slogan">La mejor plataforma para tu negocio.</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

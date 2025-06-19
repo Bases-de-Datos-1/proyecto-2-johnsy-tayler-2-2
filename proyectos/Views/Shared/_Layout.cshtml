@@ -24,17 +24,10 @@
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-
-                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Clientes" asp-action="Index">Clientes</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AgregarServicios" asp-action="SeleccionarTipoEmpresa">Agregar servicio</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AgregarServicios" asp-action="Index">Agregar servicio</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="EmpresaHospedajes" asp-action="Index">Agregar hotel</a>
@@ -43,7 +36,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="EmpresaRecreacions" asp-action="Index">Agregar servicio recreación</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Busqueda" asp-action="Index">Buscar hospedajes</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Iniciar sesión</a>
                             </li>
                         </ul>
                     </div>
@@ -58,13 +51,16 @@
         </main>
     </div>
 
-    <footer class="hotelesFooter border-top footer text-muted">
-        <div>
-            <a class="negraLetraRancho" asp-area="" asp-controller="Home" asp-action="Index">HotelesCaribe</a>
-            <p class="inter24 colorDerechosFooter">Todos los derechos reservados 2025.</p>
-        </div>
-        
-    </footer>
+    @if (ViewBag.OcultarFooter != true)
+    {
+        <footer class="hotelesFooter border-top footer text-muted">
+            <div>
+                <a class="negraLetraRancho" asp-area="" asp-controller="Home" asp-action="Index">HotelesCaribe</a>
+                <p class="inter24 colorDerechosFooter">Todos los derechos reservados 2025.</p>
+            </div>
+        </footer>
+    }
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

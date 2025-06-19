@@ -1,0 +1,79 @@
+﻿@{
+    ViewBag.OcultarHeader = false;
+}
+@{
+    ViewData["Title"] = "Tipo de Empresa";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/agregarServicios.css" asp-append-version="true" />
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<div class="container containerLogoInicioSolo">
+    <p class="container inter24" id="textoBienvenidaCliente">
+        ¿Qué tipo de empresa deseas registrar?
+    </p>
+</div>
+
+<div class="cuadroTipoEmpresa">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <form method="post" asp-action="SeleccionarTipoEmpresa" id="formTipoEmpresa">
+
+                <div class="opciones-empresa">
+                    <div class="opcion-empresa">
+                        <input type="radio" name="tipoEmpresa" value="Alojamiento" class="radio-empresa" id="alojamiento">
+                        <label for="alojamiento" class="btn-tipo-empresa">
+                            <div class="icono-empresa">
+                                <i class="fas fa-hotel"></i>
+                            </div>
+                            <span class="texto-tipo-empresa">Alojamiento</span>
+                        </label>
+                    </div>
+
+                    <div class="opcion-empresa">
+                        <input type="radio" name="tipoEmpresa" value="Recreacion" class="radio-empresa" id="recreacion">
+                        <label for="recreacion" class="btn-tipo-empresa">
+                            <div class="icono-empresa">
+                                <i class="fas fa-volleyball-ball"></i>
+                            </div>
+                            <span class="texto-tipo-empresa">Recreación</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="contenedor-siguiente">
+                    <button type="button" class="btn-volver" onclick="window.location.href='@Url.Action("Index", "Home")'">
+                        <span>← Volver</span>
+                    </button>
+                    <button type="submit" class="btn-siguiente" id="btnSiguiente" disabled>
+                        Siguiente →
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container slogan">
+    <p class="sloganRancho navbar-brand">HotelesCaribe</p>
+    <p class="container inter24 textosBienvenida" id="textoSlogan">
+        La mejor plataforma para tu negocio y tus viajes.
+    </p>
+    <div class="separacion200"></div>
+</div>
+
+@section Scripts {
+    <script>
+        // Habilitar botón siguiente cuando se seleccione una opción
+        document.querySelectorAll('input[name="tipoEmpresa"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('btnSiguiente').disabled = false;
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
