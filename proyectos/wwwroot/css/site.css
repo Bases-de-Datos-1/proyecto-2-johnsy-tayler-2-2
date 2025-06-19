@@ -177,11 +177,18 @@ body {
     padding: 0px;
 }
 
-
+.botonTransparente {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
 
 /* CREAR CUENTA */
-
-
 .containerLogoInicioSolo {
     margin-top: 20px;
     text-align: center;

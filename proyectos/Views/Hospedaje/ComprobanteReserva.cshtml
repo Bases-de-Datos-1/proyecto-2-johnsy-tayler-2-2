@@ -1,0 +1,342 @@
+﻿@{
+    ViewData["Title"] = "Reservación realizada";
+}
+
+@section Styles {
+    <style>
+        .confirmation-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .confirmation-title {
+            font-family: Inter;
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .confirmation-card {
+            background: rgba(240, 240, 240, 0.95);
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .service-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .service-icon {
+            font-size: 32px;
+            color: #666;
+        }
+
+        .service-info h3 {
+            font-family: Inter;
+            font-size: 18px;
+            color: #666;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        .service-name {
+            font-family: Inter;
+            font-size: 20px;
+            color: #333;
+            margin: 5px 0 0 0;
+            font-weight: 600;
+        }
+
+        .reservation-number {
+            background: rgba(38, 136, 228, 0.1);
+            border: 2px solid rgba(38, 136, 228, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .reservation-number-value {
+            font-family: Inter;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2688E4;
+            margin: 0;
+        }
+
+        .reservation-number-label {
+            font-family: Inter;
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0 0 0;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 12px 0;
+        }
+
+        .detail-icon {
+            font-size: 20px;
+            color: #666;
+            width: 25px;
+            text-align: center;
+        }
+
+        .detail-label {
+            font-family: Inter;
+            font-size: 16px;
+            color: #666;
+            min-width: 120px;
+        }
+
+        .detail-value {
+            font-family: Inter;
+            font-size: 16px;
+            color: #333;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 8px 16px;
+            border-radius: 8px;
+            flex: 1;
+        }
+
+        .total-section {
+            background: rgba(38, 136, 228, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .total-amount {
+            font-family: Inter;
+            font-size: 32px;
+            font-weight: bold;
+            color: #2688E4;
+            margin: 0;
+        }
+
+        .total-label {
+            font-family: Inter;
+            font-size: 16px;
+            color: #666;
+            margin: 5px 0 0 0;
+        }
+
+        .reminder-text {
+            text-align: center;
+            font-family: Inter;
+            font-size: 14px;
+            color: #666;
+            margin: 20px 0;
+            line-height: 1.5;
+        }
+
+        .btn-volver {
+            background: rgba(38, 136, 228, 0.9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-family: Inter;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+            .btn-volver:hover {
+                background: rgba(38, 136, 228, 1);
+                color: white;
+                transform: translateY(-2px);
+            }
+
+        .brand-footer {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .brand-name {
+            font-family: 'Rancho', cursive;
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+            margin: 0;
+        }
+
+        .brand-slogan {
+            font-family: Inter;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+            margin: 10px 0 0 0;
+            font-weight: 300;
+        }
+
+    </style>
+}
+
+<div class="confirmation-container">
+    <h1 class="confirmation-title">Reservación realizada</h1>
+
+    <div class="confirmation-card">
+        <!-- Header del servicio -->
+        <div class="service-header">
+            <i class="fas fa-hotel service-icon"></i>
+            <div class="service-info">
+                <h3>Servicio:</h3>
+                <p class="service-name">@ViewBag.NombreHotel</p>
+            </div>
+        </div>
+
+        <!-- Número de reserva -->
+        <div class="reservation-number">
+            <p class="reservation-number-value">@ViewBag.NumeroReserva</p>
+            <p class="reservation-number-label">Número de reserva</p>
+        </div>
+
+        <!-- Detalles de la reservación -->
+        <div class="detail-row">
+            <i class="fas fa-id-card detail-icon"></i>
+            <span class="detail-label">Identificación:</span>
+            <span class="detail-value">@ViewBag.IdentificacionCliente</span>
+        </div>
+
+        <div class="detail-row">
+            <i class="fas fa-calendar-alt detail-icon"></i>
+            <span class="detail-label">Fecha entrada:</span>
+            <span class="detail-value">@ViewBag.FechaEntrada</span>
+        </div>
+
+        <div class="detail-row">
+            <i class="fas fa-clock detail-icon"></i>
+            <span class="detail-label">Hora entrada:</span>
+            <span class="detail-value">@ViewBag.HoraEntrada</span>
+        </div>
+
+        <div class="detail-row">
+            <i class="fas fa-calendar-alt detail-icon"></i>
+            <span class="detail-label">Fecha salida:</span>
+            <span class="detail-value">@ViewBag.FechaSalida</span>
+        </div>
+
+        <div class="detail-row">
+            <i class="fas fa-clock detail-icon"></i>
+            <span class="detail-label">Hora salida:</span>
+            <span class="detail-value">@ViewBag.HoraSalida</span>
+        </div>
+
+        <div class="detail-row">
+            <i class="fas fa-door-open detail-icon"></i>
+            <span class="detail-label">Habitaciones:</span>
+            <span class="detail-value">@ViewBag.NumeroHabitaciones</span>
+        </div>
+
+        <div class="detail-row">
+            <i class="fas fa-users detail-icon"></i>
+            <span class="detail-label">Personas:</span>
+            <span class="detail-value">@ViewBag.NumeroPersonas</span>
+        </div>
+
+        <div class="detail-row">
+            <i class="fas fa-car detail-icon"></i>
+            <span class="detail-label">Tiene vehículo:</span>
+            <span class="detail-value">@ViewBag.TieneVehiculo</span>
+        </div>
+
+        <div class="detail-row">
+            <i class="fas fa-bed detail-icon"></i>
+            <span class="detail-label">Habitación:</span>
+            <span class="detail-value">@ViewBag.DescripcionHabitacion</span>
+        </div>
+
+        <!-- Total a pagar -->
+        <div class="total-section">
+            <p class="total-amount">@ViewBag.TotalPagar</p>
+            <p class="total-label">Total a pagar</p>
+        </div>
+
+        <!-- Texto de recordatorio -->
+        <p class="reminder-text">
+            Asegúrate de conocer y tener siempre accesible<br>
+            tu número de reserva.
+        </p>
+
+        <!-- Botón volver al inicio -->
+        <a asp-controller="Home" asp-action="Index" class="btn-volver">
+            <i class="fas fa-home"></i>
+            Volver al inicio
+        </a>
+    </div>
+
+    <!-- Footer con marca -->
+    <div class="brand-footer">
+        <h2 class="brand-name">Hoteles Caribe</h2>
+        <p class="brand-slogan">La mejor plataforma para tu negocio.</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Animación sutil al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const card = document.querySelector('.confirmation-card');
+            const title = document.querySelector('.confirmation-title');
+
+            // Efecto de entrada
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            title.style.opacity = '0';
+            title.style.transform = 'translateY(-20px)';
+
+            setTimeout(() => {
+                title.style.transition = 'all 0.6s ease';
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
+            }, 200);
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.8s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 400);
+
+            // Efecto hover en los detalles
+            const detailRows = document.querySelectorAll('.detail-row');
+            detailRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(5px)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+        });
+    </script>
+}

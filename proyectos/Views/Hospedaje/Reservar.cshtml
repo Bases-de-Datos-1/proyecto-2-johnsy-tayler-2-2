@@ -5,117 +5,164 @@
 }
 @section Styles {
     <link rel="stylesheet" href="~/css/reservar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/detallesHotel.css" asp-append-version="true" />
 }
 
-
 <div class="reserva-container">
-    <div class="panel-izquierdo">
-        <div class="hotel-header-info">
-            <div class="hotel-info-header">
-                <i class="fas fa-hotel hotel-icon"></i>
-                <h1 class="hotel-name">@Model.Hotel.Nombre</h1>
+
+    <!-- ZONA DE PRUEBA -->
+
+
+    <div class="hotel-header">
+        <div class="row">
+            <!-- Imagen Principal -->
+            <div >
+                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                     alt="@Model.Hotel.Nombre" class="hotel-main-image">
             </div>
 
-            <div class="hotel-location">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>@Model.Hotel.Senas, @Model.Hotel.Distrito, @Model.Hotel.Canton</span>
-            </div>
 
-            <div class="amenities-pills">
-                <span class="amenity-pill">WiFi gratuito</span>
-                <span class="amenity-pill">Parqueo incluido</span>
-                <span class="amenity-pill">Desayuno incluido</span>
-                <span class="amenity-pill">Con aire acondicionado</span>
-            </div>
         </div>
+        <div class="row">
+            <div class="hotel-info">
+                <div class="hotel-title">
+                    <i class="fas fa-hotel hotel-icon"></i>
+                    <h1 class="hotel-name">@Model.Hotel.Nombre</h1>
+                </div>
 
-        <div class="habitacion-section">
-            <h3 class="section-title">Detalles de la habitación:</h3>
+                <div class="hotel-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>@Model.Hotel.Senas, @Model.Hotel.Distrito, @Model.Hotel.Canton, @Model.Hotel.Provincia</span>
+                </div>
 
-            <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                 alt="@Model.TipoHabitacion.Nombre" class="habitacion-image">
 
-            <h4 class="habitacion-title">@Model.TipoHabitacion.Nombre</h4>
-            <p class="habitacion-descripcion">@Model.TipoHabitacion.Descripcion</p>
 
-            <div class="habitacion-amenities">
-                <span class="habitacion-amenity">WiFi</span>
-                <span class="habitacion-amenity">TV Cable</span>
-                <span class="habitacion-amenity">A/C</span>
-                <span class="habitacion-amenity">Minibar</span>
+                <div class="amenities-tags">
+                    <span class="amenity-tag">WiFi gratuito</span>
+                    <span class="amenity-tag">Parqueo incluido</span>
+                    <span class="amenity-tag">Desayuno incluido</span>
+                    <span class="amenity-tag">Con aire acondicionado</span>
+                </div>
+
+
             </div>
         </div>
     </div>
 
-    <!-- Panel Derecho - Formulario de Reserva -->
-    <div class="panel-derecho">
-        <form asp-controller="Hospedaje" asp-action="ConfirmarReserva" method="post" class="formulario-reserva">
-            <input type="hidden" asp-for="IdHabitacion" />
 
-            <div class="form-group full-width identification-field">
-                <label class="form-label">Identificación:</label>
-                <input asp-for="Identificacion" class="form-control" placeholder="101110111" />
-                <i class="fas fa-id-card id-icon"></i>
-            </div>
+    <!-- FIN DE ZONA DE PRUEBA -->
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Fecha entrada:</label>
-                    <input asp-for="FechaEntrada" type="date" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Fecha salida:</label>
-                    <input asp-for="FechaSalida" type="date" class="form-control" />
-                </div>
-            </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Hora entrada:</label>
-                    <input asp-for="HoraEntrada" type="time" class="form-control" value="12:00" />
+    <div class="reserva-info-container">
+        <div class="panel-izquierdo">
+            <!--
+            <div class="hotel-header-info">
+                <div class="hotel-info-header">
+                    <i class="fas fa-hotel hotel-icon"></i>
+                    <h1 class="hotel-name">@Model.Hotel.Nombre</h1>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Hora salida:</label>
-                    <input asp-for="HoraSalida" type="time" class="form-control" value="12:00" />
+
+                <div class="hotel-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>@Model.Hotel.Senas, @Model.Hotel.Distrito, @Model.Hotel.Canton</span>
+                </div>
+
+                <div class="amenities-pills">
+                    <span class="amenity-pill">WiFi gratuito</span>
+                    <span class="amenity-pill">Parqueo incluido</span>
+                    <span class="amenity-pill">Desayuno incluido</span>
+                    <span class="amenity-pill">Con aire acondicionado</span>
                 </div>
             </div>
+            -->
+            <div class="habitacion-section">
+                <h3 class="section-title">Detalles de la habitación:</h3>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Habitaciones:</label>
-                    <select asp-for="NumeroHabitaciones" class="form-control dropdown-control">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Personas:</label>
-                    <select asp-for="NumeroPersonas" class="form-control dropdown-control">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                    </select>
+                <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                     alt="@Model.TipoHabitacion.Nombre" class="habitacion-image">
+
+                <h4 class="habitacion-title">@Model.TipoHabitacion.Nombre</h4>
+                <p class="habitacion-descripcion">@Model.TipoHabitacion.Descripcion</p>
+
+                <div class="habitacion-amenities">
+                    <span class="habitacion-amenity">WiFi</span>
+                    <span class="habitacion-amenity">TV Cable</span>
+                    <span class="habitacion-amenity">A/C</span>
+                    <span class="habitacion-amenity">Minibar</span>
                 </div>
             </div>
+        </div>
 
-            <div class="vehiculo-section">
-                <div class="vehiculo-question">¿Posee vehículo?</div>
-                <div class="vehiculo-options">
-                    <button type="button" class="vehiculo-btn active" data-value="true">Sí</button>
-                    <button type="button" class="vehiculo-btn" data-value="false">No</button>
+        <!-- Panel Derecho - Formulario de Reserva -->
+        <div class="panel-derecho">
+            <form asp-controller="Hospedaje" asp-action="ProcesarReserva" method="post" class="formulario-reserva">
+                <input type="hidden" asp-for="IdHabitacion" />
+
+                <div class="form-group full-width identification-field">
+                    <label class="form-label">Identificación:</label>
+                    <input asp-for="Identificacion" class="form-control" placeholder="101110111" />
+                    <i class="fas fa-id-card id-icon"></i>
                 </div>
-                <input type="hidden" asp-for="TieneVehiculo" value="true" />
-            </div>
 
-            <div class="precio-total">
-                <div class="precio-amount" id="precioTotal">₡@Model.PrecioTotal.ToString("N2")</div>
-                <div class="precio-label">Total a pagar</div>
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Fecha entrada:</label>
+                        <input asp-for="FechaEntrada" type="date" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fecha salida:</label>
+                        <input asp-for="FechaSalida" type="date" class="form-control" />
+                    </div>
+                </div>
 
-            <button type="submit" class="btn-confirmar">Confirmar reservación</button>
-        </form>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Hora entrada:</label>
+                        <input asp-for="HoraEntrada" type="time" class="form-control" value="12:00" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hora salida:</label>
+                        <input asp-for="HoraSalida" type="time" class="form-control" value="12:00" />
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Habitaciones:</label>
+                        <select asp-for="NumeroHabitaciones" class="form-control dropdown-control">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Personas:</label>
+                        <select asp-for="NumeroPersonas" class="form-control dropdown-control">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="vehiculo-section">
+                    <div class="vehiculo-question">¿Posee vehículo?</div>
+                    <div class="vehiculo-options">
+                        <button type="button" class="vehiculo-btn active" data-value="true">Sí</button>
+                        <button type="button" class="vehiculo-btn" data-value="false">No</button>
+                    </div>
+                    <input type="hidden" asp-for="TieneVehiculo" value="true" />
+                </div>
+
+                <div class="precio-total">
+                    <div class="precio-amount" id="precioTotal">₡@Model.PrecioTotal.ToString("N2")</div>
+                    <div class="precio-label">Total a pagar</div>
+                </div>
+
+                <button type="submit" class="btn-confirmar">Confirmar reservación</button>
+            </form>
+        </div>
     </div>
 </div>
 
