@@ -29,6 +29,8 @@ public partial class EmpresaHospedaje
 
     public string? Correo { get; set; }
 
+    public virtual ICollection<FotosEmpresaHospedaje> FotosEmpresaHospedajes { get; set; } = new List<FotosEmpresaHospedaje>();
+
     public virtual ICollection<Habitacion> Habitacions { get; set; } = new List<Habitacion>();
 
     public virtual TipoHospedaje? IdTipoHospedajeNavigation { get; set; }

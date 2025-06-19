@@ -1,13 +1,8 @@
 ﻿using HotelesCaribe.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HotelesCaribe.Controllers
 {
@@ -27,12 +22,10 @@ namespace HotelesCaribe.Controllers
                 .Include(h => h.IdEmpresaHospedajeNavigation)
                 .Include(h => h.IdTipoHabitacionNavigation);
 
-
-            // Si viene empresaId del panel de control, filtrar por esa empresa
             if (empresaId.HasValue)
             {
                 habitaciones = habitaciones.Where(h => h.IdEmpresaHospedaje == empresaId.Value);
-                // Opcional: pasar el nombre de la empresa a la vista
+                ViewBag.EmpresaId = empresaId.Value;
                 ViewBag.EmpresaSeleccionada = await _context.EmpresaHospedajes
                     .Where(e => e.IdEmpresaHospedaje == empresaId.Value)
                     .Select(e => e.Nombre)
@@ -93,8 +86,7 @@ namespace HotelesCaribe.Controllers
                         new SqlParameter("@p_numero", habitacion.Numero),
                         new SqlParameter("@p_idTipoHabitacion", habitacion.IdTipoHabitacion),
                     };
-
-
+                
                 await _context.Database.ExecuteSqlRawAsync(
                     "EXEC SP_InsertarHabitacion @p_idEmpresaHospedaje, @p_numero, @p_idTipoHabitacion",
                     parameters);

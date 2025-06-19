@@ -5,10 +5,10 @@ namespace HotelesCaribe.Models
     public class ModeloRecreativaActividades
     {
         public int IdEmpresa { get; set; }
-        public List<ActividadViewModel> Actividades { get; set; } = new List<ActividadViewModel>();
+        public List<ModeloActividad> Actividades { get; set; } = new List<ModeloActividad>();
     }
 
-    public class ActividadViewModel
+    public class ModeloActividad
     {
         [Required]
         public string Nombre { get; set; } = string.Empty;

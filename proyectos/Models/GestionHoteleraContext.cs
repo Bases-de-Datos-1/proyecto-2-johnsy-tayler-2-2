@@ -27,6 +27,8 @@ public partial class GestionHoteleraContext : DbContext
 
     public virtual DbSet<Factura> Facturas { get; set; }
 
+    public virtual DbSet<FotosEmpresaHospedaje> FotosEmpresaHospedajes { get; set; }
+
     public virtual DbSet<FotosHabitacion> FotosHabitacions { get; set; }
 
     public virtual DbSet<Habitacion> Habitacions { get; set; }
@@ -69,6 +71,8 @@ public partial class GestionHoteleraContext : DbContext
 
     public virtual DbSet<VwHotelesDemandum> VwHotelesDemanda { get; set; }
 
+    public virtual DbSet<VwInfoCompletaEmpresaRecreacion> VwInfoCompletaEmpresaRecreacions { get; set; }
+
     public virtual DbSet<VwInfoCompletaHospedaje> VwInfoCompletaHospedajes { get; set; }
 
     public virtual DbSet<VwRangoEdadesCliente> VwRangoEdadesClientes { get; set; }
@@ -85,7 +89,7 @@ public partial class GestionHoteleraContext : DbContext
     {
         modelBuilder.Entity<Actividad>(entity =>
         {
-            entity.HasKey(e => e.IdActividad).HasName("PK__Activida__327F9BED8ECAC66F");
+            entity.HasKey(e => e.IdActividad).HasName("PK__Activida__327F9BEDABDFE677");
 
             entity.ToTable("Actividad");
 
@@ -105,23 +109,23 @@ public partial class GestionHoteleraContext : DbContext
             entity.HasOne(d => d.IdEmpresaRecreacionNavigation).WithMany(p => p.Actividads)
                 .HasForeignKey(d => d.IdEmpresaRecreacion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Actividad__idEmp__75A278F5");
+                .HasConstraintName("FK__Actividad__idEmp__787EE5A0");
 
             entity.HasOne(d => d.IdTipoActividadNavigation).WithMany(p => p.Actividads)
                 .HasForeignKey(d => d.IdTipoActividad)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Actividad__idTip__74AE54BC");
+                .HasConstraintName("FK__Actividad__idTip__778AC167");
         });
 
         modelBuilder.Entity<Cliente>(entity =>
         {
-            entity.HasKey(e => e.IdCliente).HasName("PK__Cliente__885457EEF857D3DF");
+            entity.HasKey(e => e.IdCliente).HasName("PK__Cliente__885457EE48D00860");
 
             entity.ToTable("Cliente", tb => tb.HasTrigger("tr_evitardeletecliente"));
 
-            entity.HasIndex(e => e.Correo, "UQ__Cliente__2A586E0BD7104ED8").IsUnique();
+            entity.HasIndex(e => e.Correo, "UQ__Cliente__2A586E0B5D87B6CE").IsUnique();
 
-            entity.HasIndex(e => e.Identificacion, "UQ__Cliente__C196DEC792B58D7F").IsUnique();
+            entity.HasIndex(e => e.Identificacion, "UQ__Cliente__C196DEC7DCCB4994").IsUnique();
 
             entity.HasIndex(e => e.Correo, "ix_cliente_correo");
 
@@ -173,7 +177,7 @@ public partial class GestionHoteleraContext : DbContext
 
         modelBuilder.Entity<Comodidade>(entity =>
         {
-            entity.HasKey(e => e.IdComodidad).HasName("PK__Comodida__BAD83D03BD932391");
+            entity.HasKey(e => e.IdComodidad).HasName("PK__Comodida__BAD83D03A6B0D246");
 
             entity.Property(e => e.IdComodidad).HasColumnName("idComodidad");
             entity.Property(e => e.Comodidad)
@@ -185,18 +189,18 @@ public partial class GestionHoteleraContext : DbContext
             entity.HasOne(d => d.IdTipoHabitacionNavigation).WithMany(p => p.Comodidades)
                 .HasForeignKey(d => d.IdTipoHabitacion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Comodidad__idTip__4F7CD00D");
+                .HasConstraintName("FK__Comodidad__idTip__52593CB8");
         });
 
         modelBuilder.Entity<EmpresaHospedaje>(entity =>
         {
-            entity.HasKey(e => e.IdEmpresaHospedaje).HasName("PK__EmpresaH__82A9100784B6D209");
+            entity.HasKey(e => e.IdEmpresaHospedaje).HasName("PK__EmpresaH__82A910077482558B");
 
             entity.ToTable("EmpresaHospedaje");
 
-            entity.HasIndex(e => e.Correo, "UQ__EmpresaH__2A586E0B350D415A").IsUnique();
+            entity.HasIndex(e => e.Correo, "UQ__EmpresaH__2A586E0BA991FD56").IsUnique();
 
-            entity.HasIndex(e => e.CedulaJuridica, "UQ__EmpresaH__DD9A4FB4239E8B23").IsUnique();
+            entity.HasIndex(e => e.CedulaJuridica, "UQ__EmpresaH__DD9A4FB4766D137B").IsUnique();
 
             entity.HasIndex(e => new { e.Provincia, e.Nombre }, "ix_empresahospedaje_provincia_nombre");
 
@@ -237,7 +241,7 @@ public partial class GestionHoteleraContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("provincia");
             entity.Property(e => e.Senas)
-                .HasMaxLength(100)
+                .HasMaxLength(250)
                 .IsUnicode(false)
                 .HasColumnName("senas");
 
@@ -249,13 +253,13 @@ public partial class GestionHoteleraContext : DbContext
 
         modelBuilder.Entity<EmpresaRecreacion>(entity =>
         {
-            entity.HasKey(e => e.IdEmpresaRecreacion).HasName("PK__EmpresaR__691BB3291ADE331D");
+            entity.HasKey(e => e.IdEmpresaRecreacion).HasName("PK__EmpresaR__691BB329F3112DE3");
 
             entity.ToTable("EmpresaRecreacion");
 
-            entity.HasIndex(e => e.Correo, "UQ__EmpresaR__2A586E0BE95CCB9F").IsUnique();
+            entity.HasIndex(e => e.Correo, "UQ__EmpresaR__2A586E0B35A31279").IsUnique();
 
-            entity.HasIndex(e => e.CedulaJuridica, "UQ__EmpresaR__DD9A4FB477BAC0CD").IsUnique();
+            entity.HasIndex(e => e.CedulaJuridica, "UQ__EmpresaR__DD9A4FB4E7EF9C77").IsUnique();
 
             entity.Property(e => e.IdEmpresaRecreacion).HasColumnName("idEmpresaRecreacion");
             entity.Property(e => e.Canton)
@@ -293,7 +297,7 @@ public partial class GestionHoteleraContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("provincia");
             entity.Property(e => e.Senas)
-                .HasMaxLength(100)
+                .HasMaxLength(250)
                 .IsUnicode(false)
                 .HasColumnName("senas");
             entity.Property(e => e.Telefono)
@@ -304,7 +308,7 @@ public partial class GestionHoteleraContext : DbContext
 
         modelBuilder.Entity<Factura>(entity =>
         {
-            entity.HasKey(e => e.IdFactura).HasName("PK__Factura__3CD5687EF73E4FFF");
+            entity.HasKey(e => e.IdFactura).HasName("PK__Factura__3CD5687EA2FA88E5");
 
             entity.ToTable("Factura", tb => tb.HasTrigger("tr_bloqueardeletefactura"));
 
@@ -326,31 +330,50 @@ public partial class GestionHoteleraContext : DbContext
 
             entity.HasOne(d => d.IdReservaNavigation).WithMany(p => p.Facturas)
                 .HasForeignKey(d => d.IdReserva)
-                .HasConstraintName("FK__Factura__idReser__6B24EA82");
+                .HasConstraintName("FK__Factura__idReser__6E01572D");
+        });
+
+        modelBuilder.Entity<FotosEmpresaHospedaje>(entity =>
+        {
+            entity.HasKey(e => e.IdFoto).HasName("PK__FotosEmp__69D650947E8BD942");
+
+            entity.ToTable("FotosEmpresaHospedaje");
+
+            entity.Property(e => e.IdFoto).HasColumnName("idFoto");
+            entity.Property(e => e.IdEmpresaHospedaje).HasColumnName("idEmpresaHospedaje");
+            entity.Property(e => e.Url)
+                .HasMaxLength(300)
+                .IsUnicode(false)
+                .HasColumnName("url");
+
+            entity.HasOne(d => d.IdEmpresaHospedajeNavigation).WithMany(p => p.FotosEmpresaHospedajes)
+                .HasForeignKey(d => d.IdEmpresaHospedaje)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__FotosEmpr__idEmp__3E52440B");
         });
 
         modelBuilder.Entity<FotosHabitacion>(entity =>
         {
-            entity.HasKey(e => e.IdFoto).HasName("PK__FotosHab__69D65094CCF2F171");
+            entity.HasKey(e => e.IdFoto).HasName("PK__FotosHab__69D650945436523A");
 
             entity.ToTable("FotosHabitacion");
 
             entity.Property(e => e.IdFoto).HasColumnName("idFoto");
             entity.Property(e => e.IdTipoHabitacion).HasColumnName("idTipoHabitacion");
             entity.Property(e => e.Url)
-                .HasMaxLength(200)
+                .HasMaxLength(300)
                 .IsUnicode(false)
                 .HasColumnName("url");
 
             entity.HasOne(d => d.IdTipoHabitacionNavigation).WithMany(p => p.FotosHabitacions)
                 .HasForeignKey(d => d.IdTipoHabitacion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__FotosHabi__idTip__52593CB8");
+                .HasConstraintName("FK__FotosHabi__idTip__5535A963");
         });
 
         modelBuilder.Entity<Habitacion>(entity =>
         {
-            entity.HasKey(e => e.IdHabitacion).HasName("PK__Habitaci__D9D53BE251A64799");
+            entity.HasKey(e => e.IdHabitacion).HasName("PK__Habitaci__D9D53BE2D040EC12");
 
             entity.ToTable("Habitacion");
 
@@ -365,17 +388,17 @@ public partial class GestionHoteleraContext : DbContext
 
             entity.HasOne(d => d.IdEmpresaHospedajeNavigation).WithMany(p => p.Habitacions)
                 .HasForeignKey(d => d.IdEmpresaHospedaje)
-                .HasConstraintName("FK__Habitacio__idEmp__5812160E");
+                .HasConstraintName("FK__Habitacio__idEmp__5AEE82B9");
 
             entity.HasOne(d => d.IdTipoHabitacionNavigation).WithMany(p => p.Habitacions)
                 .HasForeignKey(d => d.IdTipoHabitacion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Habitacio__idTip__571DF1D5");
+                .HasConstraintName("FK__Habitacio__idTip__59FA5E80");
         });
 
         modelBuilder.Entity<Rede>(entity =>
         {
-            entity.HasKey(e => e.IdRed).HasName("PK__Redes__3C87902A628E8D57");
+            entity.HasKey(e => e.IdRed).HasName("PK__Redes__3C87902AD1883D46");
 
             entity.HasIndex(e => e.IdEmpresaHospedaje, "ix_redes_idempresa");
 
@@ -383,23 +406,23 @@ public partial class GestionHoteleraContext : DbContext
             entity.Property(e => e.IdEmpresaHospedaje).HasColumnName("idEmpresaHospedaje");
             entity.Property(e => e.IdTipoRed).HasColumnName("idTipoRed");
             entity.Property(e => e.Url)
-                .HasMaxLength(200)
+                .HasMaxLength(300)
                 .IsUnicode(false)
                 .HasColumnName("url");
 
             entity.HasOne(d => d.IdEmpresaHospedajeNavigation).WithMany(p => p.Redes)
                 .HasForeignKey(d => d.IdEmpresaHospedaje)
-                .HasConstraintName("FK__Redes__idEmpresa__4316F928");
+                .HasConstraintName("FK__Redes__idEmpresa__45F365D3");
 
             entity.HasOne(d => d.IdTipoRedNavigation).WithMany(p => p.Redes)
                 .HasForeignKey(d => d.IdTipoRed)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Redes__idTipoRed__440B1D61");
+                .HasConstraintName("FK__Redes__idTipoRed__46E78A0C");
         });
 
         modelBuilder.Entity<Reserva>(entity =>
         {
-            entity.HasKey(e => e.IdReserva).HasName("PK__Reserva__94D104C8F6F1D92D");
+            entity.HasKey(e => e.IdReserva).HasName("PK__Reserva__94D104C8F1D6E478");
 
             entity.ToTable("Reserva", tb =>
                 {
@@ -433,21 +456,21 @@ public partial class GestionHoteleraContext : DbContext
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.Reservas)
                 .HasForeignKey(d => d.IdCliente)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Reserva__idClien__656C112C");
+                .HasConstraintName("FK__Reserva__idClien__68487DD7");
 
             entity.HasOne(d => d.IdEmpresaHospedajeNavigation).WithMany(p => p.Reservas)
                 .HasForeignKey(d => d.IdEmpresaHospedaje)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Reserva__idEmpre__6754599E");
+                .HasConstraintName("FK__Reserva__idEmpre__6A30C649");
 
             entity.HasOne(d => d.IdHabitacionNavigation).WithMany(p => p.Reservas)
                 .HasForeignKey(d => d.IdHabitacion)
-                .HasConstraintName("FK__Reserva__idHabit__66603565");
+                .HasConstraintName("FK__Reserva__idHabit__693CA210");
         });
 
         modelBuilder.Entity<Servicio>(entity =>
         {
-            entity.HasKey(e => e.IdServicio).HasName("PK__Servicio__CEB98119463B6BB4");
+            entity.HasKey(e => e.IdServicio).HasName("PK__Servicio__CEB98119855D65F3");
 
             entity.ToTable("Servicio");
 
@@ -458,17 +481,17 @@ public partial class GestionHoteleraContext : DbContext
             entity.HasOne(d => d.IdEmpresaRecreacionNavigation).WithMany(p => p.Servicios)
                 .HasForeignKey(d => d.IdEmpresaRecreacion)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Servicio__idEmpr__7B5B524B");
+                .HasConstraintName("FK__Servicio__idEmpr__7E37BEF6");
 
             entity.HasOne(d => d.IdTipoServicioNavigation).WithMany(p => p.Servicios)
                 .HasForeignKey(d => d.IdTipoServicio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Servicio__idTipo__7A672E12");
+                .HasConstraintName("FK__Servicio__idTipo__7D439ABD");
         });
 
         modelBuilder.Entity<ServiciosHospedaje>(entity =>
         {
-            entity.HasKey(e => e.IdServicio).HasName("PK__Servicio__CEB981191FB11671");
+            entity.HasKey(e => e.IdServicio).HasName("PK__Servicio__CEB98119DD56A5FE");
 
             entity.ToTable("ServiciosHospedaje");
 
@@ -478,17 +501,17 @@ public partial class GestionHoteleraContext : DbContext
 
             entity.HasOne(d => d.IdEmpresaHospedajeNavigation).WithMany(p => p.ServiciosHospedajes)
                 .HasForeignKey(d => d.IdEmpresaHospedaje)
-                .HasConstraintName("FK__Servicios__idEmp__48CFD27E");
+                .HasConstraintName("FK__Servicios__idEmp__4BAC3F29");
 
             entity.HasOne(d => d.IdTipoServicioNavigation).WithMany(p => p.ServiciosHospedajes)
                 .HasForeignKey(d => d.IdTipoServicio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Servicios__idTip__49C3F6B7");
+                .HasConstraintName("FK__Servicios__idTip__4CA06362");
         });
 
         modelBuilder.Entity<TelefonosCliente>(entity =>
         {
-            entity.HasKey(e => e.IdTelefono).HasName("PK__Telefono__39C142DFB0C56FDB");
+            entity.HasKey(e => e.IdTelefono).HasName("PK__Telefono__39C142DFBEFBF0AD");
 
             entity.ToTable("TelefonosCliente");
 
@@ -501,12 +524,12 @@ public partial class GestionHoteleraContext : DbContext
 
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.TelefonosClientes)
                 .HasForeignKey(d => d.IdCliente)
-                .HasConstraintName("FK__Telefonos__idCli__5EBF139D");
+                .HasConstraintName("FK__Telefonos__idCli__619B8048");
         });
 
         modelBuilder.Entity<TelefonosEmpresa>(entity =>
         {
-            entity.HasKey(e => e.IdTelefono).HasName("PK__Telefono__39C142DF14E51533");
+            entity.HasKey(e => e.IdTelefono).HasName("PK__Telefono__39C142DF700EF841");
 
             entity.ToTable("TelefonosEmpresa");
 
@@ -519,12 +542,12 @@ public partial class GestionHoteleraContext : DbContext
 
             entity.HasOne(d => d.IdEmpresaHospedajeNavigation).WithMany(p => p.TelefonosEmpresas)
                 .HasForeignKey(d => d.IdEmpresaHospedaje)
-                .HasConstraintName("FK__Telefonos__idEmp__3E52440B");
+                .HasConstraintName("FK__Telefonos__idEmp__412EB0B6");
         });
 
         modelBuilder.Entity<TipoActividad>(entity =>
         {
-            entity.HasKey(e => e.IdTipoActividad).HasName("PK__TipoActi__A3477EC54604FB7F");
+            entity.HasKey(e => e.IdTipoActividad).HasName("PK__TipoActi__A3477EC583D0124A");
 
             entity.ToTable("TipoActividad");
 
@@ -537,7 +560,7 @@ public partial class GestionHoteleraContext : DbContext
 
         modelBuilder.Entity<TipoHabitacion>(entity =>
         {
-            entity.HasKey(e => e.IdTipo).HasName("PK__TipoHabi__BDD0DFE144872A5C");
+            entity.HasKey(e => e.IdTipo).HasName("PK__TipoHabi__BDD0DFE18C1FDFE1");
 
             entity.ToTable("TipoHabitacion");
 
@@ -563,7 +586,7 @@ public partial class GestionHoteleraContext : DbContext
 
         modelBuilder.Entity<TipoHospedaje>(entity =>
         {
-            entity.HasKey(e => e.IdTipoHospedaje).HasName("PK__TipoHosp__0CC167A742D60A5F");
+            entity.HasKey(e => e.IdTipoHospedaje).HasName("PK__TipoHosp__0CC167A793E36965");
 
             entity.ToTable("TipoHospedaje");
 
@@ -576,7 +599,7 @@ public partial class GestionHoteleraContext : DbContext
 
         modelBuilder.Entity<TipoRedSocial>(entity =>
         {
-            entity.HasKey(e => e.IdTipoRed).HasName("PK__TipoRedS__F814FCE9340B59D6");
+            entity.HasKey(e => e.IdTipoRed).HasName("PK__TipoRedS__F814FCE9B3F9D2A7");
 
             entity.ToTable("TipoRedSocial");
 
@@ -589,7 +612,7 @@ public partial class GestionHoteleraContext : DbContext
 
         modelBuilder.Entity<TipoServicio>(entity =>
         {
-            entity.HasKey(e => e.IdTipoServicio).HasName("PK__TipoServ__27861676C0AF416F");
+            entity.HasKey(e => e.IdTipoServicio).HasName("PK__TipoServ__278616764AA9BBC3");
 
             entity.ToTable("TipoServicio");
 
@@ -602,7 +625,7 @@ public partial class GestionHoteleraContext : DbContext
 
         modelBuilder.Entity<TipoServicioHospedaje>(entity =>
         {
-            entity.HasKey(e => e.IdTipoServicio).HasName("PK__TipoServ__27861676575A3DE6");
+            entity.HasKey(e => e.IdTipoServicio).HasName("PK__TipoServ__278616762D1244AB");
 
             entity.ToTable("TipoServicioHospedaje");
 
@@ -688,7 +711,7 @@ public partial class GestionHoteleraContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("provincia");
             entity.Property(e => e.Senas)
-                .HasMaxLength(100)
+                .HasMaxLength(250)
                 .IsUnicode(false)
                 .HasColumnName("senas");
             entity.Property(e => e.Servicios)
@@ -833,6 +856,65 @@ public partial class GestionHoteleraContext : DbContext
             entity.Property(e => e.TotalReservas).HasColumnName("total_reservas");
         });
 
+        modelBuilder.Entity<VwInfoCompletaEmpresaRecreacion>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("VW_InfoCompletaEmpresaRecreacion");
+
+            entity.Property(e => e.Actividades)
+                .HasMaxLength(8000)
+                .IsUnicode(false)
+                .HasColumnName("actividades");
+            entity.Property(e => e.Canton)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("canton");
+            entity.Property(e => e.CedulaJuridica)
+                .HasMaxLength(15)
+                .IsUnicode(false)
+                .HasColumnName("cedulaJuridica");
+            entity.Property(e => e.Correo)
+                .HasMaxLength(40)
+                .IsUnicode(false)
+                .HasColumnName("correo");
+            entity.Property(e => e.Distrito)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("distrito");
+            entity.Property(e => e.Encargado)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("encargado");
+            entity.Property(e => e.IdEmpresaRecreacion).HasColumnName("idEmpresaRecreacion");
+            entity.Property(e => e.Latitud)
+                .HasColumnType("decimal(10, 8)")
+                .HasColumnName("latitud");
+            entity.Property(e => e.Longitud)
+                .HasColumnType("decimal(11, 8)")
+                .HasColumnName("longitud");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("nombre");
+            entity.Property(e => e.Provincia)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("provincia");
+            entity.Property(e => e.Senas)
+                .HasMaxLength(250)
+                .IsUnicode(false)
+                .HasColumnName("senas");
+            entity.Property(e => e.Servicios)
+                .HasMaxLength(8000)
+                .IsUnicode(false)
+                .HasColumnName("servicios");
+            entity.Property(e => e.Telefono)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("telefono");
+        });
+
         modelBuilder.Entity<VwInfoCompletaHospedaje>(entity =>
         {
             entity
@@ -859,6 +941,7 @@ public partial class GestionHoteleraContext : DbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("distrito");
+            entity.Property(e => e.IdEmpresaHospedaje).HasColumnName("idEmpresaHospedaje");
             entity.Property(e => e.Latitud)
                 .HasColumnType("decimal(10, 8)")
                 .HasColumnName("latitud");
@@ -878,7 +961,7 @@ public partial class GestionHoteleraContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("redesSociales");
             entity.Property(e => e.Senas)
-                .HasMaxLength(100)
+                .HasMaxLength(250)
                 .IsUnicode(false)
                 .HasColumnName("senas");
             entity.Property(e => e.Servicios)

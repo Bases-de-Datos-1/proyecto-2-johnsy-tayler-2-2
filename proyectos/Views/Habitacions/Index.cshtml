@@ -1,51 +1,222 @@
 ﻿@model IEnumerable<HotelesCaribe.Models.Habitacion>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Administración de habitaciones";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/panelControl.css" />
 }
 
-<h1>Index</h1>
+<div class="panel-container">
+    <div class="panel-header">
+        <h1 class="panel-title">Administración de habitaciones</h1>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <div class="panel-content">
+        <div class="service-info">
+            <div class="service-icon">
+                <i class="fas fa-building"></i>
+            </div>
+            <div class="service-text">
+                <span class="service-label">Servicio:</span>
+                <span class="service-name">@ViewBag.EmpresaSeleccionada</span>
+            </div>
+        </div>
 
-<div class="cuadroVisual">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Numero)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.IdEmpresaHospedajeNavigation)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.IdTipoHabitacionNavigation)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
+        <div class="panel-buttons">
+            <div class="button-row">
+                <a asp-controller="Habitacions" asp-action="Create" asp-route-empresaId="@ViewBag.EmpresaId" class="panel-button">
+                    <div class="button-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    <span class="button-text">Agregar habitación</span>
+                </a>
+                <a asp-controller="TipoHabitacions" asp-action="Create" asp-route-empresaId="@ViewBag.EmpresaId" class="panel-button">
+                    <div class="button-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <span class="button-text">Agregar tipo de habitación</span>
+                </a>
+            </div>
+        </div>
 
-    @foreach (var item in Model) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Numero)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdEmpresaHospedajeNavigation.IdEmpresaHospedaje)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdTipoHabitacionNavigation.IdTipo)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdHabitacion">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdHabitacion">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdHabitacion">Delete</a>
-                </td>
-            </tr>
-    }
-        </tbody>
-    </table>
+        <div class="habitaciones-table-container">
+            <table class="habitaciones-table">
+                <thead>
+                    <tr>
+                        <th class="numero-col">Número</th>
+                        <th class="descripcion-col">Descripción</th>
+                        <th class="ajustes-col">Ajustes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="habitacion-row">
+                            <td class="numero-cell">
+                                <div class="numero-indicator">
+                                    <i class="fas fa-door-open"></i>
+                                    <span>@item.Numero</span>
+                                </div>
+                            </td>
+                            <td class="descripcion-cell">
+                                <span>@item.IdTipoHabitacionNavigation?.Nombre</span>
+                            </td>
+                            <td class="ajustes-cell">
+                                <div class="action-buttons">
+                                    <a asp-action="Edit" asp-route-id="@item.IdHabitacion" class="action-btn edit-btn" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.IdHabitacion" class="action-btn view-btn" title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.IdHabitacion" class="action-btn delete-btn" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+<div class="container slogan">
+    <p class="sloganRancho navbar-brand">HotelesCaribe</p>
+    <p class="container inter24 textosBienvenida" id="textoSlogan">
+        La mejor plataforma para tu negocio y tus viajes.
+    </p>
+    <div class="separacion200"></div>
+</div>
+
+<style>
+    .habitaciones-table-container {
+        margin-top: 30px;
+        background-color: rgba(217, 217, 217, 0.6);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .habitaciones-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        font-family: Inter;
+    }
+
+    .habitaciones-table thead th {
+        background-color: rgba(180, 180, 180, 0.8);
+        color: #555;
+        font-size: 18px;
+        font-weight: 600;
+        padding: 20px 15px;
+        text-align: center;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .numero-col {
+        width: 15%;
+    }
+
+    .descripcion-col {
+        width: 65%;
+    }
+
+    .ajustes-col {
+        width: 20%;
+    }
+
+    .habitacion-row {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+    }
+
+    .habitacion-row:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .habitacion-row:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .numero-cell, .descripcion-cell, .ajustes-cell {
+        padding: 20px 15px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .numero-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: #666;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .numero-indicator i {
+        font-size: 20px;
+        color: #888;
+    }
+
+    .descripcion-cell {
+        text-align: left;
+        font-size: 16px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 16px;
+    }
+
+    .edit-btn {
+        background-color: rgba(255, 193, 7, 0.8);
+        color: #856404;
+    }
+
+    .edit-btn:hover {
+        background-color: rgba(255, 193, 7, 1);
+        color: #856404;
+        transform: translateY(-2px);
+    }
+
+    .view-btn {
+        background-color: rgba(0, 123, 255, 0.8);
+        color: #004085;
+    }
+
+    .view-btn:hover {
+        background-color: rgba(0, 123, 255, 1);
+        color: #004085;
+        transform: translateY(-2px);
+    }
+
+    .delete-btn {
+        background-color: rgba(220, 53, 69, 0.8);
+        color: #721c24;
+    }
+
+    .delete-btn:hover {
+        background-color: rgba(220, 53, 69, 1);
+        color: #721c24;
+        transform: translateY(-2px);
+    }
+</style>

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using HotelesCaribe.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using HotelesCaribe.Models;
 
 namespace HotelesCaribe.Controllers
 {
@@ -55,10 +56,46 @@ namespace HotelesCaribe.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(empresaRecreacion);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    var parameters = new[]
+                    {
+                        new SqlParameter("@p_nombre", empresaRecreacion.Nombre),
+                        new SqlParameter("@p_cedulaJuridica", empresaRecreacion.CedulaJuridica),
+                        new SqlParameter("@p_correo", empresaRecreacion.Correo ?? (object)DBNull.Value),
+                        new SqlParameter("@p_telefono", empresaRecreacion.Telefono ?? (object)DBNull.Value),
+                        new SqlParameter("@p_encargado", empresaRecreacion.Encargado ?? (object)DBNull.Value),
+                        new SqlParameter("@p_provincia", empresaRecreacion.Provincia),
+                        new SqlParameter("@p_canton", empresaRecreacion.Canton),
+                        new SqlParameter("@p_distrito", empresaRecreacion.Distrito),
+                        new SqlParameter("@p_senas", empresaRecreacion.Senas),
+                        new SqlParameter("@p_latitud", empresaRecreacion.Latitud ?? (object)DBNull.Value),
+                        new SqlParameter("@p_longitud", empresaRecreacion.Longitud ?? (object)DBNull.Value)
+                    };
 
-                return RedirectToAction("AgregarTiposServicios", new { id = empresaRecreacion?.IdEmpresaRecreacion });
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC SP_InsertarEmpresaRecreacion @p_nombre, @p_cedulaJuridica, @p_correo, @p_telefono, @p_encargado, @p_provincia, @p_canton, @p_distrito, @p_senas, @p_latitud, @p_longitud",
+                        parameters);
+
+                    var paramCedula = new SqlParameter("@cedulaJuridica", empresaRecreacion.CedulaJuridica);
+                    var info = _context.VwInfoCompletaEmpresaRecreacions
+                        .FromSqlRaw("EXEC SP_InfoEmpresaRecreacionPorCedula @cedulaJuridica", paramCedula)
+                        .AsEnumerable()
+                        .FirstOrDefault();
+
+                    if (info != null)
+                    {
+                        return RedirectToAction("AgregarTiposServicios", new { id = info.IdEmpresaRecreacion });
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "No se pudo obtener el ID del hotel recién creado.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Error al crear la empresa de recreación: {ex.Message}");
+                }
             }
             return View(empresaRecreacion);
         }
@@ -181,30 +218,35 @@ namespace HotelesCaribe.Controllers
                 var empresa = await _context.EmpresaRecreacions.FindAsync(id);
                 if (empresa != null)
                 {
-                    // Aquí guardarías las actividades en tu base de datos
-                    // Esto dependerá de tu estructura de base de datos
 
-                    // Ejemplo si tienes una tabla ActividadesEmpresa:
-                    /*
-                    // Eliminar actividades existentes
-                    var actividadesExistentes = _context.ActividadesEmpresas
-                        .Where(a => a.IdEmpresaRecreacions == id);
-                    _context.ActividadesEmpresas.RemoveRange(actividadesExistentes);
-
-                    // Agregar nuevas actividades
-                    foreach (var actividad in modelo.Actividades)
+                    foreach (ModeloActividad actividad in modelo.Actividades)
                     {
-                        var nuevaActividad = new ActividadesEmpresa
+                        if (!string.IsNullOrWhiteSpace(actividad.Nombre) && !string.IsNullOrWhiteSpace(actividad.Descripcion) && actividad.Precio >= 0)
                         {
-                            IdEmpresaRecreacions = id,
-                            Nombre = actividad.Nombre,
-                            Descripcion = actividad.Descripcion,
-                            Precio = actividad.Precio,
-                            FechaCreacion = DateTime.Now
-                        };
-                        _context.ActividadesEmpresas.Add(nuevaActividad);
+                            if (ModelState.IsValid)
+                            {
+                                var parameters = new[]
+                                {
+                                    new SqlParameter("@p_idTipoActividad", 1), // Para cualquiera, CAMBIAR DESPUES
+                                    new SqlParameter("@p_idEmpresaRecreacion", id),
+                                    new SqlParameter("@p_descripcion", actividad.Descripcion),
+                                    new SqlParameter("@p_precio", actividad.Precio),
+                                };
+
+                                await _context.Database.ExecuteSqlRawAsync(
+                                    "EXEC SP_InsertarEmpresaRecreacion @p_idTipoActividad, @p_idEmpresaRecreacion, @p_descripcion, @p_precio",
+                                    parameters);
+                            }
+                               
+                            
+                            return View(modelo);
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "Todos los campos de las actividades son obligatorios y el precio debe ser mayor a 0.");
+                            return View(modelo);
+                        }
                     }
-                    */
 
                     await _context.SaveChangesAsync();
 

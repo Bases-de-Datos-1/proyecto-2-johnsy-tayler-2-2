@@ -44,8 +44,9 @@ namespace HotelesCaribe.Controllers
         }
 
         // GET: TipoHabitacions/Create
-        public IActionResult Create()
+        public IActionResult Create(int? empresaId)
         {
+            ViewBag.EmpresaId = empresaId;
             return View();
         }
 
@@ -54,7 +55,7 @@ namespace HotelesCaribe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdTipo,Nombre,Descripcion,TipoCama,Precio")] TipoHabitacion tipoHabitacion)
+        public async Task<IActionResult> Create([Bind("IdTipo,Nombre,Descripcion,TipoCama,Precio")] TipoHabitacion tipoHabitacion, int? empresaId)
         {
             if (ModelState.IsValid)
             {
@@ -69,7 +70,7 @@ namespace HotelesCaribe.Controllers
                 await _context.Database.ExecuteSqlRawAsync(
                     "EXEC SP_InsertarTipoHabitacion @p_nombre, @p_descripcion, @p_tipoCama, @p_precio",
                     parameters);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { empresaId = empresaId });
             }
             return View(tipoHabitacion);
         }

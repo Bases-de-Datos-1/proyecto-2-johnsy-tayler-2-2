@@ -433,7 +433,21 @@ namespace HotelesCaribe.Controllers
                         "EXEC SP_InsertarEmpresaHospedaje @p_nombre, @p_cedulaJuridica, @p_idTipoHospedaje, @p_provincia, @p_canton, @p_distrito, @p_barrio, @p_senas, @p_latitud, @p_longitud, @p_correo",
                         parameters);
 
-                    return RedirectToAction("RedesSociales", new { id = empresaHospedaje?.IdEmpresaHospedaje });
+
+                    var paramCedula = new SqlParameter("@cedulaJuridica", empresaHospedaje.CedulaJuridica);
+                    var info = _context.VwInfoCompletaHospedajes
+                        .FromSqlRaw("EXEC SP_InfoCompletaHospedaje_PorCedula @cedulaJuridica", paramCedula)
+                        .AsEnumerable()
+                        .FirstOrDefault();
+
+                    if (info != null)
+                    {
+                        return RedirectToAction("RedesSociales", new { id = info.IdEmpresaHospedaje });
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "No se pudo obtener el ID del hotel recién creado.");
+                    }
                 }
                 catch (Exception ex)
                 {

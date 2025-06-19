@@ -9,9 +9,7 @@
 
 
 <div class="reserva-container">
-    <!-- Panel Izquierdo - Información del Hotel y Habitación -->
     <div class="panel-izquierdo">
-        <!-- Header del Hotel -->
         <div class="hotel-header-info">
             <div class="hotel-info-header">
                 <i class="fas fa-hotel hotel-icon"></i>
@@ -31,7 +29,6 @@
             </div>
         </div>
 
-        <!-- Información de la Habitación -->
         <div class="habitacion-section">
             <h3 class="section-title">Detalles de la habitación:</h3>
 
@@ -55,14 +52,12 @@
         <form asp-controller="Hospedaje" asp-action="ConfirmarReserva" method="post" class="formulario-reserva">
             <input type="hidden" asp-for="IdHabitacion" />
 
-            <!-- Identificación -->
             <div class="form-group full-width identification-field">
                 <label class="form-label">Identificación:</label>
                 <input asp-for="Identificacion" class="form-control" placeholder="101110111" />
                 <i class="fas fa-id-card id-icon"></i>
             </div>
 
-            <!-- Fechas -->
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Fecha entrada:</label>
@@ -74,7 +69,6 @@
                 </div>
             </div>
 
-            <!-- Horas -->
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Hora entrada:</label>
@@ -86,7 +80,6 @@
                 </div>
             </div>
 
-            <!-- Habitaciones y Personas -->
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Habitaciones:</label>
@@ -107,7 +100,6 @@
                 </div>
             </div>
 
-            <!-- Vehículo -->
             <div class="vehiculo-section">
                 <div class="vehiculo-question">¿Posee vehículo?</div>
                 <div class="vehiculo-options">
@@ -117,13 +109,11 @@
                 <input type="hidden" asp-for="TieneVehiculo" value="true" />
             </div>
 
-            <!-- Precio Total -->
             <div class="precio-total">
                 <div class="precio-amount" id="precioTotal">₡@Model.PrecioTotal.ToString("N2")</div>
                 <div class="precio-label">Total a pagar</div>
             </div>
 
-            <!-- Botón Confirmar -->
             <button type="submit" class="btn-confirmar">Confirmar reservación</button>
         </form>
     </div>
