@@ -69,3 +69,23 @@ on Actividad(idEmpresaRecreacion);
 -- Buscar usuarios por nombre
 create nonclustered index ix_usuarios_nombre
 on Usuarios(nombreUsuario);
+
+-- Buscar tipos de habitacion por empresa
+create nonclustered index ix_tipohabitacion_empresa
+on tipohabitacion(idempresahospedaje);
+
+-- Buscar habitaciones por empresa y tipo
+create nonclustered index ix_habitacion_empresa_tipo
+on habitacion(idempresahospedaje, idtipohabitacion);
+
+-- Buscar reservas por cliente y empresa
+create nonclustered index ix_reserva_idcliente_empresa
+on reserva(idcliente, idempresahospedaje);
+
+-- Buscar cliente por nombre y apellidos
+create nonclustered index ix_cliente_nombre_apellidos
+on cliente(nombre, apellido1, apellido2);
+
+-- Buscar reservas por estado y fechas
+create nonclustered index ix_reserva_estado_fecha
+on reserva(estado, fechaingreso, fechasalida);

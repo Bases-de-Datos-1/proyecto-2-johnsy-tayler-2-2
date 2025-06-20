@@ -30,7 +30,7 @@
             <!-- Campo oculto para la empresa si viene preseleccionada -->
             @if (ViewBag.EmpresaIdPreseleccionada != null)
             {
-                <input type="hidden" asp-for="IdEmpresaHospedaje" value="@ViewBag.EmpresaIdPreseleccionada" />
+                <input type="hidden" name="IdEmpresaHospedaje" value="@ViewBag.EmpresaIdPreseleccionada" />
             }
             else
             {

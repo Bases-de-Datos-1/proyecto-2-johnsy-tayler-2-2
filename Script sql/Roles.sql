@@ -46,7 +46,6 @@ GRANT SELECT ON dbo.VW_FotosEmpresaHospedaje TO rol_admin;
 GRANT SELECT ON dbo.VW_FotosEmpresaRecreacion TO rol_admin;
 GRANT SELECT ON dbo.VW_FotosTipoHabitacion TO rol_admin;
 
-
 -- Procedures
 -- Insertar, actualizar, eliminar
 GRANT EXECUTE ON dbo.SP_InsertarEmpresaHospedaje TO rol_admin;
@@ -63,6 +62,8 @@ GRANT EXECUTE ON dbo.SP_InsertarServicio TO rol_admin;
 GRANT EXECUTE ON dbo.SP_InsertarRedSocial TO rol_admin;
 GRANT EXECUTE ON dbo.SP_InsertarTelefonoEmpresa TO rol_admin;
 GRANT EXECUTE ON dbo.SP_InsertarTelefonoCliente TO rol_admin;
+GRANT EXECUTE ON dbo.SP_InsertarTipoHabitacionParaEmpresa TO rol_admin;
+GRANT EXECUTE ON dbo.SP_InsertarFactura TO rol_admin;
 
 GRANT EXECUTE ON dbo.SP_ActualizarHospedaje TO rol_admin;
 GRANT EXECUTE ON dbo.SP_ActualizarReserva TO rol_admin;
@@ -70,9 +71,11 @@ GRANT EXECUTE ON dbo.SP_ActualizarFactura TO rol_admin;
 GRANT EXECUTE ON dbo.SP_ActualizarCliente TO rol_admin;
 GRANT EXECUTE ON dbo.SP_ActualizarHabitacion TO rol_admin;
 GRANT EXECUTE ON dbo.SP_ActualizarActividad TO rol_admin;
+GRANT EXECUTE ON dbo.SP_ActualizarTipoHabitacion TO rol_admin;
 
 GRANT EXECUTE ON dbo.SP_EliminarHabitacion TO rol_admin;
 GRANT EXECUTE ON dbo.SP_EliminarActividad TO rol_admin;
+GRANT EXECUTE ON dbo.SP_EliminarTipoHabitacion TO rol_admin;
 
 -- Gestión de imágenes
 GRANT EXECUTE ON dbo.SP_InsertarFotoEmpresaHospedaje TO rol_admin;
@@ -90,6 +93,7 @@ GRANT EXECUTE ON dbo.SP_BuscarFacturasPorPago TO rol_admin;
 GRANT EXECUTE ON dbo.SP_BuscarFacturasPorTipoHabitacion TO rol_admin;
 GRANT EXECUTE ON dbo.SP_BuscarFacturasPorNumeroHabitacion TO rol_admin;
 GRANT EXECUTE ON dbo.SP_BuscarFacturasPorIdentificacion TO rol_admin;
+GRANT EXECUTE ON dbo.SP_BuscarFacturasPorEmpresa TO rol_admin;
 GRANT EXECUTE ON dbo.SP_ReservasFinalizadasPorTipo TO rol_admin;
 GRANT EXECUTE ON dbo.SP_ClientesPorRangoEdad TO rol_admin;
 GRANT EXECUTE ON dbo.SP_HotelesDemandaZona TO rol_admin;
@@ -107,6 +111,7 @@ GRANT EXECUTE ON dbo.SP_AsignarAdminHotel TO rol_admin;
 GRANT EXECUTE ON dbo.SP_VerificarAdminHotel TO rol_admin;
 GRANT EXECUTE ON dbo.SP_MostrarHotelesUsuario TO rol_admin;
 GRANT EXECUTE ON dbo.SP_CambiarEstadoReserva TO rol_admin;
+GRANT EXECUTE ON dbo.SP_TiposHabitacionPorEmpresa TO rol_admin;
 
 -- Autenticación
 GRANT EXECUTE ON dbo.SP_LoginUsuario TO rol_admin;

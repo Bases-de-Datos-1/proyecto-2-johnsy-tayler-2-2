@@ -61,6 +61,7 @@ namespace HotelesCaribe.Controllers
             {
                 var parameters = new[]
                     {
+                        new SqlParameter("@idEmpresaHospedaje", empresaId),
                         new SqlParameter("@p_nombre", tipoHabitacion.Nombre),
                         new SqlParameter("@p_descripcion", tipoHabitacion.Descripcion),
                         new SqlParameter("@p_tipoCama", tipoHabitacion.TipoCama),
@@ -68,7 +69,7 @@ namespace HotelesCaribe.Controllers
                     };
 
                 await _context.Database.ExecuteSqlRawAsync(
-                    "EXEC SP_InsertarTipoHabitacion @p_nombre, @p_descripcion, @p_tipoCama, @p_precio",
+                    "EXEC SP_InsertarTipoHabitacion @idEmpresaHospedaje, @p_nombre, @p_descripcion, @p_tipoCama, @p_precio",
                     parameters);
                 return RedirectToAction(nameof(Index), new { empresaId = empresaId });
             }

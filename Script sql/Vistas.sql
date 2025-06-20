@@ -2,7 +2,7 @@ USE GestionHotelera;
 GO
 
 CREATE VIEW VW_InfoCompletaHospedaje AS
-SELECT
+SELECT 
 	eh.idEmpresaHospedaje,
     eh.nombre AS nombreHotel,
     eh.cedulaJuridica,

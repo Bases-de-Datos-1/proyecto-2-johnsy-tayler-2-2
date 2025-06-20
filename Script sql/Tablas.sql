@@ -57,11 +57,14 @@ create table Cliente (
 
 create table TipoHabitacion (
     idTipo int identity(1,1) primary key,
-    nombre varchar(50) not null,
-    descripcion varchar(150) not null,
-    tipoCama varchar(50) not null,
-    precio decimal(10, 2) check (precio >= 0) not null
+    idEmpresaHospedaje int NOT NULL,
+    nombre varchar(50) NOT NULL,
+    descripcion varchar(150) NOT NULL,
+    tipoCama varchar(50) NOT NULL,
+    precio decimal(10, 2) check (precio >= 0) NOT NULL,
+    foreign key (idEmpresaHospedaje) references EmpresaHospedaje(idEmpresaHospedaje) on delete cascade
 );
+
 
 create table Habitacion (
     idHabitacion int identity(1,1) primary key,

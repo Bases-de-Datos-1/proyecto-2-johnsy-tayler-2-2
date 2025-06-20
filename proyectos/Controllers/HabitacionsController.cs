@@ -73,7 +73,7 @@ namespace HotelesCaribe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdHabitacion,IdEmpresaHospedaje,Numero,IdTipoHabitacion")] Habitacion habitacion, int? empresaId)
         {
-            if (empresaId.HasValue)
+            if (empresaId.HasValue && habitacion.IdEmpresaHospedaje == 0)
             {
                 habitacion.IdEmpresaHospedaje = empresaId.Value;
             }

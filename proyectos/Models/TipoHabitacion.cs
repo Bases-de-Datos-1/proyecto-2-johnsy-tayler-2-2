@@ -7,6 +7,8 @@ public partial class TipoHabitacion
 {
     public int IdTipo { get; set; }
 
+    public int IdEmpresaHospedaje { get; set; }
+
     public string Nombre { get; set; } = null!;
 
     public string Descripcion { get; set; } = null!;
@@ -20,4 +22,6 @@ public partial class TipoHabitacion
     public virtual ICollection<FotosTipoHabitacion> FotosTipoHabitacions { get; set; } = new List<FotosTipoHabitacion>();
 
     public virtual ICollection<Habitacion> Habitacions { get; set; } = new List<Habitacion>();
+
+    public virtual EmpresaHospedaje? IdEmpresaHospedajeNavigation { get; set; }
 }
