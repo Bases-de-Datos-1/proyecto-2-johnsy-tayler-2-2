@@ -1,3 +1,5 @@
+USE GestionHotelera;
+GO
 -- Procedures para insertar
 CREATE PROCEDURE SP_InsertarTipoHospedaje(
     @p_nombre varchar(50)
@@ -756,18 +758,6 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE SP_InsertarFotoEmpresaHospedaje
-    @idEmpresaHospedaje INT,
-    @url VARCHAR(300)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    INSERT INTO FotosEmpresaHospedaje (idEmpresaHospedaje, url)
-    VALUES (@idEmpresaHospedaje, @url);
-END;
-GO
-
 CREATE PROCEDURE SP_BuscarClientePorCedula (
     @cedula VARCHAR(30)
 )
@@ -880,4 +870,392 @@ BEGIN
 
     INSERT INTO FotosTipoHabitacion (idTipoHabitacion, rutaLocal)
     VALUES (@idTipoHabitacion, @rutaLocal);
+END;
+GO
+
+-- PROCEDURES DE USUARIO
+
+-- Registrar usuario
+CREATE PROCEDURE SP_RegistrarUsuario
+    @nombreUsuario VARCHAR(50),
+    @contrasena VARCHAR(255),
+    @rol VARCHAR(20) = 'usuario'
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    BEGIN TRY
+        IF EXISTS (SELECT 1 FROM Usuarios WHERE nombreUsuario = @nombreUsuario)
+        BEGIN
+            RAISERROR('El nombre de usuario ya existe.', 16, 1);
+            RETURN;
+        END
+
+        INSERT INTO Usuarios (nombreUsuario, contrasena, rol)
+        VALUES (@nombreUsuario, @contrasena, @rol);
+        
+        SELECT 'Usuario registrado exitosamente' AS Mensaje, SCOPE_IDENTITY() AS idUsuario;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+-- LOGINS Y USUARIOS
+-- Verificar login
+CREATE PROCEDURE SP_LoginUsuario
+    @nombreUsuario VARCHAR(50),
+    @contrasena VARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT idUsuario, nombreUsuario, rol
+    FROM Usuarios
+    WHERE nombreUsuario = @nombreUsuario AND contrasena = @contrasena;
+END;
+GO
+
+-- Verificar existencia de usuario
+CREATE PROCEDURE SP_VerificarUsuario
+    @nombreUsuario VARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS (SELECT 1 FROM Usuarios WHERE nombreUsuario = @nombreUsuario)
+        SELECT 1 AS Existe;
+    ELSE
+        SELECT 0 AS Existe;
+END;
+GO
+
+-- Verificar contraseña de usuario
+CREATE PROCEDURE SP_VerificarContrasena
+    @nombreUsuario VARCHAR(50),
+    @contrasena VARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @idUsuario INT;
+    DECLARE @rolUsuario VARCHAR(20);
+    
+    SELECT 
+        @idUsuario = idUsuario,
+        @rolUsuario = rol
+    FROM Usuarios 
+    WHERE nombreUsuario = @nombreUsuario AND contrasena = @contrasena;
+    
+    IF @idUsuario IS NOT NULL
+    BEGIN
+        SELECT 
+            @idUsuario AS idUsuario,
+            @nombreUsuario AS nombreUsuario,
+            @rolUsuario AS rol,
+            1 AS loginExitoso,
+            'Inicio de sesion exitoso' AS mensaje;
+    END
+    ELSE
+    BEGIN
+        SELECT 
+            NULL AS idUsuario,
+            NULL AS nombreUsuario,
+            NULL AS rol,
+            0 AS loginExitoso,
+            'Credenciales incorrectas' AS mensaje;
+    END
+END;
+GO
+
+-- PROCEDURES DE ADMIN
+
+-- PROCEDURE PARA ASIGNAR ADMIN A UN HOTEL
+CREATE PROCEDURE SP_AsignarAdminHotel
+    @idUsuario INT,
+    @idEmpresaHospedaje INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Usuarios WHERE idUsuario = @idUsuario)
+        BEGIN
+            RAISERROR('El usuario no existe.', 16, 1);
+            RETURN;
+        END
+
+        IF NOT EXISTS (SELECT 1 FROM EmpresaHospedaje WHERE idEmpresaHospedaje = @idEmpresaHospedaje)
+        BEGIN
+            RAISERROR('La empresa de hospedaje no existe.', 16, 1);
+            RETURN;
+        END
+
+        IF EXISTS (
+            SELECT 1 FROM UsuarioEmpresa 
+            WHERE idUsuario = @idUsuario AND idEmpresaHospedaje = @idEmpresaHospedaje AND activo = 1
+        )
+        BEGIN
+            RAISERROR('El usuario ya es administrador de este hotel.', 16, 1);
+            RETURN;
+        END
+
+        IF EXISTS (
+            SELECT 1 FROM UsuarioEmpresa 
+            WHERE idUsuario = @idUsuario AND idEmpresaHospedaje = @idEmpresaHospedaje AND activo = 0
+        )
+        BEGIN
+            UPDATE UsuarioEmpresa 
+            SET activo = 1, fechaAsignacion = GETDATE()
+            WHERE idUsuario = @idUsuario AND idEmpresaHospedaje = @idEmpresaHospedaje;
+
+            SELECT 'Administracion reactivada exitosamente' AS Mensaje;
+        END
+        ELSE
+        BEGIN
+            INSERT INTO UsuarioEmpresa (idUsuario, idEmpresaHospedaje)
+            VALUES (@idUsuario, @idEmpresaHospedaje);
+
+            SELECT 'Usuario asignado como administrador exitosamente' AS Mensaje;
+        END
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+
+-- MOSTRAR HOTELES DE USUARIO ADMIN
+CREATE PROCEDURE SP_MostrarHotelesUsuario
+    @idUsuario INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        e.idEmpresaHospedaje,
+        e.nombre AS nombreHotel,
+        e.cedulaJuridica,
+        CONCAT(e.provincia, ', ', e.canton, ', ', e.distrito) AS ubicacion,
+        th.nombre AS tipoHospedaje,
+        ue.fechaAsignacion,
+        (SELECT COUNT(*) FROM Habitacion h WHERE h.idEmpresaHospedaje = e.idEmpresaHospedaje) AS totalHabitaciones
+    FROM UsuarioEmpresa ue
+    INNER JOIN EmpresaHospedaje e ON ue.idEmpresaHospedaje = e.idEmpresaHospedaje
+    INNER JOIN TipoHospedaje th ON e.idTipoHospedaje = th.idTipoHospedaje
+    WHERE ue.idUsuario = @idUsuario AND ue.activo = 1
+    ORDER BY e.nombre;
+
+    IF @@ROWCOUNT = 0
+    BEGIN
+        SELECT 'El usuario no administra ningun hotel actualmente.' AS Mensaje;
+    END
+END;
+GO
+
+-- VERIFICAR ADMIN HOTEL
+CREATE PROCEDURE SP_VerificarAdminHotel
+    @idUsuario INT,
+    @idEmpresaHospedaje INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @esAdmin BIT = 0;
+    DECLARE @nombreUsuario VARCHAR(50);
+    DECLARE @nombreHotel VARCHAR(100);
+
+    SELECT @nombreUsuario = nombreUsuario FROM Usuarios WHERE idUsuario = @idUsuario;
+    SELECT @nombreHotel = nombre FROM EmpresaHospedaje WHERE idEmpresaHospedaje = @idEmpresaHospedaje;
+
+    IF EXISTS (
+        SELECT 1 FROM UsuarioEmpresa 
+        WHERE idUsuario = @idUsuario AND idEmpresaHospedaje = @idEmpresaHospedaje AND activo = 1
+    )
+    BEGIN
+        SET @esAdmin = 1;
+    END
+
+    SELECT 
+        @esAdmin AS esAdministrador,
+        @nombreUsuario AS nombreUsuario,
+        @nombreHotel AS nombreHotel,
+        CASE 
+            WHEN @esAdmin = 1 THEN 'El usuario SI es administrador de este hotel'
+            ELSE 'El usuario NO es administrador de este hotel'
+        END AS mensaje;
+END;
+GO
+
+-- PROCEDIMIENTO PARA CAMBIAR ROL
+CREATE PROCEDURE SP_AsignarRolUsuario
+    @nombreUsuario VARCHAR(50),
+    @rolNuevo VARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM Usuarios WHERE nombreUsuario = @nombreUsuario)
+        BEGIN
+            RAISERROR('El usuario no existe.', 16, 1);
+            RETURN;
+        END
+
+        IF @rolNuevo NOT IN ('admin', 'usuario')
+        BEGIN
+            RAISERROR('Rol invalido. Use: admin o usuario.', 16, 1);
+            RETURN;
+        END
+
+        UPDATE Usuarios
+        SET rol = @rolNuevo
+        WHERE nombreUsuario = @nombreUsuario;
+
+        SELECT 'Rol actualizado exitosamente' AS Mensaje,
+               @nombreUsuario AS Usuario,
+               @rolNuevo AS NuevoRol;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+
+-- MOSTRAR TODAS LAS RESERVAS DE UN CLIENTE
+CREATE PROCEDURE SP_ReservasPorCliente (
+    @idCliente INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        r.idReserva,
+        eh.nombre AS Hotel,
+        h.numero AS Habitacion,
+        r.fechaIngreso,
+        r.fechaSalida,
+        r.cantidadPersonas,
+        r.estado
+    FROM Reserva r
+    JOIN Habitacion h ON r.idHabitacion = h.idHabitacion
+    JOIN EmpresaHospedaje eh ON r.idEmpresaHospedaje = eh.idEmpresaHospedaje
+    WHERE r.idCliente = @idCliente
+    ORDER BY r.fechaIngreso DESC;
+END;
+GO
+
+-- MOSTRAR RESERVAS DENTRO DE RANGO DE FECHAS
+CREATE PROCEDURE SP_ReservasPorFecha (
+    @fechaInicio DATE,
+    @fechaFin DATE
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        r.idReserva,
+        c.nombre + ' ' + c.apellido1 AS Cliente,
+        eh.nombre AS Hotel,
+        r.fechaIngreso,
+        r.fechaSalida,
+        r.estado
+    FROM Reserva r
+    JOIN Cliente c ON r.idCliente = c.idCliente
+    JOIN EmpresaHospedaje eh ON r.idEmpresaHospedaje = eh.idEmpresaHospedaje
+    WHERE r.fechaIngreso BETWEEN @fechaInicio AND @fechaFin
+    ORDER BY r.fechaIngreso;
+END;
+GO
+
+-- LISTAR USUARIOS CON SU ROL
+CREATE PROCEDURE SP_ListarUsuarios
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        idUsuario,
+        nombreUsuario,
+        rol
+    FROM Usuarios
+    ORDER BY nombreUsuario;
+END;
+GO
+
+-- CAMIBAR ESTADO DE UNA RESERVA (CANCELADA o FINALIZADA)
+CREATE PROCEDURE SP_CambiarEstadoReserva (
+    @idReserva INT,
+    @nuevoEstado VARCHAR(20)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @nuevoEstado NOT IN ('ACTIVA', 'CANCELADA')
+    BEGIN
+        RAISERROR('Estado invalido. Use: ACTIVA o CANCELADA .', 16, 1);
+        RETURN;
+    END
+
+    UPDATE Reserva
+    SET estado = @nuevoEstado
+    WHERE idReserva = @idReserva;
+
+    SELECT 'Estado actualizado correctamente' AS Mensaje;
+END;
+GO
+
+-- PROCEDURES PARA USUARIO NORMAL
+-- Ver todas las reservas asociadas a un usuario (cliente)
+CREATE PROCEDURE SP_MisReservas (
+    @idCliente INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        r.idReserva,
+        eh.nombre AS Hotel,
+        h.numero AS Habitacion,
+        r.fechaIngreso,
+        r.fechaSalida,
+        r.estado,
+        r.cantidadPersonas,
+        r.tieneVehiculo
+    FROM Reserva r
+    JOIN EmpresaHospedaje eh ON r.idEmpresaHospedaje = eh.idEmpresaHospedaje
+    JOIN Habitacion h ON r.idHabitacion = h.idHabitacion
+    WHERE r.idCliente = @idCliente
+    ORDER BY r.fechaIngreso DESC;
+END;
+GO
+
+-- CAMIBAR CONTRASEÑA DE USUARIO AUTENTICADO
+CREATE PROCEDURE SP_CambiarContrasena (
+    @nombreUsuario VARCHAR(50),
+    @contrasenaActual VARCHAR(255),
+    @nuevaContrasena VARCHAR(255)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM Usuarios 
+        WHERE nombreUsuario = @nombreUsuario AND contrasena = @contrasenaActual
+    )
+    BEGIN
+        RAISERROR('La contraseña actual es incorrecta.', 16, 1);
+        RETURN;
+    END
+
+    UPDATE Usuarios
+    SET contrasena = @nuevaContrasena
+    WHERE nombreUsuario = @nombreUsuario;
+
+    SELECT 'Contraseña actualizada correctamente' AS Mensaje;
 END;

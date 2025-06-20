@@ -233,7 +233,6 @@ LEFT JOIN TipoActividad ta ON a.idTipoActividad = ta.idTipoActividad
 GROUP BY er.idEmpresaRecreacion, er.nombre, er.cedulaJuridica, er.correo, er.telefono, er.encargado,
          er.provincia, er.canton, er.distrito, er.senas, er.latitud, er.longitud;
 
-		 use GestionHotelera;
 go
 
 -- VISTA PARA MOSTRAR HOTELES QUE ADMINISTRA CADA USUARIO
@@ -259,13 +258,9 @@ GO
 
 -- VISTA PARA LOGIN DE USUARIOS
 CREATE VIEW VW_LoginUsuarios AS
-SELECT 
-    idUsuario, 
-    nombreUsuario, 
-    rol
+SELECT idUsuario, nombreUsuario, rol
 FROM Usuarios;
 GO
-
 -- VISTA RESUMEN DE ADMINISTRADORES POR HOTEL
 CREATE VIEW VW_AdminsPorHotel AS
 SELECT 
@@ -282,18 +277,18 @@ GROUP BY e.idEmpresaHospedaje, e.nombre, e.provincia, e.canton;
 GO
 
 -- FOTOS DE EMPRESA HOSPEDAJE
-CREATE OR ALTER VIEW VW_FotosEmpresaHospedaje AS
+CREATE VIEW VW_FotosEmpresaHospedaje AS
 SELECT idFoto, idEmpresaHospedaje, rutaLocal
 FROM FotosEmpresaHospedaje;
 GO
 
 -- FOTOS DE EMPRESA RECREACION
-CREATE OR ALTER VIEW VW_FotosEmpresaRecreacion AS
+CREATE VIEW VW_FotosEmpresaRecreacion AS
 SELECT idFoto, idEmpresaRecreacion, rutaLocal
 FROM FotosEmpresaRecreacion;
 GO
 
 -- FOTOS DE TIPO HABITACION
-CREATE OR ALTER VIEW VW_FotosTipoHabitacion AS
+CREATE VIEW VW_FotosTipoHabitacion AS
 SELECT idFoto, idTipoHabitacion, rutaLocal
 FROM FotosTipoHabitacion;

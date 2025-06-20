@@ -108,4 +108,3 @@ begin
     from inserted i
     where Reserva.idReserva = i.idReserva;
 end;
-go
