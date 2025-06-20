@@ -108,3 +108,44 @@ begin
     from inserted i
     where Reserva.idReserva = i.idReserva;
 end;
+go
+
+create trigger tr_bloquear_delete_empresa_con_habitaciones
+on empresahospedaje
+instead of delete
+as
+begin
+    set nocount on;
+
+    if exists (
+        select 1
+        from deleted d
+        join habitacion h on h.idempresahospedaje = d.idempresahospedaje
+    )
+    begin
+        raiserror('No se puede eliminar una empresa con habitaciones registradas.', 16, 1);
+        rollback transaction;
+        return;
+    end
+
+    delete from empresahospedaje
+    where idempresahospedaje in (select idempresahospedaje from deleted);
+end;
+go
+create trigger tr_bloquear_delete_tipohabitacion_con_habitaciones
+on tipohabitacion
+after delete
+as
+begin
+    set nocount on;
+
+    if exists (
+        select 1
+        from deleted d
+        join habitacion h on h.idtipohabitacion = d.idtipo
+    )
+    begin
+        rollback transaction;
+        raiserror('No se puede eliminar un tipo de habitación que tenga habitaciones asociadas.', 16, 1);
+    end
+end;

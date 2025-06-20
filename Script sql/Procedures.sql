@@ -199,18 +199,18 @@ BEGIN
 END;
 GO
 
--- PROCEDURE para insertar una Factura
-CREATE PROCEDURE SP_InsertarFactura(
-    @p_idReserva int,
-    @p_importeTotal decimal(10, 2),
-    @p_formaPaGO varchar(20)
+CREATE PROCEDURE SP_InsertarFactura (
+    @p_idReserva INT,
+    @p_importeTotal DECIMAL(10, 2),
+    @p_formaPago VARCHAR(20)
 )
 AS
 BEGIN
-    INSERT INTO Factura (idReserva, importeTotal, formaPaGO)
-    VALUES (@p_idReserva, @p_importeTotal, @p_formaPaGO);
+    INSERT INTO Factura (idReserva, importeTotal, formaPago)
+    VALUES (@p_idReserva, @p_importeTotal, @p_formaPago);
 END;
 GO
+
 
 -- PROCEDURE para insertar una empresa de recreación
 CREATE PROCEDURE SP_InsertarEmpresaRecreacion(
@@ -870,6 +870,105 @@ BEGIN
 
     INSERT INTO FotosTipoHabitacion (idTipoHabitacion, rutaLocal)
     VALUES (@idTipoHabitacion, @rutaLocal);
+END;
+GO
+
+CREATE PROCEDURE SP_InsertarTipoHabitacionParaEmpresa (
+    @idEmpresaHospedaje INT,
+    @numeroHabitacion INT,
+    @nombre VARCHAR(50),
+    @descripcion VARCHAR(150),
+    @tipoCama VARCHAR(50),
+    @precio DECIMAL(10, 2)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Insertar tipo personalizado
+    INSERT INTO TipoHabitacion (nombre, descripcion, tipoCama, precio)
+    VALUES (@nombre, @descripcion, @tipoCama, @precio);
+
+    DECLARE @idTipoHabitacion INT = SCOPE_IDENTITY();
+
+    -- Insertar habitación asociada a la empresa y tipo
+    INSERT INTO Habitacion (idEmpresaHospedaje, numero, idTipoHabitacion)
+    VALUES (@idEmpresaHospedaje, @numeroHabitacion, @idTipoHabitacion);
+END;
+GO
+
+CREATE PROCEDURE SP_ActualizarTipoHabitacion (
+    @idTipoHabitacion INT,
+    @nombre VARCHAR(50),
+    @descripcion VARCHAR(150),
+    @tipoCama VARCHAR(50),
+    @precio DECIMAL(10, 2)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE TipoHabitacion
+    SET nombre = @nombre,
+        descripcion = @descripcion,
+        tipoCama = @tipoCama,
+        precio = @precio
+    WHERE idTipo = @idTipoHabitacion;
+END;
+GO
+
+CREATE PROCEDURE SP_EliminarTipoHabitacion (
+    @idTipoHabitacion INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM TipoHabitacion WHERE idTipo = @idTipoHabitacion;
+END;
+GO
+
+CREATE PROCEDURE SP_TiposHabitacionPorEmpresa (
+    @idEmpresaHospedaje INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        t.idTipo,
+        h.numero AS numeroHabitacion,
+        t.nombre,
+        t.descripcion,
+        t.tipoCama,
+        t.precio
+    FROM Habitacion h
+    INNER JOIN TipoHabitacion t ON h.idTipoHabitacion = t.idTipo
+    WHERE h.idEmpresaHospedaje = @idEmpresaHospedaje
+    ORDER BY h.numero;
+END;
+GO
+
+
+CREATE PROCEDURE SP_BuscarFacturasPorEmpresa (
+    @idEmpresaHospedaje INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        f.idFactura,
+        f.fecha,
+        f.importeTotal,
+        f.formaPago,
+        r.idReserva,
+        c.nombre + ' ' + c.apellido1 AS cliente
+    FROM Factura f
+    INNER JOIN Reserva r ON f.idReserva = r.idReserva
+    INNER JOIN Cliente c ON r.idCliente = c.idCliente
+    WHERE r.idEmpresaHospedaje = @idEmpresaHospedaje
+    ORDER BY f.fecha DESC;
 END;
 GO
 
