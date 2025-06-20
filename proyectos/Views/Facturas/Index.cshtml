@@ -1,0 +1,344 @@
+﻿@model IEnumerable<HotelesCaribe.Models.Factura>
+@{
+    ViewData["Title"] = "Administración de facturas";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/panelControl.css" />
+}
+
+<div class="panel-container">
+    <div class="panel-header">
+        <h1 class="panel-title">Administración de facturas</h1>
+    </div>
+
+    <div class="panel-content">
+        <div class="service-info">
+            <div class="service-icon">
+                <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+            <div class="service-text">
+                <span class="service-label">Gestión:</span>
+                <span class="service-name">Sistema de facturación</span>
+            </div>
+        </div>
+
+        <div class="panel-buttons">
+            <div class="button-row">
+                <a asp-action="Create" class="panel-button">
+                    <div class="button-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <span class="button-text">Realizar facturación</span>
+                </a>
+                <a asp-action="Consultar" class="panel-button">
+                    <div class="button-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <span class="button-text">Consultar factura</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="habitaciones-table-container">
+            <table class="habitaciones-table">
+                <thead>
+                    <tr>
+                        <th class="fecha-col">Fecha</th>
+                        <th class="cliente-col">Cliente</th>
+                        <th class="reserva-col">Reserva</th>
+                        <th class="importe-col">Importe Total</th>
+                        <th class="pago-col">Forma de Pago</th>
+                        <th class="ajustes-col">Ajustes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="habitacion-row">
+                            <td class="fecha-cell">
+                                <div class="fecha-indicator">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <div class="fecha-info">
+                                        <span class="fecha-factura">@item.Fecha.ToString("dd/MM/yyyy")</span>
+                                        <small class="hora-factura">@item.Fecha.ToString("HH:mm")</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="cliente-cell">
+                                <div class="cliente-info">
+                                    <i class="fas fa-user"></i>
+                                    <span>@item.IdReservaNavigation?.IdClienteNavigation?.Nombre @item.IdReservaNavigation?.IdClienteNavigation?.Apellido1</span>
+                                </div>
+                            </td>
+                            <td class="reserva-cell">
+                                <div class="reserva-indicator">
+                                    <i class="fas fa-bookmark"></i>
+                                    <span>#@item.IdReserva.ToString("000000")</span>
+                                </div>
+                            </td>
+                            <td class="importe-cell">
+                                <div class="importe-info">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span class="importe-amount">₡@item.ImporteTotal.ToString("N2")</span>
+                                </div>
+                            </td>
+                            <td class="pago-cell">
+                                <span class="pago-badge pago-@item.FormaPago.ToLower().Replace(" ", "-")">
+                                    @item.FormaPago
+                                </span>
+                            </td>
+                            <td class="ajustes-cell">
+                                <div class="action-buttons">
+                                    <a asp-action="Edit" asp-route-id="@item.IdFactura" class="action-btn edit-btn" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.IdFactura" class="action-btn view-btn" title="Ver detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Print" asp-route-id="@item.IdFactura" class="action-btn print-btn" title="Imprimir">
+                                        <i class="fas fa-print"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="container slogan">
+    <p class="sloganRancho navbar-brand">HotelesCaribe</p>
+    <p class="container inter24 textosBienvenida" id="textoSlogan">
+        La mejor plataforma para tu negocio y tus viajes.
+    </p>
+    <div class="separacion200"></div>
+</div>
+
+<style>
+    .habitaciones-table-container {
+        margin-top: 30px;
+        background-color: rgba(217, 217, 217, 0.6);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .habitaciones-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        font-family: Inter;
+    }
+
+        .habitaciones-table thead th {
+            background-color: rgba(180, 180, 180, 0.8);
+            color: #555;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 20px 10px;
+            text-align: center;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+    .fecha-col {
+        width: 15%;
+    }
+
+    .cliente-col {
+        width: 25%;
+    }
+
+    .reserva-col {
+        width: 12%;
+    }
+
+    .importe-col {
+        width: 15%;
+    }
+
+    .pago-col {
+        width: 13%;
+    }
+
+    .ajustes-col {
+        width: 20%;
+    }
+
+    .habitacion-row {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease;
+    }
+
+        .habitacion-row:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .habitacion-row:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+    .fecha-cell, .cliente-cell, .reserva-cell, .importe-cell, .pago-cell, .ajustes-cell {
+        padding: 15px 10px;
+        vertical-align: middle;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .fecha-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .fecha-indicator i {
+            font-size: 16px;
+            color: #007bff;
+        }
+
+    .fecha-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fecha-factura {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .hora-factura {
+        font-size: 11px;
+        color: #888;
+    }
+
+    .cliente-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .cliente-info i {
+            font-size: 14px;
+            color: #28a745;
+        }
+
+    .reserva-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        color: #666;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+        .reserva-indicator i {
+            font-size: 16px;
+            color: #6c757d;
+        }
+
+    .importe-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+        .importe-info i {
+            font-size: 14px;
+            color: #28a745;
+        }
+
+    .importe-amount {
+        font-weight: 600;
+        font-size: 15px;
+        color: #28a745;
+    }
+
+    .pago-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .pago-efectivo {
+        background-color: rgba(40, 167, 69, 0.2);
+        color: #155724;
+    }
+
+    .pago-tarjeta {
+        background-color: rgba(0, 123, 255, 0.2);
+        color: #004085;
+    }
+
+    .pago-transferencia {
+        background-color: rgba(255, 193, 7, 0.2);
+        color: #856404;
+    }
+
+    .pago-sinpe {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #721c24;
+    }
+
+    .pago-credito {
+        background-color: rgba(108, 117, 125, 0.2);
+        color: #495057;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    .edit-btn {
+        background-color: rgba(255, 193, 7, 0.8);
+        color: #856404;
+    }
+
+        .edit-btn:hover {
+            background-color: rgba(255, 193, 7, 1);
+            color: #856404;
+            transform: translateY(-2px);
+        }
+
+    .view-btn {
+        background-color: rgba(0, 123, 255, 0.8);
+        color: #004085;
+    }
+
+        .view-btn:hover {
+            background-color: rgba(0, 123, 255, 1);
+            color: #004085;
+            transform: translateY(-2px);
+        }
+
+    .print-btn {
+        background-color: rgba(108, 117, 125, 0.8);
+        color: #495057;
+    }
+
+        .print-btn:hover {
+            background-color: rgba(108, 117, 125, 1);
+            color: #495057;
+            transform: translateY(-2px);
+        }
+</style>

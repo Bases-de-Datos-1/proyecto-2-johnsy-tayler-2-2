@@ -26,12 +26,12 @@
 
         <div class="panel-buttons">
             <div class="button-row">
-                <div class="panel-button">
+                <a asp-controller="Reservas" asp-action="Index" asp-route-id="@Model.IdEmpresaHospedaje" class="panel-button">
                     <div class="button-icon">
                         <i class="fas fa-calendar-check"></i>
                     </div>
                     <span class="button-text">Administrar reservaciones</span>
-                </div>
+                </a>
                 <a asp-controller="EmpresaHospedajes" asp-action="PanelHabitaciones" asp-route-id="@Model.IdEmpresaHospedaje" class="panel-button">
                     <div class="button-icon">
                         <i class="fas fa-bed"></i>
@@ -40,12 +40,12 @@
                 </a>
             </div>
             <div class="button-row">
-                <div class="panel-button">
+                <a asp-controller="Facturas" asp-action="Index" asp-route-id="@Model.IdEmpresaHospedaje" class="panel-button">
                     <div class="button-icon">
                         <i class="fas fa-file-invoice"></i>
                     </div>
                     <span class="button-text">Facturación</span>
-                </div>
+                </a>
                 <div class="panel-button">
                     <div class="button-icon">
                         <i class="fas fa-info-circle"></i>

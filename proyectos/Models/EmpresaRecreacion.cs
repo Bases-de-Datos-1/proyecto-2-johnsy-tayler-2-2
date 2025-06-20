@@ -31,5 +31,7 @@ public partial class EmpresaRecreacion
 
     public virtual ICollection<Actividad> Actividads { get; set; } = new List<Actividad>();
 
+    public virtual ICollection<FotosEmpresaRecreacion> FotosEmpresaRecreacions { get; set; } = new List<FotosEmpresaRecreacion>();
+
     public virtual ICollection<Servicio> Servicios { get; set; } = new List<Servicio>();
 }

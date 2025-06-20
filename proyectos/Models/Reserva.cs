@@ -32,4 +32,6 @@ public partial class Reserva
     public virtual EmpresaHospedaje IdEmpresaHospedajeNavigation { get; set; } = null!;
 
     public virtual Habitacion IdHabitacionNavigation { get; set; } = null!;
+
+    public virtual ICollection<ReservasEmpresaHospedaje> ReservasEmpresaHospedajes { get; set; } = new List<ReservasEmpresaHospedaje>();
 }

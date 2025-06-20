@@ -17,7 +17,7 @@ public partial class TipoHabitacion
 
     public virtual ICollection<Comodidade> Comodidades { get; set; } = new List<Comodidade>();
 
-    public virtual ICollection<FotosHabitacion> FotosHabitacions { get; set; } = new List<FotosHabitacion>();
+    public virtual ICollection<FotosTipoHabitacion> FotosTipoHabitacions { get; set; } = new List<FotosTipoHabitacion>();
 
     public virtual ICollection<Habitacion> Habitacions { get; set; } = new List<Habitacion>();
 }

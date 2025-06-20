@@ -5,6 +5,7 @@ namespace HotelesCaribe.Models;
 
 public partial class VwInfoCompletaHospedaje
 {
+
     public int IdEmpresaHospedaje { get; set; }
 
     public string NombreHotel { get; set; } = null!;

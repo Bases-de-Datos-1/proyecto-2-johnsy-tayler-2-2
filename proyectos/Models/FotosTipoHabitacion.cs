@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace HotelesCaribe.Models;
 
-public partial class FotosEmpresaHospedaje
+public partial class FotosTipoHabitacion
 {
     public int IdFoto { get; set; }
 
-    public int IdEmpresaHospedaje { get; set; }
+    public int IdTipoHabitacion { get; set; }
 
     public string RutaLocal { get; set; } = null!;
 
-    public virtual EmpresaHospedaje IdEmpresaHospedajeNavigation { get; set; } = null!;
+    public virtual TipoHabitacion IdTipoHabitacionNavigation { get; set; } = null!;
 }

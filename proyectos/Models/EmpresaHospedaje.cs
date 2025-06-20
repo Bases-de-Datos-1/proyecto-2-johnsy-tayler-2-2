@@ -42,4 +42,6 @@ public partial class EmpresaHospedaje
     public virtual ICollection<ServiciosHospedaje> ServiciosHospedajes { get; set; } = new List<ServiciosHospedaje>();
 
     public virtual ICollection<TelefonosEmpresa> TelefonosEmpresas { get; set; } = new List<TelefonosEmpresa>();
+
+    public virtual ICollection<UsuarioEmpresa> UsuarioEmpresas { get; set; } = new List<UsuarioEmpresa>();
 }
