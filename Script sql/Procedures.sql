@@ -937,16 +937,15 @@ BEGIN
     SET NOCOUNT ON;
 
     SELECT 
+		t.idEmpresaHospedaje,
         t.idTipo,
-        h.numero AS numeroHabitacion,
         t.nombre,
         t.descripcion,
         t.tipoCama,
         t.precio
-    FROM Habitacion h
-    INNER JOIN TipoHabitacion t ON h.idTipoHabitacion = t.idTipo
-    WHERE h.idEmpresaHospedaje = @idEmpresaHospedaje
-    ORDER BY h.numero;
+    FROM TipoHabitacion t
+    WHERE t.idEmpresaHospedaje = @idEmpresaHospedaje
+    ORDER BY t.idEmpresaHospedaje;
 END;
 GO
 

@@ -64,8 +64,13 @@ namespace HotelesCaribe.Controllers
                 var empresa = _context.EmpresaHospedajes.Find(empresaId.Value);
                 ViewBag.EmpresaSeleccionada = empresa?.Nombre;
             }
+
+            var idEmpresaHospedaje = new SqlParameter("@idEmpresaHospedaje", empresaId);
+            var info = _context.TipoHabitacions
+                .FromSqlRaw("EXEC SP_TiposHabitacionPorEmpresa @idEmpresaHospedaje", idEmpresaHospedaje)
+                .AsEnumerable();
             ViewData["IdEmpresaHospedaje"] = new SelectList(_context.EmpresaHospedajes, "IdEmpresaHospedaje", "Nombre");
-            ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitacions, "IdTipo", "Nombre");
+            ViewData["IdTipoHabitacion"] = new SelectList(info, "IdTipo", "Nombre");
             return View();
         }
 

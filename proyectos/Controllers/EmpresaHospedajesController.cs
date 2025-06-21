@@ -275,63 +275,112 @@ namespace HotelesCaribe.Controllers
             return View(modelo);
         }
 
-        // POST: EmpresaHospedajes/AgregarImagenes/5
+
+        // POST: EmpresaHospedajes/AgregarImagenes/5 - Solo para archivos
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AgregarImagenes(int id, ModeloEmpresaImagenes modelo)
+        public async Task<IActionResult> AgregarImagenes(int id, IFormFile nuevoArchivo)
         {
-            if (id != modelo.IdEmpresa)
+            if (nuevoArchivo != null && nuevoArchivo.Length > 0)
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                var empresa = await _context.EmpresaHospedajes.FindAsync(id);
-                if (empresa != null)
+                try
                 {
-                    // Aquí guardar las imágenes en tu base de datos
-                    // Ejemplo si tienes una tabla ImagenesEmpresa:
-                    /*
-                    // Eliminar imágenes existentes
-                    var imagenesExistentes = _context.ImagenesEmpresas
-                        .Where(img => img.IdEmpresaHospedaje == id);
-                    _context.ImagenesEmpresas.RemoveRange(imagenesExistentes);
-
-                    // Agregar nuevas imágenes
-                    foreach (var urlImagen in modelo.ImagenesUrls)
+                    if (true)//EsImagenValida(nuevoArchivo))
                     {
-                        var nuevaImagen = new ImagenesEmpresa
+                        // Crear directorio si no existe
+                        var imagesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "empresas", id.ToString());
+                        if (!Directory.Exists(imagesPath))
                         {
-                            IdEmpresaHospedaje = id,
-                            UrlImagen = urlImagen,
-                            FechaCreacion = DateTime.Now
-                        };
-                        _context.ImagenesEmpresas.Add(nuevaImagen);
+                            Directory.CreateDirectory(imagesPath);
+                        }
+
+                        var extension = Path.GetExtension(nuevoArchivo.FileName);
+                        var nombreArchivo = $"{Guid.NewGuid()}{extension}";
+                        var rutaCompleta = Path.Combine(imagesPath, nombreArchivo);
+                        var rutaRelativa = $"/images/empresas/{id}/{nombreArchivo}";
+
+                        using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+                        {
+                            await nuevoArchivo.CopyToAsync(stream);
+                        }
+
+                        // Guardar en base de datos
+                        var parameters = new[]
+                        {
+                    new SqlParameter("@idEmpresaHospedaje", id),
+                    new SqlParameter("@rutaLocal", rutaRelativa)
+                };
+
+                        await _context.Database.ExecuteSqlRawAsync(
+                            "EXEC SP_InsertarFotoEmpresaHospedaje @idEmpresaHospedaje, @rutaLocal",
+                            parameters);
+
+                        TempData["Success"] = "Imagen subida correctamente.";
                     }
-                    */
-
-                    /*
-                        @p_idTipoHabitacion int,
-                        @p_url varchar(200)
-                     */
-
-                    /*
-                    var parameters = new[]
+                    else
                     {
-                        new SqlParameter("@p_idTipoHabitacion", modelo.IdEmpresa), new SqlParameter("@p_url", 1),
-                    };
-                    await _context.Database.ExecuteSqlRawAsync(
-                        "EXEC SP_InsertarRedSocial @p_idTipoHabitacion, @p_url", parameters);
-                    */
-
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction("PanelControl", new { id = id }); // O la siguiente pantalla
+                        TempData["Error"] = "El archivo no es válido. Solo se permiten imágenes JPG, PNG, GIF, WEBP de máximo 5MB.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = $"Error al subir la imagen: {ex.Message}";
                 }
             }
+            else
+            {
+                TempData["Error"] = "Debe seleccionar un archivo.";
+            }
 
-            return View(modelo);
+            return RedirectToAction("AgregarImagenes", new { id = id });
         }
+
+        // POST: EmpresaHospedajes/EliminarImagen
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EliminarImagen(int empresaId, int fotoId)
+        {
+            try
+            {
+                var foto = await _context.FotosEmpresaHospedajes
+                    .FirstOrDefaultAsync(f => f.IdFoto == fotoId && f.IdEmpresaHospedaje == empresaId);
+
+                if (foto != null)
+                {
+                    var rutaCompleta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", foto.RutaLocal.TrimStart('/'));
+                    if (System.IO.File.Exists(rutaCompleta))
+                    {
+                        System.IO.File.Delete(rutaCompleta);
+                    }
+
+                    // Eliminar de la base de datos
+                    _context.FotosEmpresaHospedajes.Remove(foto);
+                    await _context.SaveChangesAsync();
+
+                    TempData["Success"] = "Imagen eliminada correctamente.";
+                }
+                else
+                {
+                    TempData["Error"] = "No se encontró la imagen a eliminar.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error al eliminar la imagen: {ex.Message}";
+            }
+
+            return RedirectToAction("AgregarImagenes", new { id = empresaId });
+        }
+
+        // POST: EmpresaHospedajes/ContinuarPaso
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ContinuarPaso(int empresaId)
+        {
+            return RedirectToAction("PanelControl", new { id = empresaId });
+        }
+
+
 
         /* FIN IMAGENES */
 

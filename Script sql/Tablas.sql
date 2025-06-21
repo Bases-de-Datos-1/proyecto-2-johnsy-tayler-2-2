@@ -65,7 +65,6 @@ create table TipoHabitacion (
     foreign key (idEmpresaHospedaje) references EmpresaHospedaje(idEmpresaHospedaje) on delete cascade
 );
 
-
 create table Habitacion (
     idHabitacion int identity(1,1) primary key,
     idEmpresaHospedaje int not null,

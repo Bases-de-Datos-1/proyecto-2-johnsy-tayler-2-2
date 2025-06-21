@@ -165,7 +165,28 @@ namespace HotelesCaribe.Controllers
             {
                 try
                 {
-                    _context.Update(cliente);
+                    Cliente c = cliente;
+                    var parameters = new[]
+                        {
+                        new SqlParameter("@p_nombre", c.Nombre),
+                        new SqlParameter("@p_apellido1", c.Apellido1),
+                        new SqlParameter("@p_apellido2", c.Apellido2),
+                        new SqlParameter("@p_fechaNacimiento", c.FechaNacimiento),
+                        new SqlParameter("@p_tipoIdentIFicacion", c.TipoIdentificacion),
+                        new SqlParameter("@p_identIFicacion", c.Identificacion),
+                        new SqlParameter("@p_pais", c.Pais),
+                        new SqlParameter("@p_provincia", c.Provincia),
+                        new SqlParameter("@p_canton", c.Canton),
+                        new SqlParameter("@p_distrito", c.Distrito),
+                        new SqlParameter("@p_correo", c.Correo)
+                    };
+
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC SP_ActualizarCliente @p_nombre, @p_apellido1, @p_apellido2, @p_fechaNacimiento, @p_tipoIdentIFicacion, @p_identIFicacion, @p_pais, @p_provincia, @p_canton, @p_distrito, @p_correo",
+                        parameters);
+
+
+                    //_context.Update(cliente);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

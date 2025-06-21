@@ -37,3 +37,6 @@ secrets.json
 
 # Dependency packages
 packages/
+
+# Cache images
+wwwroot/images/

@@ -12,30 +12,59 @@
     <!-- Header del Hotel -->
     <div class="hotel-header">
         <div class="row">
-            <!-- Imagen Principal -->
             <div class="col-md-6">
-                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-                     alt="@Model.Hotel.Nombre" class="hotel-main-image">
+                @if (Model.FotosHotel != null && Model.FotosHotel.Any())
+                {
+                    <img src="@Model.FotosHotel.First().RutaLocal"
+                         alt="@Model.Hotel.Nombre"
+                         class="hotel-main-image">
+                }
+                else
+                {
+                    <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                         alt="@Model.Hotel.Nombre"
+                         class="hotel-main-image">
+                }
             </div>
 
             <!-- Galería de Imágenes -->
             <div class="col-md-3">
                 <div class="hotel-gallery">
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Piscina">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Piscina">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Piscina">
-                    </div>
-                    <div class="gallery-item">
-                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Piscina">
-                        <div class="gallery-more">+7</div>
-                    </div>
+                    @if (Model.FotosHotel != null && Model.FotosHotel.Count > 1)
+                    {
+                        @for (int i = 1; i < Math.Min(Model.FotosHotel.Count, 4); i++)
+                        {
+                            <div class="gallery-item">
+                                <img src="@Model.FotosHotel[i].RutaLocal"
+                                     alt="@Model.Hotel.Nombre - Imagen @(i + 1)">
+                            </div>
+                        }
+
+                        @if (Model.FotosHotel.Count > 4)
+                        {
+                            <div class="gallery-item">
+                                <img src="@Model.FotosHotel[3].RutaLocal"
+                                     alt="@Model.Hotel.Nombre - Imagen 4">
+                                <div class="gallery-more">+@(Model.FotosHotel.Count - 4)</div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <!-- Imágenes por defecto si no hay fotos -->
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Imagen por defecto">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Imagen por defecto">
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Imagen por defecto">
+                        </div>
+                    }
                 </div>
             </div>
+        </div>
         </div>
         <div class="row">
             <div class="hotel-info">
@@ -323,5 +352,39 @@
                 totalElement.textContent = '₡' + total.toLocaleString();
             }
         }
+    }
+
+    function abrirGaleria() {
+        // Crear modal con todas las imágenes
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        modal.innerHTML = `
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Galería - @Model.Hotel.Nombre</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            @foreach (var foto in Model.FotosHotel)
+                            {
+                                    <div class="col-md-6 mb-3">
+                                            <img src="@foto.RutaLocal" class="img-fluid rounded" alt="@Model.Hotel.Nombre">
+                                    </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        const modalInstance = new bootstrap.Modal(modal);
+        modalInstance.show();
+
+        modal.addEventListener('hidden.bs.modal', function () {
+            document.body.removeChild(modal);
+        });
     }
 </script>

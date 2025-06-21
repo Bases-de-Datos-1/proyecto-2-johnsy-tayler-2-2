@@ -3,6 +3,13 @@
 @{
     ViewData["Title"] = "Agregar Imágenes";
     Layout = "_Layout";
+
+    // Obtener imágenes de la base de datos
+    var imagenesExistentes = ViewContext.HttpContext.RequestServices
+        .GetService<HotelesCaribe.Models.GestionHoteleraContext>()
+        .FotosEmpresaHospedajes
+        .Where(f => f.IdEmpresaHospedaje == Model.IdEmpresa)
+        .ToList();
 }
 
 @section Styles {
@@ -20,50 +27,76 @@
         <div class="cuadroVisual cuadroImagenes">
             <h2 class="titulo-imagenes">Agregar imágenes para tu servicio de alojamiento</h2>
 
-            <form asp-action="AgregarImagenes" asp-route-id="@Model.IdEmpresa" method="post" enctype="multipart/form-data">
-                <input type="hidden" asp-for="IdEmpresa" />
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">@TempData["Error"]</div>
+            }
 
-                <div class="seccion-imagenes">
-                    <!-- Área principal de agregar imagen -->
-                    <div class="area-agregar-imagen" id="areaAgregarImagen">
-                        <div class="contenido-agregar">
-                            <p class="texto-instruccion">Ingrese el link a una imagen pública:</p>
-                            <div class="input-imagen-container">
-                                <input type="url" class="form-control input-url-imagen" id="inputUrlImagen"
-                                       placeholder="https://ejemplo.com/imagen.jpg">
-                                <button type="button" class="btn-agregar-url">
-                                    <i class="fas fa-plus"></i> Agregar imagen
-                                </button>
-                            </div>
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
 
+            <div class="seccion-imagenes">
+                <div class="area-agregar-imagen">
+                    <div class="contenido-agregar">
+                        <!-- Formulario -->
+                        <form asp-action="AgregarImagenes" asp-route-id="@Model.IdEmpresa" method="post" enctype="multipart/form-data">
                             <div class="area-subir-archivo">
-                                <input type="file" id="inputArchivo" accept="image/*" multiple style="display: none;">
-                                <button type="button" class="btn-subir-archivo" onclick="document.getElementById('inputArchivo').click()">
-                                    <i class="fas fa-plus"></i> Agregar imagen
+                                <p class="texto-instruccion">Selecciona una imagen desde tu dispositivo:</p>
+                                <input type="file" name="nuevoArchivo" accept="image/*" class="form-control mb-3" required>
+                                <button type="submit" class="btn-subir-archivo">
+                                    <i class="fas fa-upload"></i> Subir imagen
                                 </button>
-                                <p class="texto-archivo">Selecciona archivos desde tu dispositivo</p>
+                                <p class="texto-archivo">Formatos permitidos: JPG, PNG, GIF, WEBP - Máximo 5MB</p>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Panel lateral de imágenes agregadas -->
-                    <div class="panel-imagenes-agregadas">
-                        <div class="lista-imagenes" id="listaImagenes">
-                            <!-- Las imágenes agregadas aparecerán aquí -->
-                        </div>
+                        </form>
                     </div>
                 </div>
 
-                <!-- Campos hidden para las URLs de las imágenes -->
-                <div id="camposImagenes"></div>
+                <div class="panel-imagenes-agregadas">
+                    <div class="lista-imagenes">
+                        @if (imagenesExistentes.Any())
+                        {
+                            @foreach (var imagen in imagenesExistentes)
+                            {
+                                <div class="imagen-item">
+                                    <img src="@imagen.RutaLocal" alt="Imagen" class="imagen-preview"
+                                         onerror="this.src='data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;60&quot; height=&quot;60&quot;><rect width=&quot;60&quot; height=&quot;60&quot; fill=&quot;%23f0f0f0&quot;/><text x=&quot;30&quot; y=&quot;35&quot; text-anchor=&quot;middle&quot; fill=&quot;%23999&quot; font-size=&quot;10&quot;>Error</text></svg>'">
+                                    <div class="imagen-info">
+                                        <p class="imagen-nombre">Imagen @imagen.IdFoto</p>
+                                        <p class="imagen-numero">Archivo Local</p>
+                                    </div>
+                                    <form asp-action="EliminarImagen" method="post" style="display: inline;">
+                                        <input type="hidden" name="empresaId" value="@Model.IdEmpresa" />
+                                        <input type="hidden" name="fotoId" value="@imagen.IdFoto" />
+                                        <button type="submit" class="btn-eliminar-imagen" onclick="return confirm('¿Eliminar esta imagen?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="estado-vacio">
+                                <i class="fas fa-images"></i>
+                                <p>No hay imágenes agregadas</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
 
-                <div class="botones-accion">
+            <div class="botones-accion">
+                <form asp-action="ContinuarPaso" method="post">
+                    <input type="hidden" name="empresaId" value="@Model.IdEmpresa" />
                     <button type="submit" class="btn-siguiente">
                         <span>Siguiente</span>
                         <i class="fas fa-arrow-right"></i>
                     </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -73,148 +106,8 @@
     </div>
 </div>
 
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-    <script>
-        $(document).ready(function() {
-            let imagenesAgregadas = [];
-            let contadorImagenes = 0;
-
-            // Mostrar estado vacío inicial
-            mostrarEstadoVacio();
-
-            // Agregar imagen por URL
-            $('.btn-agregar-url').click(function() {
-                const url = $('#inputUrlImagen').val().trim();
-                if (url && esUrlValida(url)) {
-                    agregarImagen(url, 'URL');
-                    $('#inputUrlImagen').val('');
-                } else {
-                    alert('Por favor ingresa una URL válida de imagen.');
-                }
-            });
-
-            // Permitir agregar con Enter
-            $('#inputUrlImagen').keypress(function(e) {
-                if (e.which === 13) {
-                    $('.btn-agregar-url').click();
-                }
-            });
-
-            // Manejar archivos seleccionados
-            $('#inputArchivo').change(function(e) {
-                const archivos = e.target.files;
-                for (let i = 0; i < archivos.length; i++) {
-                    const archivo = archivos[i];
-                    if (archivo.type.startsWith('image/')) {
-                        const url = URL.createObjectURL(archivo);
-                        agregarImagen(url, archivo.name);
-                    }
-                }
-                // Limpiar el input
-                $(this).val('');
-            });
-
-            function esUrlValida(url) {
-                return true;
-                try {
-                    new URL(url);
-                    return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
-                } catch {
-                    return false;
-                }
-            }
-
-            function agregarImagen(url, origen) {
-                contadorImagenes++;
-                const idImagen = 'imagen_' + contadorImagenes;
-
-                const imagenData = {
-                    id: idImagen,
-                    url: url,
-                    origen: origen,
-                    numero: contadorImagenes
-                };
-
-                imagenesAgregadas.push(imagenData);
-                renderizarImagen(imagenData);
-                actualizarCamposHidden();
-
-                // Ocultar estado vacío si es la primera imagen
-                if (imagenesAgregadas.length === 1) {
-                    $('.estado-vacio').remove();
-                }
-            }
-
-            function renderizarImagen(imagenData) {
-                const html = `
-                    <div class="imagen-item" data-id="${imagenData.id}">
-                        <img src="${imagenData.url}" alt="Imagen ${imagenData.numero}" class="imagen-preview"
-                             onerror="this.src='data:image/svg+xml,<svg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"60\\" height=\\"60\\"><rect width=\\"60\\" height=\\"60\\" fill=\\"%23f0f0f0\\"/><text x=\\"30\\" y=\\"35\\" text-anchor=\\"middle\\" fill=\\"%23999\\" font-size=\\"10\\">Error</text></svg>'">
-                        <div class="imagen-info">
-                            <p class="imagen-nombre">Imagen ${imagenData.numero}</p>
-                            <p class="imagen-numero">${imagenData.origen}</p>
-                        </div>
-                        <button type="button" class="btn-eliminar-imagen" onclick="eliminarImagen('${imagenData.id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                $('#listaImagenes').append(html);
-            }
-
-            function mostrarEstadoVacio() {
-                if (imagenesAgregadas.length === 0) {
-                    const html = `
-                        <div class="estado-vacio">
-                            <i class="fas fa-images"></i>
-                            <p>No hay imágenes agregadas</p>
-                        </div>
-                    `;
-                    $('#listaImagenes').html(html);
-                }
-            }
-
-            function actualizarCamposHidden() {
-                $('#camposImagenes').empty();
-                imagenesAgregadas.forEach((imagen, index) => {
-                    $('#camposImagenes').append(
-                        `<input type="hidden" name="ImagenesUrls[${index}]" value="${imagen.url}">`
-                    );
-                });
-            }
-
-            // Función global para eliminar imagen
-            window.eliminarImagen = function(idImagen) {
-                // Remover del array
-                imagenesAgregadas = imagenesAgregadas.filter(img => img.id !== idImagen);
-
-                // Remover del DOM
-                $(`.imagen-item[data-id="${idImagen}"]`).fadeOut(300, function() {
-                    $(this).remove();
-
-                    // Mostrar estado vacío si no hay imágenes
-                    if (imagenesAgregadas.length === 0) {
-                        mostrarEstadoVacio();
-                    }
-                });
-
-                // Actualizar campos hidden
-                actualizarCamposHidden();
-            };
-
-            // Validar antes de enviar
-            $('form').submit(function(e) {
-                if (imagenesAgregadas.length === 0) {
-                    e.preventDefault();
-                    alert('Por favor agrega al menos una imagen antes de continuar.');
-                    return false;
-                }
-            });
-        });
-    </script>
 }

@@ -5,6 +5,7 @@
         public EmpresaHospedaje Hotel { get; set; }
         public List<Habitacion> Habitaciones { get; set; }
         public BusquedaFiltros Filtros { get; set; }
+        public List<VwFotosEmpresaHospedaje> FotosHotel { get; set; } = new List<VwFotosEmpresaHospedaje>();
     }
 
     public class BusquedaFiltros

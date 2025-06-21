@@ -35,10 +35,15 @@ namespace HotelesCaribe.Controllers
                 .Where(h => h.IdEmpresaHospedaje == id)
                 .ToListAsync();
 
+            var fotosHotel = await _context.VwFotosEmpresaHospedajes
+                .Where(f => f.IdEmpresaHospedaje == id)
+                .ToListAsync();
+
             var viewModel = new HospedajeDetallesModel
             {
                 Hotel = hotel,
                 Habitaciones = habitaciones,
+                FotosHotel = fotosHotel,
                 Filtros = new BusquedaFiltros()
             };
 
