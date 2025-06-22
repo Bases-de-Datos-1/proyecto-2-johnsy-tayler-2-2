@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using HotelesCaribe.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HotelesCaribe.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace HotelesCaribe.Controllers
 {
+    [Authorize]
     public class ReservasController : Controller
     {
         private readonly GestionHoteleraContext _context;
@@ -73,6 +75,7 @@ namespace HotelesCaribe.Controllers
         }
 
         // GET: Reservas/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["IdCliente"] = new SelectList(_context.Clientes, "IdCliente", "IdCliente");
@@ -84,6 +87,7 @@ namespace HotelesCaribe.Controllers
         // POST: Reservas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdReserva,IdCliente,IdEmpresaHospedaje,IdHabitacion,FechaIngreso,CantidadPersonas,TieneVehiculo,FechaSalida,HoraSalida,Estado")] Reserva reserva)

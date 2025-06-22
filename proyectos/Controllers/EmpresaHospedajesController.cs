@@ -1,4 +1,5 @@
 ﻿using HotelesCaribe.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace HotelesCaribe.Controllers
 {
+    [Authorize]
     public class EmpresaHospedajesController : Controller
     {
         private readonly GestionHoteleraContext _context;
@@ -445,6 +447,7 @@ namespace HotelesCaribe.Controllers
 
 
         // GET: EmpresaHospedajes/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["IdTipoHospedaje"] = new SelectList(_context.TipoHospedajes, "IdTipoHospedaje", "Nombre");
@@ -454,6 +457,7 @@ namespace HotelesCaribe.Controllers
         // POST: EmpresaHospedajes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdEmpresaHospedaje,Nombre,CedulaJuridica,IdTipoHospedaje,Provincia,Canton,Distrito,Barrio,Senas,Latitud,Longitud,Correo")] EmpresaHospedaje empresaHospedaje)
@@ -527,6 +531,7 @@ namespace HotelesCaribe.Controllers
         }
 
         // GET: EmpresaHospedajes/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -546,6 +551,7 @@ namespace HotelesCaribe.Controllers
         // POST: EmpresaHospedajes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdEmpresaHospedaje,Nombre,CedulaJuridica,IdTipoHospedaje,Provincia,Canton,Distrito,Barrio,Senas,Latitud,Longitud,Correo")] EmpresaHospedaje empresaHospedaje)
@@ -580,6 +586,7 @@ namespace HotelesCaribe.Controllers
         }
 
         // GET: EmpresaHospedajes/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -599,6 +606,7 @@ namespace HotelesCaribe.Controllers
         }
 
         // POST: EmpresaHospedajes/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

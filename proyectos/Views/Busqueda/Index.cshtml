@@ -170,8 +170,30 @@
 
                 <!-- Imagen del hotel -->
                 <div class="hotel-imagen-container">
-                    <img src="/img/hotel-default.jpg" alt="@hotel.NombreHotel" class="hotel-img">
+                    @{
+                        // Obtener la primera imagen del hotel
+                        var primeraImagen = ViewContext.HttpContext.RequestServices
+                        .GetService<HotelesCaribe.Models.GestionHoteleraContext>()
+                        .FotosEmpresaHospedajes
+                        .Where(f => f.IdEmpresaHospedaje == hotel.IdEmpresaHospedaje)
+                        .FirstOrDefault();
+
+                        var rutaImagen = primeraImagen?.RutaLocal ?? "/img/hotel-default.jpg";
+                    }
+
+                    <img src="@rutaImagen"
+                         alt="@hotel.NombreHotel"
+                         class="hotel-img"
+                         onerror="this.src='/img/hotel-default.jpg'; this.classList.add('imagen-error');">
                     <div class="imagen-overlay"></div>
+
+                    @if (primeraImagen == null)
+                    {
+                        <div class="sin-imagen-badge">
+                            <i class="fas fa-image"></i>
+                            <span>Sin imagen</span>
+                        </div>
+                    }
                 </div>
 
                 <!-- Información del hotel -->

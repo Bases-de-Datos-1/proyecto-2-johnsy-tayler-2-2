@@ -1,4 +1,5 @@
 ﻿using HotelesCaribe.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace HotelesCaribe.Controllers
 {
+    [Authorize]
     public class EmpresaRecreacionsController : Controller
     {
         private readonly GestionHoteleraContext _context;

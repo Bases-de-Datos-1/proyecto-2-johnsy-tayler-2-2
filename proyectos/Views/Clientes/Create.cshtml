@@ -100,6 +100,18 @@
                     <input asp-for="Cliente.Correo" class="form-control inputRegistroCliente" />
                     <span asp-validation-for="Cliente.Correo" class="text-danger"></span>
                 </div>
+
+                <div class="form-group">
+                    <label asp-for="Contrasena" class="control-label">Contraseña:</label>
+                    <input asp-for="Contrasena" class="form-control inputRegistroCliente" />
+                    <span asp-validation-for="Contrasena" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ConfirmarContrasena" class="control-label">Confirmar contraseña:</label>
+                    <input asp-for="ConfirmarContrasena" class="form-control inputRegistroCliente" />
+                    <span asp-validation-for="ConfirmarContrasena" class="text-danger"></span>
+                </div>
                 <div class="form-group">
                     <input type="submit" value="Siguiente" class="btn btn-primary" />
                 </div>

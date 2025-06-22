@@ -65,7 +65,6 @@
                 </div>
             </div>
         </div>
-        </div>
         <div class="row">
             <div class="hotel-info">
                 <div class="hotel-title">
@@ -235,7 +234,7 @@
                 <h5 class="modal-title">Filtrar habitaciones</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form asp-action="Detalle" method="get">
+            <form asp-action="Detalles" method="get">
                 <input type="hidden" name="id" value="@Model.Hotel.IdEmpresaHospedaje" />
                 <div class="modal-body">
                     <div class="row">
@@ -262,12 +261,6 @@
                             <input type="number" name="filtros.PrecioMaximo" class="form-control"
                                    value="@Model.Filtros.PrecioMaximo" />
                         </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Número de personas:</label>
-                        <input type="number" name="filtros.NumeroPersonas" class="form-control"
-                               value="@Model.Filtros.NumeroPersonas" min="1" max="10" />
                     </div>
 
                     <div class="row">
@@ -369,9 +362,9 @@
                         <div class="row">
                             @foreach (var foto in Model.FotosHotel)
                             {
-                                    <div class="col-md-6 mb-3">
-                                            <img src="@foto.RutaLocal" class="img-fluid rounded" alt="@Model.Hotel.Nombre">
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                        <img src="@foto.RutaLocal" class="img-fluid rounded" alt="@Model.Hotel.Nombre">
+                                </div>
                             }
                         </div>
                     </div>

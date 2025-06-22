@@ -60,6 +60,13 @@ namespace HotelesCaribe.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (!clienteConTelefonos.Contrasena.Equals(clienteConTelefonos.ConfirmarContrasena))
+                {
+                    ModelState.AddModelError("", "Las contraseñas no coinciden.");
+                    return View(clienteConTelefonos);
+                }
+
+
                 Cliente c = clienteConTelefonos.Cliente;
                 var parameters = new[]
                     {
@@ -82,9 +89,10 @@ namespace HotelesCaribe.Controllers
 
                 var paramCedula = new SqlParameter("@cedula", c.Identificacion);
                 var info = _context.Clientes
-                    .FromSqlRaw("SELECT * FROM Cliente WHERE Identificacion = @cedula", paramCedula)
+                    .FromSqlRaw("EXEC SP_BuscarClientePorCedula @cedula", paramCedula)
                     .AsEnumerable()
                     .FirstOrDefault();
+                //.FromSqlRaw("SELECT * FROM Cliente WHERE Identificacion = @cedula", paramCedula)
 
                 var paramId = new SqlParameter("@p_idCliente", info?.IdCliente);
                 if (!string.IsNullOrEmpty(clienteConTelefonos.Telefono1))
@@ -108,6 +116,17 @@ namespace HotelesCaribe.Controllers
                         "EXEC SP_InsertarTelefonoCliente @p_idCliente, @p_numero",
                         paramId, tel);
                 }
+
+                //crear usuario para auth
+                var parameters2 = new[] {
+                    new SqlParameter("@nombreUsuario", c.Correo),
+                    new SqlParameter("@contrasena", clienteConTelefonos.Contrasena),
+                    new SqlParameter("@rol", "usuario")
+                };
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC SP_RegistrarUsuario @nombreUsuario, @contrasena, @rol",
+                    parameters2);
 
                 return RedirectToAction(nameof(CodigoVerificacion));
             }
@@ -154,7 +173,7 @@ namespace HotelesCaribe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdCliente,Nombre,Apellido1,Apellido2,FechaNacimiento,TipoIdentIficacion,IdentIficacion,Pais,Provincia,Canton,Distrito,Correo")] Cliente cliente)
+        public async Task<IActionResult> Edit(int id, [Bind("IdCliente,Nombre,Apellido1,Apellido2,FechaNacimiento,TipoIdentIficacion,IdentIficacion,Pais,Provincia,Canton,Distrito,Correo,Contrasena,ConfirmarContrasena")] Cliente cliente)
         {
             if (id != cliente.IdCliente)
             {
@@ -184,7 +203,6 @@ namespace HotelesCaribe.Controllers
                     await _context.Database.ExecuteSqlRawAsync(
                         "EXEC SP_ActualizarCliente @p_nombre, @p_apellido1, @p_apellido2, @p_fechaNacimiento, @p_tipoIdentIFicacion, @p_identIFicacion, @p_pais, @p_provincia, @p_canton, @p_distrito, @p_correo",
                         parameters);
-
 
                     //_context.Update(cliente);
                     await _context.SaveChangesAsync();

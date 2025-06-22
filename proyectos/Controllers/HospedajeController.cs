@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using System.Data;
 using System.Diagnostics;
 using System.Text.Json;
@@ -22,7 +23,7 @@ namespace HotelesCaribe.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Detalles(int id)
+        public async Task<IActionResult> Detalles(int id, BusquedaFiltros filtros)
         {
             var hotel = await _context.EmpresaHospedajes
                 .FirstOrDefaultAsync(h => h.IdEmpresaHospedaje == id);
@@ -39,12 +40,36 @@ namespace HotelesCaribe.Controllers
                 .Where(f => f.IdEmpresaHospedaje == id)
                 .ToListAsync();
 
+            // sp para filtros de habitaciones
+            /*
+             * 
+             *     @fecha_inicio DATE,
+                    @fecha_fin DATE,
+                    @idEmpresaHospedaje INT = NULL,
+                    @idTipoHabitacion INT = NULL,
+                    @precio_maximo DECIMAL(10,2) = NULL,
+                    @comodidad VARCHAR(50) = NULL
+             * 
+             */
+            var parameters = new[]
+            {
+                new SqlParameter("@fecha_inicio", filtros.FechaEntrada ?? (object)DBNull.Value),
+                new SqlParameter("@fecha_fin", filtros.FechaSalida ?? (object)DBNull.Value),
+                new SqlParameter("@idEmpresaHospedaje", id),
+                new SqlParameter("@idTipoHabitacion", DBNull.Value),
+                new SqlParameter("@precio_maximo", filtros.PrecioMaximo ?? (object)DBNull.Value),
+                new SqlParameter("@comodidad", DBNull.Value),
+            };
+            habitaciones = _context.Habitacions
+                .FromSqlRaw("EXEC SP_BuscarHabitacionesDisponiblesConFiltros @fecha_inicio, @fecha_fin, @idEmpresaHospedaje, @idTipoHabitacion, @precio_maximo, @comodidad", parameters)
+                .ToList();
+
             var viewModel = new HospedajeDetallesModel
             {
                 Hotel = hotel,
                 Habitaciones = habitaciones,
                 FotosHotel = fotosHotel,
-                Filtros = new BusquedaFiltros()
+                Filtros = filtros
             };
 
             return View(viewModel);
@@ -64,6 +89,7 @@ namespace HotelesCaribe.Controllers
             var viewModel = new ReservaModel
             {
                 IdHabitacion = id,
+                Identificacion = User.FindFirst("ClienteIdentificacion")?.Value,
                 Hotel = habitacion.IdEmpresaHospedajeNavigation,
                 TipoHabitacion = habitacion.IdTipoHabitacionNavigation,
                 FechaEntrada = fechaEntrada ?? DateTime.Today.AddDays(1),
@@ -110,7 +136,7 @@ namespace HotelesCaribe.Controllers
 
                 var parametros = new[]
                 {
-                    new SqlParameter("@p_idCliente", SqlDbType.Int) { Value = 1 },
+                    new SqlParameter("@p_idCliente", SqlDbType.Int) { Value = int.Parse(User.FindFirst("ClienteId")?.Value ?? "0")  },
                     new SqlParameter("@p_idEmpresaHospedaje", SqlDbType.Int) { Value = habitacion.IdEmpresaHospedaje },
                     new SqlParameter("@p_idHabitacion", SqlDbType.Int) { Value = modelo.IdHabitacion },
                     new SqlParameter("@p_fechaIngreso", SqlDbType.DateTime) { Value = modelo.FechaEntrada },

@@ -602,6 +602,9 @@ BEGIN
         h.idHabitacion,
         eh.nombre AS nombreHotel,
         th.nombre AS TipoHabitacion,
+		h.idEmpresaHospedaje,
+		h.numero,
+		h.idTipoHabitacion,
         th.precio,
         STRING_AGG(c.comodidad, ', ') AS Comodidades
     FROM Habitacion h
@@ -619,7 +622,7 @@ BEGIN
         SELECT 1 FROM Comodidades c2 
         WHERE c2.idTipoHabitacion = th.idTipo AND c2.comodidad LIKE '%' + @comodidad + '%'
     ))
-    GROUP BY h.idHabitacion, eh.nombre, th.nombre, th.precio;
+    GROUP BY h.idHabitacion, eh.nombre, th.nombre, th.precio, h.idEmpresaHospedaje, h.idTipoHabitacion, h.numero;
 END;
 GO
 
@@ -773,7 +776,12 @@ BEGIN
         apellido2,
         tipoIdentificacion,
         identificacion,
-        correo
+		fechaNacimiento,
+        correo,
+		pais,
+		provincia,
+		canton,
+		distrito
     FROM Cliente
     WHERE identificacion = @cedula;
 END;

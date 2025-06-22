@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Acceso Denegado";
+}
+
+@section Styles {
+    <style>
+        .acceso-denegado-container {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -20px -15px;
+            padding: 20px;      
+        }
+
+        .acceso-denegado-card {
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            background-color: rgba(217, 217, 217, 0.8);
+        }
+
+        .error-icon {
+            font-size: 120px;
+            color: #dc3545;
+            margin-bottom: 30px;
+        }
+
+        .error-code {
+            font-size: 72px;
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .error-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .error-description {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .additional-info {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: rgba(108, 117, 125, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #6c757d;
+        }
+
+        .additional-info h5 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .additional-info ul {
+            text-align: left;
+            color: #6c757d;
+            font-family: 'Inter', sans-serif;
+            display: block;
+        }
+
+        .additional-info li {
+            margin-bottom: 8px;
+        }
+    </style>
+}
+
+<div class="acceso-denegado-container">
+    <div class="acceso-denegado-card">
+        <i class="fas fa-ban error-icon"></i>
+        
+        <h1 class="error-title">Acceso Denegado</h1>
+        
+        <p class="error-description">
+             ¡Ups! Parece que no tiene los permisos necesarios para acceder a esta página. 
+            Es posible que necesite iniciar sesión con una cuenta diferente o solicitar acceso adicional.
+        </p>
+
+        <div class="additional-info">
+            <h5><i class="fas fa-info-circle"></i> ¿Por qué podría estar viendo esta página?</h5>
+            <ul>
+                <li>No ha iniciado sesión en el sistema.</li>
+                <li>Su cuenta no tiene los permisos necesarios.</li>
+                <li>Está intentando acceder a una área administrativa.</li>
+                <li>Está intentando acceder a información restringida.</li>
+                <li>Su sesión puede haber expirado.</li>
+            </ul>
+        </div>
+    </div>
+</div>
