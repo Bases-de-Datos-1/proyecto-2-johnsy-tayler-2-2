@@ -124,23 +124,18 @@ namespace HotelesCaribe.Controllers
         }
 
         // GET: /Login/Logout
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            // Limpiar session
             HttpContext.Session.Clear();
-
-            // Cerrar sesión de cookies
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
             return RedirectToAction("Index", "Home");
         }
 
-        // Método para guardar información en session
         private async Task GuardarInformacionEnSession(VerificarUsuarioResult usuario, Cliente? cliente)
         {
             try
             {
-                // Información del usuario
                 var usuarioInfo = new
                 {
                     IdUsuario = usuario.IdUsuario,
@@ -153,7 +148,6 @@ namespace HotelesCaribe.Controllers
                 HttpContext.Session.SetString("NombreUsuario", usuario.NombreUsuario);
                 HttpContext.Session.SetString("Rol", usuario.Rol);
 
-                // Si hay cliente asociado
                 if (cliente != null)
                 {
                     var clienteInfo = new
@@ -171,7 +165,6 @@ namespace HotelesCaribe.Controllers
                     HttpContext.Session.SetString("ClienteInfo", JsonSerializer.Serialize(clienteInfo));
                     HttpContext.Session.SetInt32("ClienteId", cliente.IdCliente);
 
-                    // Obtener teléfonos del cliente
                     var telefonos = await _context.TelefonosClientes
                         .Where(t => t.IdCliente == cliente.IdCliente)
                         .Select(t => t.Numero)
@@ -183,7 +176,6 @@ namespace HotelesCaribe.Controllers
                     }
                 }
 
-                // Si es admin, obtener hoteles administrados
                 if (usuario.Rol == "admin")
                 {
                     var hotelesParams = new[]
@@ -211,7 +203,6 @@ namespace HotelesCaribe.Controllers
             }
         }
 
-        // Método para obtener el usuario actual
         public Usuario? GetCurrentUsuario()
         {
             if (User.Identity?.IsAuthenticated == true)
@@ -226,7 +217,6 @@ namespace HotelesCaribe.Controllers
             return null;
         }
 
-        // Método para obtener el cliente actual (si existe)
         public Cliente? GetCurrentCliente()
         {
             if (User.Identity?.IsAuthenticated == true)
@@ -242,7 +232,6 @@ namespace HotelesCaribe.Controllers
         }
     }
 
-    // Clases para los resultados de los stored procedures
     public class VerificarUsuarioResult
     {
         public int IdUsuario { get; set; }

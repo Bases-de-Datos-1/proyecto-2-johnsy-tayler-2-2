@@ -30,7 +30,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Login/Index";
-        //options.LogoutPath = "/Login/Logout";
+        options.LogoutPath = "/Login/Logout";
         options.AccessDeniedPath = "/Home/AccesoDenegado";
 
         options.ExpireTimeSpan = TimeSpan.FromHours(24);
@@ -71,7 +71,8 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseRouting();
-
+app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

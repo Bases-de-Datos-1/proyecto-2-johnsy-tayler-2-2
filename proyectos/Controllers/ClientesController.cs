@@ -127,7 +127,7 @@ namespace HotelesCaribe.Controllers
                     "EXEC SP_RegistrarUsuario @nombreUsuario, @contrasena, @rol",
                     parameters2);
 
-                return RedirectToAction(nameof(CodigoVerificacion));
+                return RedirectToAction(nameof(Index));
             }
             else
             {

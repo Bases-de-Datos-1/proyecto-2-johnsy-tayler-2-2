@@ -20,8 +20,9 @@ namespace HotelesCaribe.Controllers
         }
 
         // GET: TipoHabitacions
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? empresaId)
         {
+            ViewBag.EmpresaId = empresaId;
             return View(await _context.TipoHabitacions.ToListAsync());
         }
 
@@ -39,7 +40,7 @@ namespace HotelesCaribe.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.EmpresaId = tipoHabitacion.IdEmpresaHospedaje;
             return View(tipoHabitacion);
         }
 
@@ -90,6 +91,7 @@ namespace HotelesCaribe.Controllers
             {
                 return NotFound();
             }
+            ViewData["IdEmpresaHospedaje"] = id;
             return View(tipoHabitacion);
         }
 
@@ -98,7 +100,7 @@ namespace HotelesCaribe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdTipo,Nombre,Descripcion,TipoCama,Precio")] TipoHabitacion tipoHabitacion, int? empresaId)
+        public async Task<IActionResult> Edit(int id, [Bind("IdTipo,Nombre,Descripcion,TipoCama,Precio,IdEmpresaHospedaje")] TipoHabitacion tipoHabitacion, int? empresaId)
         {
             if (id != tipoHabitacion.IdTipo)
             {
