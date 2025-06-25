@@ -422,9 +422,12 @@ namespace HotelesCaribe.Controllers
                 return NotFound();
             }
 
-            var empresaHospedaje = await _context.EmpresaHospedajes
-                .Include(e => e.IdTipoHospedajeNavigation)
-                .FirstOrDefaultAsync(m => m.IdEmpresaHospedaje == id);
+            var param = new SqlParameter("@idEmpresaHospedaje", id);
+            var empresaHospedaje = _context.VwInfoCompletaHospedajes
+                .FromSqlRaw("EXEC SP_InfoCompletaHospedajePorId @idEmpresaHospedaje", param)
+                .AsEnumerable()
+                .FirstOrDefault();
+
 
             if (empresaHospedaje == null)
             {
@@ -487,14 +490,27 @@ namespace HotelesCaribe.Controllers
                         parameters);
 
 
+
+
                     var paramCedula = new SqlParameter("@cedulaJuridica", empresaHospedaje.CedulaJuridica);
                     var info = _context.VwInfoCompletaHospedajes
                         .FromSqlRaw("EXEC SP_InfoCompletaHospedaje_PorCedula @cedulaJuridica", paramCedula)
                         .AsEnumerable()
                         .FirstOrDefault();
 
+
                     if (info != null)
                     {
+                        var paramsAdmin = new[]
+                        {
+                            new SqlParameter("@idUsuario", int.Parse(User.FindFirst("UsuarioId")?.Value ?? "0")),
+                            new SqlParameter("@idEmpresaHospedaje", info.IdEmpresaHospedaje)
+                        };
+
+                        await _context.Database.ExecuteSqlRawAsync(
+                            "EXEC SP_AsignarAdminHotel @idUsuario, @idEmpresaHospedaje",
+                            paramsAdmin);
+
                         return RedirectToAction("RedesSociales", new { id = info.IdEmpresaHospedaje });
                     }
                     else
@@ -565,8 +581,23 @@ namespace HotelesCaribe.Controllers
             {
                 try
                 {
-                    _context.Update(empresaHospedaje);
-                    await _context.SaveChangesAsync();
+                    var parameters = new[] {
+                        new SqlParameter("@id_hospedaje", empresaHospedaje.IdEmpresaHospedaje),
+                        new SqlParameter("@nombre", empresaHospedaje.Nombre),
+                        new SqlParameter("@cedulaJuridica", empresaHospedaje.CedulaJuridica),
+                        new SqlParameter("@idTipoHospedaje", empresaHospedaje.IdTipoHospedaje),
+                        new SqlParameter("@provincia", empresaHospedaje.Provincia),
+                        new SqlParameter("@canton", empresaHospedaje.Canton),
+                        new SqlParameter("@distrito", empresaHospedaje.Distrito),
+                        new SqlParameter("@barrio", empresaHospedaje.Barrio ?? ""),
+                        new SqlParameter("@senas", empresaHospedaje.Senas),
+                        new SqlParameter("@latitud", empresaHospedaje.Latitud ?? (object)DBNull.Value),
+                        new SqlParameter("@longitud", empresaHospedaje.Longitud ?? (object)DBNull.Value),
+                        new SqlParameter("@correo", empresaHospedaje.Correo ?? "")
+                    };
+
+                    await _context.Database.ExecuteSqlRawAsync("EXEC SP_ActualizarHospedaje @id_hospedaje, @nombre, @cedulaJuridica, @idTipoHospedaje, @provincia, @canton, @distrito, @barrio, @senas, @latitud, @longitud, @correo", parameters);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {

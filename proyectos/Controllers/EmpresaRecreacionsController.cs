@@ -21,13 +21,11 @@ namespace HotelesCaribe.Controllers
             _context = context;
         }
 
-        // GET: EmpresaRecreacions
         public async Task<IActionResult> Index()
         {
             return View(await _context.EmpresaRecreacions.ToListAsync());
         }
 
-        // GET: EmpresaRecreacions/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,8 +33,11 @@ namespace HotelesCaribe.Controllers
                 return NotFound();
             }
 
+            var param = new SqlParameter("@idEmpresaRecreacion", id);
             var empresaRecreacion = await _context.EmpresaRecreacions
-                .FirstOrDefaultAsync(m => m.IdEmpresaRecreacion == id);
+                .FromSqlRaw("EXEC SP_InfoEmpresaRecreacionPorId @idEmpresaRecreacion", param)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
             if (empresaRecreacion == null)
             {
                 return NotFound();
@@ -45,13 +46,11 @@ namespace HotelesCaribe.Controllers
             return View(empresaRecreacion);
         }
 
-        // GET: EmpresaRecreacions/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: EmpresaRecreacions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdEmpresaRecreacion,Nombre,CedulaJuridica,Correo,Telefono,Encargado,Provincia,Canton,Distrito,Senas,Latitud,Longitud")] EmpresaRecreacion empresaRecreacion)
@@ -102,9 +101,7 @@ namespace HotelesCaribe.Controllers
             return View(empresaRecreacion);
         }
 
-        /* AGREGAR TIPOS DE SERVICIOS */
 
-        // GET: EmpresaRecreacions/AgregarTiposServicios/5
         public async Task<IActionResult> AgregarTiposServicios(int? id)
         {
             if (id == null)
@@ -112,7 +109,11 @@ namespace HotelesCaribe.Controllers
                 return NotFound();
             }
 
-            var empresaRecreacion = await _context.EmpresaRecreacions.FindAsync(id);
+            var param = new SqlParameter("@idEmpresaRecreacion", id);
+            var empresaRecreacion = await _context.EmpresaRecreacions
+                .FromSqlRaw("EXEC SP_InfoEmpresaRecreacionPorId @idEmpresaRecreacion", param)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
             if (empresaRecreacion == null)
             {
                 return NotFound();
@@ -126,7 +127,6 @@ namespace HotelesCaribe.Controllers
             return View(modelo);
         }
 
-        // POST: EmpresaRecreacions/AgregarTiposServicios/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AgregarTiposServicios(int id, ModeloRecreativaActividades modelo, List<string> ServiciosSeleccionados)
@@ -138,7 +138,11 @@ namespace HotelesCaribe.Controllers
 
             if (ModelState.IsValid && ServiciosSeleccionados != null && ServiciosSeleccionados.Any())
             {
-                var empresa = await _context.EmpresaRecreacions.FindAsync(id);
+                var param = new SqlParameter("@idEmpresaRecreacion", id);
+                var empresa = await _context.EmpresaRecreacions
+                    .FromSqlRaw("EXEC SP_InfoEmpresaRecreacionPorId @idEmpresaRecreacion", param)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
                 if (empresa != null)
                 {
                     // Aquí guardarías los tipos de servicios seleccionados en tu base de datos
@@ -179,11 +183,7 @@ namespace HotelesCaribe.Controllers
             return View(modelo);
         }
 
-        /* FIN AGREGAR TIPOS DE SERVICIOS */
 
-        /* AGREGAR ACTIVIDADES */
-
-        // GET: EmpresaRecreacions/AgregarActividades/5
         public async Task<IActionResult> AgregarActividades(int? id)
         {
             if (id == null)
@@ -191,21 +191,24 @@ namespace HotelesCaribe.Controllers
                 return NotFound();
             }
 
-            var empresaRecreacions = await _context.EmpresaRecreacions.FindAsync(id);
-            if (empresaRecreacions == null)
+            var param = new SqlParameter("@idEmpresaRecreacion", id);
+            var empresaRecreacion = await _context.EmpresaRecreacions
+                .FromSqlRaw("EXEC SP_InfoEmpresaRecreacionPorId @idEmpresaRecreacion", param)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+            if (empresaRecreacion == null)
             {
                 return NotFound();
             }
 
             var modelo = new ModeloRecreativaActividades
             {
-                IdEmpresa = empresaRecreacions.IdEmpresaRecreacion
+                IdEmpresa = empresaRecreacion.IdEmpresaRecreacion
             };
 
             return View(modelo);
         }
 
-        // POST: EmpresaRecreacions/AgregarActividades/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AgregarActividades(int id, ModeloRecreativaActividades modelo)
@@ -217,7 +220,11 @@ namespace HotelesCaribe.Controllers
 
             if (ModelState.IsValid)
             {
-                var empresa = await _context.EmpresaRecreacions.FindAsync(id);
+                var param = new SqlParameter("@idEmpresaRecreacion", id);
+                var empresa = await _context.EmpresaRecreacions
+                    .FromSqlRaw("EXEC SP_InfoEmpresaRecreacionPorId @idEmpresaRecreacion", param)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
                 if (empresa != null)
                 {
 
@@ -229,7 +236,7 @@ namespace HotelesCaribe.Controllers
                             {
                                 var parameters = new[]
                                 {
-                                    new SqlParameter("@p_idTipoActividad", 1), // Para cualquiera, CAMBIAR DESPUES
+                                    new SqlParameter("@p_idTipoActividad", 1),
                                     new SqlParameter("@p_idEmpresaRecreacion", id),
                                     new SqlParameter("@p_descripcion", actividad.Descripcion),
                                     new SqlParameter("@p_precio", actividad.Precio),
@@ -252,7 +259,6 @@ namespace HotelesCaribe.Controllers
 
                     await _context.SaveChangesAsync();
 
-                    // IR A PANEL DE CONTROL DE RECREACIÓN
                     return RedirectToAction("PanelControlRecreativa", new {id = modelo.IdEmpresa});
                 }
             }
@@ -260,10 +266,8 @@ namespace HotelesCaribe.Controllers
             return View(modelo);
         }
 
-        /* FIN AGREGAR ACTIVIDADES */
 
 
-        // GET: EmpresaRecreacions/PanelControlRecreativa/5
         public async Task<IActionResult> PanelControlRecreativa(int? id)
         {
             if (id == null)
@@ -271,8 +275,12 @@ namespace HotelesCaribe.Controllers
                 return NotFound();
             }
 
+            var param = new SqlParameter("@idEmpresaRecreacion", id);
             var empresaRecreacion = await _context.EmpresaRecreacions
-                .FirstOrDefaultAsync(m => m.IdEmpresaRecreacion == id);
+                .FromSqlRaw("EXEC SP_InfoEmpresaRecreacionPorId @idEmpresaRecreacion", param)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
 
             if (empresaRecreacion == null)
             {
@@ -283,7 +291,6 @@ namespace HotelesCaribe.Controllers
         }
 
 
-        // GET: EmpresaRecreacions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -291,7 +298,11 @@ namespace HotelesCaribe.Controllers
                 return NotFound();
             }
 
-            var empresaRecreacion = await _context.EmpresaRecreacions.FindAsync(id);
+            var param = new SqlParameter("@idEmpresaRecreacion", id);
+            var empresaRecreacion = await _context.EmpresaRecreacions
+                .FromSqlRaw("EXEC SP_InfoEmpresaRecreacionPorId @idEmpresaRecreacion", param)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
             if (empresaRecreacion == null)
             {
                 return NotFound();
@@ -299,7 +310,6 @@ namespace HotelesCaribe.Controllers
             return View(empresaRecreacion);
         }
 
-        // POST: EmpresaRecreacions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdEmpresaRecreacion,Nombre,CedulaJuridica,Correo,Telefono,Encargado,Provincia,Canton,Distrito,Senas,Latitud,Longitud")] EmpresaRecreacion empresaRecreacion)
@@ -313,8 +323,24 @@ namespace HotelesCaribe.Controllers
             {
                 try
                 {
-                    _context.Update(empresaRecreacion);
-                    await _context.SaveChangesAsync();
+                    var parameters = new[]
+                    {
+                        new SqlParameter("@idEmpresaRecreacion", empresaRecreacion.IdEmpresaRecreacion),
+                        new SqlParameter("@nombre", empresaRecreacion.Nombre),
+                        new SqlParameter("@cedulaJuridica", empresaRecreacion.CedulaJuridica),
+                        new SqlParameter("@correo", empresaRecreacion.Correo ?? (object)DBNull.Value),
+                        new SqlParameter("@telefono", empresaRecreacion.Telefono ?? (object)DBNull.Value),
+                        new SqlParameter("@encargado", empresaRecreacion.Encargado ?? (object)DBNull.Value),
+                        new SqlParameter("@provincia", empresaRecreacion.Provincia),
+                        new SqlParameter("@canton", empresaRecreacion.Canton),
+                        new SqlParameter("@distrito", empresaRecreacion.Distrito),
+                        new SqlParameter("@senas", empresaRecreacion.Senas),
+                        new SqlParameter("@latitud", empresaRecreacion.Latitud ?? (object)DBNull.Value),
+                        new SqlParameter("@longitud", empresaRecreacion.Longitud ?? (object)DBNull.Value)
+                    };
+
+                    await _context.Database.ExecuteSqlRawAsync("EXEC SP_ActualizarEmpresaRecreacion @idEmpresaRecreacion, @nombre, @cedulaJuridica, @correo, @telefono, @encargado, @provincia, @canton, @distrito, @senas, @latitud, @longitud", parameters);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -332,7 +358,6 @@ namespace HotelesCaribe.Controllers
             return View(empresaRecreacion);
         }
 
-        // GET: EmpresaRecreacions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -340,8 +365,11 @@ namespace HotelesCaribe.Controllers
                 return NotFound();
             }
 
+            var param = new SqlParameter("@idEmpresaRecreacion", id);
             var empresaRecreacion = await _context.EmpresaRecreacions
-                .FirstOrDefaultAsync(m => m.IdEmpresaRecreacion == id);
+                .FromSqlRaw("EXEC SP_InfoEmpresaRecreacionPorId @idEmpresaRecreacion", param)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
             if (empresaRecreacion == null)
             {
                 return NotFound();
@@ -350,20 +378,16 @@ namespace HotelesCaribe.Controllers
             return View(empresaRecreacion);
         }
 
-        // POST: EmpresaRecreacions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var empresaRecreacion = await _context.EmpresaRecreacions.FindAsync(id);
-            if (empresaRecreacion != null)
-            {
-                _context.EmpresaRecreacions.Remove(empresaRecreacion);
-            }
+            var param = new SqlParameter("@idEmpresaRecreacion", id);
+            await _context.Database.ExecuteSqlRawAsync("EXEC SP_EliminarEmpresaRecreacion @idEmpresaRecreacion", param);
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool EmpresaRecreacionExists(int id)
         {

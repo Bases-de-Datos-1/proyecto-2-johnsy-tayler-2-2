@@ -120,7 +120,7 @@ namespace HotelesCaribe.Controllers
 
 
         // GET: Habitacions/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? empresaId)
         {
             if (id == null)
             {
@@ -132,8 +132,9 @@ namespace HotelesCaribe.Controllers
             {
                 return NotFound();
             }
+            ViewBag.EmpresaId = empresaId;
             ViewData["IdEmpresaHospedaje"] = new SelectList(_context.EmpresaHospedajes, "IdEmpresaHospedaje", "IdEmpresaHospedaje", habitacion.IdEmpresaHospedaje);
-            ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitacions, "IdTipo", "IdTipo", habitacion.IdTipoHabitacion);
+            ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitacions, "IdTipo", "Nombre", habitacion.IdTipoHabitacion);
             return View(habitacion);
         }
 
@@ -142,7 +143,7 @@ namespace HotelesCaribe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdHabitacion,IdEmpresaHospedaje,Numero,IdTipoHabitacion")] Habitacion habitacion)
+        public async Task<IActionResult> Edit(int id, [Bind("IdHabitacion,IdEmpresaHospedaje,Numero,IdTipoHabitacion")] Habitacion habitacion, int? empresaId)
         {
             if (id != habitacion.IdHabitacion)
             {
@@ -167,8 +168,9 @@ namespace HotelesCaribe.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { empresaId = empresaId });
             }
+            ViewBag.EmpresaId = empresaId;
             ViewData["IdEmpresaHospedaje"] = new SelectList(_context.EmpresaHospedajes, "IdEmpresaHospedaje", "IdEmpresaHospedaje", habitacion.IdEmpresaHospedaje);
             ViewData["IdTipoHabitacion"] = new SelectList(_context.TipoHabitacions, "IdTipo", "IdTipo", habitacion.IdTipoHabitacion);
             return View(habitacion);
@@ -206,7 +208,7 @@ namespace HotelesCaribe.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { empresaId = habitacion.IdEmpresaHospedaje });
         }
 
         private bool HabitacionExists(int id)

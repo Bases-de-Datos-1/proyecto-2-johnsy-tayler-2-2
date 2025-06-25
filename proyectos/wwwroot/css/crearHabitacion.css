@@ -1,0 +1,118 @@
+﻿@font-face {
+    font-family: Inter;
+    src: url('../fonts/Inter.ttf');
+}
+
+.habitacion-form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    background-color: rgba(217, 217, 217, 0.8);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.form-icon {
+    margin-right: 20px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.form-icon i {
+    font-size: 32px;
+    color: #888;
+}
+
+.form-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.form-label {
+    font-family: Inter;
+    font-size: 20px;
+    color: #888;
+    font-weight: 500;
+    margin: 0;
+    white-space: nowrap;
+    min-width: 200px;
+}
+
+.form-input-container {
+    flex: 1;
+    position: relative;
+}
+
+.form-input, .form-select {
+    border: none;
+    border-bottom: 2px solid rgba(136, 136, 136, 0.3);
+    background-color: transparent;
+    padding: 8px 0;
+    font-family: Inter;
+    font-size: 18px;
+    color: #666;
+    outline: none;
+    border-radius: 0;
+    width: 100%;
+}
+
+.form-input::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+.form-input:focus, .form-select:focus {
+    border-bottom-color: #888;
+    box-shadow: none;
+}
+
+.form-select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23888' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-size: 16px 12px;
+    padding-right: 40px;
+}
+
+.form-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.add-button {
+    background-color: rgba(180, 180, 180, 0.7);
+    border: none;
+    border-radius: 20px;
+    padding: 15px 40px;
+    font-family: Inter;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.add-button:hover {
+    background-color: rgba(160, 160, 160, 0.8);
+    transform: translateY(-2px);
+}
+
+.add-button i {
+    font-size: 18px;
+}
+
+.text-danger {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+    font-family: Inter;
+}
+

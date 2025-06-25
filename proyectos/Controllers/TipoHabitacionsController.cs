@@ -26,7 +26,7 @@ namespace HotelesCaribe.Controllers
         }
 
         // GET: TipoHabitacions/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? empresaId)
         {
             if (id == null)
             {
@@ -60,17 +60,18 @@ namespace HotelesCaribe.Controllers
             if (ModelState.IsValid)
             {
                 var parameters = new[]
-                    {
-                        new SqlParameter("@idEmpresaHospedaje", empresaId),
-                        new SqlParameter("@p_nombre", tipoHabitacion.Nombre),
-                        new SqlParameter("@p_descripcion", tipoHabitacion.Descripcion),
-                        new SqlParameter("@p_tipoCama", tipoHabitacion.TipoCama),
-                        new SqlParameter("@p_precio", tipoHabitacion.Precio),
-                    };
+                 {
+                    new SqlParameter("@idEmpresaHospedaje", empresaId),
+                    new SqlParameter("@p_nombre", tipoHabitacion.Nombre),
+                    new SqlParameter("@p_descripcion", tipoHabitacion.Descripcion),
+                    new SqlParameter("@p_tipoCama", tipoHabitacion.TipoCama),
+                    new SqlParameter("@p_precio", tipoHabitacion.Precio),
+                };
 
                 await _context.Database.ExecuteSqlRawAsync(
                     "EXEC SP_InsertarTipoHabitacion @idEmpresaHospedaje, @p_nombre, @p_descripcion, @p_tipoCama, @p_precio",
                     parameters);
+
                 return RedirectToAction(nameof(Index), new { empresaId = empresaId });
             }
             return View(tipoHabitacion);
@@ -97,7 +98,7 @@ namespace HotelesCaribe.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdTipo,Nombre,Descripcion,TipoCama,Precio")] TipoHabitacion tipoHabitacion)
+        public async Task<IActionResult> Edit(int id, [Bind("IdTipo,Nombre,Descripcion,TipoCama,Precio")] TipoHabitacion tipoHabitacion, int? empresaId)
         {
             if (id != tipoHabitacion.IdTipo)
             {
@@ -122,7 +123,7 @@ namespace HotelesCaribe.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { empresaId = empresaId });
             }
             return View(tipoHabitacion);
         }

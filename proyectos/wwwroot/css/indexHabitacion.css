@@ -1,0 +1,133 @@
+﻿@font-face {
+    font-family: Inter;
+    src: url('../fonts/Inter.ttf');
+}
+
+.habitaciones-table-container {
+    margin-top: 30px;
+    background-color: rgba(217, 217, 217, 0.6);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.habitaciones-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-family: Inter;
+}
+
+.habitaciones-table thead th {
+    background-color: rgba(180, 180, 180, 0.8);
+    color: #555;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 20px 15px;
+    text-align: center;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.numero-col {
+    width: 15%;
+}
+
+.descripcion-col {
+    width: 65%;
+}
+
+.ajustes-col {
+    width: 20%;
+}
+
+.habitacion-row {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.habitacion-row:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.habitacion-row:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.numero-cell, .descripcion-cell, .ajustes-cell {
+    padding: 20px 15px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.numero-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #666;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.numero-indicator i {
+    font-size: 20px;
+    color: #888;
+}
+
+.descripcion-cell {
+    text-align: left;
+    font-size: 16px;
+    color: #555;
+    font-weight: 500;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.edit-btn {
+    background-color: rgba(255, 193, 7, 0.8);
+    color: #856404;
+}
+
+.edit-btn:hover {
+    background-color: rgba(255, 193, 7, 1);
+    color: #856404;
+    transform: translateY(-2px);
+}
+
+.view-btn {
+    background-color: rgba(0, 123, 255, 0.8);
+    color: #004085;
+}
+
+.view-btn:hover {
+    background-color: rgba(0, 123, 255, 1);
+    color: #004085;
+    transform: translateY(-2px);
+}
+
+.delete-btn {
+    background-color: rgba(220, 53, 69, 0.8);
+    color: #721c24;
+}
+
+.delete-btn:hover {
+    background-color: rgba(220, 53, 69, 1);
+    color: #721c24;
+    transform: translateY(-2px);
+}

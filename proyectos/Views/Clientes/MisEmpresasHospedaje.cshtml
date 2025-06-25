@@ -1,0 +1,137 @@
+﻿@model List<HotelesCaribe.Models.HotelesUsuarioResult>
+@{
+    ViewData["Title"] = "Mis Empresas de Hospedaje";
+    var hoteles = Model ?? new List<HotelesUsuarioResult>();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/detallesMiHotel.css" asp-append-version="true" />
+}
+
+<div class="empresas-container">
+    <div class="page-header">
+        <h1 class="page-title">Mis Empresas de Hospedaje</h1>
+        <p class="page-subtitle">Administra tus hoteles y propiedades</p>
+    </div>
+
+    @if (hoteles != null && hoteles.Any())
+    {
+        <div class="empresas-grid">
+            @foreach (var empresa in hoteles)
+            {
+                <div class="empresa-card">
+                    <div class="card-header">
+                        <i class="fas fa-hotel hotel-icon"></i>
+                        <h3 class="hotel-name">@empresa.nombreHotel</h3>
+                        <p class="hotel-type">@empresa.tipoHospedaje</p>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="info-row">
+                            <i class="fas fa-map-marker-alt info-icon"></i>
+                            <span class="info-label">Ubicación:</span>
+                            <span class="info-value">@empresa.ubicacion</span>
+                        </div>
+
+                        <div class="info-row">
+                            <i class="fas fa-id-card info-icon"></i>
+                            <span class="info-label">Cédula:</span>
+                            <span class="info-value">@empresa.cedulaJuridica</span>
+                        </div>
+
+                        <div class="info-row">
+                            <i class="fas fa-calendar info-icon"></i>
+                            <span class="info-label">Admin desde:</span>
+                            <span class="info-value">
+                                @((DateTime)empresa.fechaAsignacion).ToString("dd/MM/yyyy")
+                                <div class="fecha-asignacion">
+                                    @((DateTime.Now - (DateTime)empresa.fechaAsignacion).Days) días administrando
+                                </div>
+                            </span>
+                        </div>
+
+                        <div class="stats-row">
+                            <div class="stat-item">
+                                <div class="stat-number">@empresa.totalHabitaciones</div>
+                                <div class="stat-label">Habitaciones</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">
+                                    <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                                </div>
+                                <div class="stat-label">Activo</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <a asp-controller="EmpresaHospedajes"
+                           asp-action="PanelControl"
+                           asp-route-id="@empresa.idEmpresaHospedaje"
+                           class="btn-panel-control">
+                            <i class="fas fa-cog"></i>
+                            Ir al Panel de Control
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="no-empresas">
+            <i class="fas fa-hotel no-empresas-icon"></i>
+            <h2 class="no-empresas-title">No tienes empresas asignadas</h2>
+            <p class="no-empresas-text">
+                @if (!string.IsNullOrEmpty(ViewBag.Mensaje))
+                {
+                    @ViewBag.Mensaje
+                }
+                else
+                {
+                    @("Actualmente no administras ningún hotel. Contacta al administrador del sistema para que te asigne una empresa o registra un nuevo hotel.")
+                        }
+            </p>
+            <a asp-controller="AgregarServicios" asp-action="Index" class="btn-agregar-empresa">
+                <i class="fas fa-plus"></i>
+                Registrar Nueva Empresa
+            </a>
+        </div>
+    }
+</div>
+
+<div class="container slogan">
+    <p class="sloganRancho navbar-brand">HotelesCaribe</p>
+    <p class="container inter24 textosBienvenida" id="textoSlogan">
+        La mejor plataforma para tu negocio.
+    </p>
+    <div class="separacion200"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animación de entrada para las cards
+        const cards = document.querySelectorAll('.empresa-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 150);
+        });
+
+        // Efecto hover mejorado
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    });
+</script>

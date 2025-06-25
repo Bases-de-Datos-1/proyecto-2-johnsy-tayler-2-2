@@ -10,12 +10,10 @@
 
 <div class="reserva-container">
 
-    <!-- ZONA DE PRUEBA -->
 
 
     <div class="hotel-header">
         <div class="row">
-            <!-- Imagen Principal -->
             <div >
                 <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
                      alt="@Model.Hotel.Nombre" class="hotel-main-image">
@@ -50,31 +48,9 @@
     </div>
 
 
-    <!-- FIN DE ZONA DE PRUEBA -->
-
 
     <div class="reserva-info-container">
         <div class="panel-izquierdo">
-            <!--
-            <div class="hotel-header-info">
-                <div class="hotel-info-header">
-                    <i class="fas fa-hotel hotel-icon"></i>
-                    <h1 class="hotel-name">@Model.Hotel.Nombre</h1>
-                </div>
-
-                <div class="hotel-location">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>@Model.Hotel.Senas, @Model.Hotel.Distrito, @Model.Hotel.Canton</span>
-                </div>
-
-                <div class="amenities-pills">
-                    <span class="amenity-pill">WiFi gratuito</span>
-                    <span class="amenity-pill">Parqueo incluido</span>
-                    <span class="amenity-pill">Desayuno incluido</span>
-                    <span class="amenity-pill">Con aire acondicionado</span>
-                </div>
-            </div>
-            -->
             <div class="habitacion-section">
                 <h3 class="section-title">Detalles de la habitación:</h3>
 
@@ -93,7 +69,6 @@
             </div>
         </div>
 
-        <!-- Panel Derecho - Formulario de Reserva -->
         <div class="panel-derecho">
             <form asp-controller="Hospedaje" asp-action="ProcesarReserva" method="post" class="formulario-reserva">
                 <input type="hidden" asp-for="IdHabitacion" />
@@ -168,7 +143,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Manejo de botones de vehículo
         const vehiculoBtns = document.querySelectorAll('.vehiculo-btn');
         const vehiculoInput = document.querySelector('input[name="TieneVehiculo"]');
 
@@ -180,7 +154,6 @@
             });
         });
 
-        // Cálculo de precio total
         const fechaEntrada = document.querySelector('input[name="FechaEntrada"]');
         const fechaSalida = document.querySelector('input[name="FechaSalida"]');
         const numeroHabitaciones = document.querySelector('select[name="NumeroHabitaciones"]');
@@ -204,7 +177,6 @@
         fechaSalida.addEventListener('change', calcularTotal);
         numeroHabitaciones.addEventListener('change', calcularTotal);
 
-        // Validación de fechas
         fechaEntrada.addEventListener('change', function() {
             if (fechaSalida.value && new Date(fechaSalida.value) <= new Date(this.value)) {
                 const nuevaFechaSalida = new Date(this.value);
@@ -213,7 +185,6 @@
             }
         });
 
-        // Establecer fecha mínima como hoy
         const hoy = new Date().toISOString().split('T')[0];
         fechaEntrada.min = hoy;
         fechaSalida.min = hoy;

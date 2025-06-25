@@ -257,17 +257,6 @@ namespace HotelesCaribe.Controllers
         public int Existe { get; set; }
     }
 
-    public class HotelesUsuarioResult
-    {
-        public int IdEmpresaHospedaje { get; set; }
-        public string NombreHotel { get; set; } = string.Empty;
-        public string CedulaJuridica { get; set; } = string.Empty;
-        public string Ubicacion { get; set; } = string.Empty;
-        public string TipoHospedaje { get; set; } = string.Empty;
-        public DateTime FechaAsignacion { get; set; }
-        public int TotalHabitaciones { get; set; }
-    }
-
     // Clase para información del usuario en session
     public class UsuarioSessionInfo
     {

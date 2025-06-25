@@ -152,6 +152,60 @@ body {
     cursor: pointer;
 }
 
+/* ------------------------------------------------------------------------------------------------------------- */
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background-color: rgba(217, 217, 217, 0.8);
+    border-radius: 30px;
+    padding: 0px 0px 0px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tipo-busqueda-select {
+    border: none;
+    background: transparent;
+    font-family: Inter;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    padding-right: 28px;
+    margin-right: 15px;
+    color: grey;
+}
+
+.inputRedondo {
+    border: none !important;
+    background: transparent !important;
+    flex: 1;
+    padding: 25px 25px 25px 5px !important;
+    font-size: 16px !important;
+    outline: none !important;
+}
+
+.inputRedondo:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.botonTransparente {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    margin-left: 15px;
+}
+
+.icono-busqueda {
+    font-size: 24px;
+}
+/* ------------------------------------------------------------------------------------------------------------- */
+
 .sloganPrincipal {
     text-align: center;
     margin-top: 100px;

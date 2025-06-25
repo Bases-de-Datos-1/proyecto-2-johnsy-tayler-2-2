@@ -24,7 +24,6 @@
             <input type="hidden" asp-for="IdEmpresa" />
 
             <div class="actividades-container">
-                <!-- Formulario principal -->
                 <div class="actividad-form">
                     <div class="form-field">
                         <label class="field-label">Nombre:</label>
@@ -49,15 +48,12 @@
                     </div>
                 </div>
 
-                <!-- Panel lateral de actividades agregadas -->
                 <div class="actividades-agregadas">
                     <div class="actividades-lista" id="actividadesLista">
-                        <!-- Las actividades agregadas aparecerán aquí -->
                     </div>
                 </div>
             </div>
 
-            <!-- Campos hidden para las actividades -->
             <div id="camposActividades"></div>
 
             <div class="form-actions">
@@ -83,10 +79,8 @@
         let actividadesAgregadas = [];
         let contadorActividades = 0;
 
-        // Mostrar estado vacío inicial
         mostrarEstadoVacio();
 
-        // Agregar actividad
         document.getElementById('btnAgregarActividad').addEventListener('click', function() {
             const nombre = document.getElementById('nombreActividad').value.trim();
             const descripcion = document.getElementById('descripcionActividad').value.trim();
@@ -116,7 +110,6 @@
             renderizarActividad(actividadData);
             actualizarCamposHidden();
 
-            // Ocultar estado vacío si es la primera actividad
             if (actividadesAgregadas.length === 1) {
                 document.querySelector('.estado-vacio')?.remove();
             }
@@ -158,7 +151,6 @@
             document.getElementById('precioActividad').value = '';
         }
 
-        // CORREGIDO: Función para actualizar campos hidden
         function actualizarCamposHidden() {
             const container = document.getElementById('camposActividades');
             container.innerHTML = '';
@@ -170,17 +162,13 @@
                 `);
             });
 
-            // DEBUG: Mostrar en consola lo que se está enviando
             console.log('Actividades a enviar:', actividadesAgregadas);
             console.log('Campos hidden creados:', container.innerHTML);
         }
 
-        // Función global para eliminar actividad
         window.eliminarActividad = function(idActividad) {
-            // Remover del array
             actividadesAgregadas = actividadesAgregadas.filter(act => act.id !== idActividad);
 
-            // Remover del DOM
             const elemento = document.querySelector(`[data-id="${idActividad}"]`);
             if (elemento) {
                 elemento.style.transition = 'opacity 0.3s ease';
@@ -188,18 +176,15 @@
                 setTimeout(() => {
                     elemento.remove();
 
-                    // Mostrar estado vacío si no hay actividades
                     if (actividadesAgregadas.length === 0) {
                         mostrarEstadoVacio();
                     }
                 }, 300);
             }
 
-            // Actualizar campos hidden
             actualizarCamposHidden();
         };
 
-        // CORREGIDO: Validar antes de enviar
         document.querySelector('form').addEventListener('submit', function(e) {
             console.log('Formulario enviándose...');
             console.log('Actividades agregadas:', actividadesAgregadas.length);
@@ -210,7 +195,6 @@
                 return false;
             }
 
-            // DEBUG: Mostrar datos del formulario
             const formData = new FormData(this);
             console.log('Datos del formulario:');
             for (let [key, value] of formData.entries()) {

@@ -9,7 +9,6 @@
 }
 
 <div class="hotel-detail-container">
-    <!-- Header del Hotel -->
     <div class="hotel-header">
         <div class="row">
             <div class="col-md-6">
@@ -27,7 +26,6 @@
                 }
             </div>
 
-            <!-- Galería de Imágenes -->
             <div class="col-md-3">
                 <div class="hotel-gallery">
                     @if (Model.FotosHotel != null && Model.FotosHotel.Count > 1)
@@ -51,7 +49,6 @@
                     }
                     else
                     {
-                        <!-- Imágenes por defecto si no hay fotos -->
                         <div class="gallery-item">
                             <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Imagen por defecto">
                         </div>
@@ -110,7 +107,6 @@
         </div>
     </div>
 
-    <!-- Sección de Habitaciones -->
     <div class="habitaciones-section">
         <div class="habitaciones-header">
             <h2 class="habitaciones-title">Habitaciones disponibles:</h2>
@@ -151,7 +147,6 @@
                         </td>
                         <td>
                             <div class="comodidades-list">
-                                <!-- Comodidades fijas por ahora -->
                                 <span class="comodidad-item">WiFi</span>
                                 <span class="comodidad-item">A/C</span>
                                 <span class="comodidad-item">TV</span>
@@ -211,7 +206,6 @@
             </tbody>
         </table>
 
-        <!-- Paginación -->
         <div class="pagination-container">
             <div class="pagination-info">Página 1 de 15</div>
             <div class="pagination-nav">
@@ -226,7 +220,6 @@
     </div>
 </div>
 
-<!-- Modal de Filtros -->
 <div class="modal fade" id="filtrosModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -300,7 +293,6 @@
 </div>
 
 <script>
-    // Validación de fechas
     document.addEventListener('DOMContentLoaded', function() {
         const fechaEntradaInputs = document.querySelectorAll('input[name="fechaEntrada"]');
         const fechaSalidaInputs = document.querySelectorAll('input[name="fechaSalida"]');
@@ -318,7 +310,6 @@
                     });
                 }
 
-                // Actualizar precio total
                 actualizarPrecioTotal(this);
             });
         });
@@ -348,7 +339,6 @@
     }
 
     function abrirGaleria() {
-        // Crear modal con todas las imágenes
         const modal = document.createElement('div');
         modal.className = 'modal fade';
         modal.innerHTML = `

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using HotelesCaribe.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HotelesCaribe.Controllers
 {
@@ -19,56 +20,101 @@ namespace HotelesCaribe.Controllers
         }
 
         // GET: Busqueda
-        public async Task<IActionResult> Index(string ubicacion = null, string tipoHospedaje = "Hotel", string nombreHotel = null)
+        public async Task<IActionResult> Index(
+            string tipoBusqueda = "hospedaje",
+            string ubicacion = null,
+            string tipoHospedaje = "Hotel",
+            string tipoActividad = null,
+            string nombreHotel = null,
+            string provincia = null,
+            string canton = null,
+            string servicio = null,
+            decimal? precioMinimo = null,
+            decimal? precioMaximo = null)
         {
-            ubicacion = string.IsNullOrEmpty(ubicacion) ? "Puerto Viejo, Limón" : ubicacion;
-            List<VwBusquedaHospedaje> resultados = new List<VwBusquedaHospedaje>();
+            ubicacion ??= "Puerto Viejo, Limón";
+            
+            var resultados = new List<VwBusquedaHospedaje>();
 
-            try
+            var resultadosHospedaje = new List<VwBusquedaHospedaje>();
+            var resultadosActividades = new List<ModelVwBusquedaActividades>();
+
+            if (!tipoBusqueda.Equals("actividades"))
             {
-                if (!string.IsNullOrWhiteSpace(nombreHotel))
+                // Búsqueda de hospedajes
+                try
                 {
+                    if (!string.IsNullOrWhiteSpace(nombreHotel))
+                    {
+                        var param = new SqlParameter("@nombreHotel", nombreHotel.ToLower());
+                        resultados = await _context.VwBusquedaHospedajes
+                            .FromSqlRaw("EXEC SP_BuscarHospedajesPorNombre @nombreHotel", param)
+                            .ToListAsync();
+                    }
+                    else
+                    {
+                        var parametros = new[]
+                        {
+                            new SqlParameter("@provincia", (object?)provincia ?? DBNull.Value),
+                            new SqlParameter("@canton", (object?)canton ?? DBNull.Value),
+                            new SqlParameter("@TipoHospedaje", (object?)tipoHospedaje ?? DBNull.Value),
+                            new SqlParameter("@servicio", (object?)servicio ?? DBNull.Value),
+                            new SqlParameter("@precio_minimo", (object?)precioMinimo ?? DBNull.Value),
+                            new SqlParameter("@precio_maximo", (object?)precioMaximo ?? DBNull.Value)
+                        };
 
-                    var parametro = new SqlParameter("@nombreHotel", nombreHotel.ToLower());
-                    resultados = await _context.VwBusquedaHospedajes
-                        .FromSqlRaw("EXEC SP_BuscarHospedajesPorNombre @nombreHotel", parametro)
-                        .ToListAsync();
+                        resultados = await _context.VwBusquedaHospedajes
+                            .FromSqlRaw("EXEC SP_BuscarHospedajesConFiltros @provincia, @canton, @TipoHospedaje, @servicio, @precio_minimo, @precio_maximo", parametros)
+                            .ToListAsync();
+
+                        //resultados.AddRange(resultadosActividades.Cast<dynamic>());
+                    }
                 }
-                /*
-                else
+                catch (Exception ex)
                 {
-                    resultados = await _context.VwBusquedaHospedajes
-                        .Where(h => string.IsNullOrEmpty(ubicacion) ||
-                               h.Provincia.Contains(ubicacion) ||
-                               h.Canton.Contains(ubicacion) ||
-                               h.Distrito.Contains(ubicacion))
-                        .Where(h => string.IsNullOrEmpty(tipoHospedaje) ||
-                               h.TipoHospedaje == tipoHospedaje)
-                        .Take(9)
-                        .ToListAsync();
+                    System.Diagnostics.Debug.WriteLine($"Error en búsqueda: {ex.Message}");
                 }
-                */
             }
-            catch (Exception ex)
+            else
             {
-                System.Diagnostics.Debug.WriteLine($"Error en búsqueda: {ex.Message}");
-                /*
-                resultados = await _context.VwBusquedaHospedajes
-                    .Where(h => string.IsNullOrEmpty(ubicacion) ||
-                           h.Provincia.Contains(ubicacion) ||
-                           h.Canton.Contains(ubicacion) ||
-                           h.Distrito.Contains(ubicacion))
-                    .Where(h => string.IsNullOrEmpty(tipoHospedaje) ||
-                           h.TipoHospedaje == tipoHospedaje)
-                    .Take(9)
-                    .ToListAsync();
-                */
+                // Búsqueda de actividades
+                try
+                {
+                    if (!string.IsNullOrWhiteSpace(nombreHotel))
+                    {
+                        var param = new SqlParameter("@nombreHotel", nombreHotel.ToLower());
+                        //resultadosActividades = await _context.VwBusquedaHospedajes
+                        //    .FromSqlRaw("EXEC SP_BuscarHospedajesPorNombre @nombreHotel", param)
+                        //    .ToListAsync();
+                    }
+                    else
+                    {
+                        var parametros = new[]
+                        {
+                            new SqlParameter("@TipoActividad", (object?)tipoActividad ?? DBNull.Value),
+                            new SqlParameter("@precio_maximo", (object?)precioMaximo ?? DBNull.Value),
+                            new SqlParameter("@provincia", (object?)provincia ?? DBNull.Value),
+                            new SqlParameter("@canton", (object?)canton ?? DBNull.Value)
+                        };
+
+                        resultadosActividades = await _context.Database
+                           .SqlQueryRaw<ModelVwBusquedaActividades>("EXEC SP_BuscarActividadesConFiltros @TipoActividad, @precio_maximo, @provincia, @canton", parametros)
+                           .ToListAsync();
+
+                        //resultados.AddRange(resultadosActividades.Cast<dynamic>());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error en búsqueda: {ex.Message}");
+                }
             }
 
             ViewBag.Ubicacion = ubicacion;
             ViewBag.TipoHospedaje = tipoHospedaje;
             ViewBag.NombreHotel = nombreHotel;
             ViewBag.TotalResultados = resultados.Count;
+            ViewBag.TipoBusqueda = tipoBusqueda;
 
             return View(resultados);
         }

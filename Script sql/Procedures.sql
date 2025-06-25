@@ -507,11 +507,12 @@ CREATE PROCEDURE SP_BuscarHospedajesConFiltros (
 AS
 BEGIN
     SELECT * FROM VW_BusquedaHospedajes
-    WHERE provincia = @provincia
-      AND canton = @canton
-      AND TipoHospedaje = @TipoHospedaje
-      AND LOWER(servicios) LIKE '%' + LOWER(@servicio) + '%'
-      AND precio_minimo BETWEEN @precio_minimo AND @precio_maximo;
+    WHERE (@provincia IS NULL OR provincia = @provincia)
+      AND (@canton IS NULL OR canton = @canton)
+      AND (@TipoHospedaje IS NULL OR TipoHospedaje = @TipoHospedaje)
+      AND (@servicio IS NULL OR LOWER(servicios) LIKE '%' + LOWER(@servicio) + '%')
+      AND (@precio_maximo IS NULL OR (precio_minimo <= @precio_maximo))
+	  AND (@precio_minimo IS NULL OR (precio_minimo >= @precio_minimo));
 END
 GO
 
@@ -595,6 +596,7 @@ CREATE PROCEDURE SP_BuscarHabitacionesDisponiblesConFiltros
     @idEmpresaHospedaje INT = NULL,
     @idTipoHabitacion INT = NULL,
     @precio_maximo DECIMAL(10,2) = NULL,
+	@precio_minimo DECIMAL(10,2) = NULL,
     @comodidad VARCHAR(50) = NULL
 AS
 BEGIN
@@ -618,6 +620,7 @@ BEGIN
     AND (@idEmpresaHospedaje IS NULL OR h.idEmpresaHospedaje = @idEmpresaHospedaje)
     AND (@idTipoHabitacion IS NULL OR h.idTipoHabitacion = @idTipoHabitacion)
     AND (@precio_maximo IS NULL OR th.precio <= @precio_maximo)
+	AND (@precio_minimo IS NULL OR th.precio >= @precio_minimo)
     AND (@comodidad IS NULL OR EXISTS (
         SELECT 1 FROM Comodidades c2 
         WHERE c2.idTipoHabitacion = th.idTipo AND c2.comodidad LIKE '%' + @comodidad + '%'
@@ -759,6 +762,18 @@ BEGIN
     SELECT *
     FROM VW_InfoCompletaHospedaje
     WHERE cedulaJuridica = @cedulaJuridica;
+END;
+GO
+
+CREATE PROCEDURE SP_InfoCompletaHospedajePorId
+    @idEmpresaHospedaje VARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT *
+    FROM VW_InfoCompletaHospedaje
+    WHERE idEmpresaHospedaje = @idEmpresaHospedaje;
 END;
 GO
 

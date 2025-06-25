@@ -1,0 +1,318 @@
+﻿@model HotelesCaribe.Models.Factura
+@{
+    ViewData["Title"] = "Facturación";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/panelControl.css" />
+    <style>
+        .facturacion-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            min-height: 80vh;
+        }
+
+        .facturacion-title {
+            font-family: Inter;
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .facturacion-card {
+            background-color: rgba(181, 213, 255, 0.85);
+            border-radius: 25px;
+            padding: 40px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            background-color: rgba(217, 217, 217, 0.8);
+            border-radius: 15px;
+            padding: 20px 25px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+            .info-row:hover {
+                background-color: rgba(217, 217, 217, 0.9);
+                transform: translateX(3px);
+            }
+
+        .info-icon {
+            margin-right: 20px;
+            min-width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .info-icon i {
+                font-size: 24px;
+                color: #666;
+            }
+
+        .info-content {
+            flex: 1;
+            font-family: Inter;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .info-label {
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .info-value {
+            font-weight: 400;
+            color: #555;
+        }
+
+        .metodo-pago-row {
+            display: flex;
+            align-items: center;
+            background-color: rgba(217, 217, 217, 0.8);
+            border-radius: 15px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+        }
+
+        .metodo-pago-icon {
+            margin-right: 20px;
+            min-width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .metodo-pago-icon i {
+                font-size: 24px;
+                color: #666;
+            }
+
+        .metodo-pago-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .metodo-pago-label {
+            font-family: Inter;
+            font-size: 18px;
+            color: #666;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .metodo-pago-select {
+            flex: 1;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-family: Inter;
+            font-size: 16px;
+            color: #555;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px 12px;
+            padding-right: 40px;
+        }
+
+            .metodo-pago-select:focus {
+                background-color: rgba(255, 255, 255, 0.9);
+                box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
+            }
+
+        .btn-facturar {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 20px;
+            font-family: Inter;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 0 auto;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            width: fit-content;
+        }
+
+            .btn-facturar:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+                background: linear-gradient(135deg, #357abd, #2968a3);
+            }
+
+            .btn-facturar i {
+                font-size: 20px;
+            }
+
+        .footer-brand {
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .brand-name {
+            font-family: 'Rancho', cursive;
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+            margin: 0;
+        }
+
+        .brand-slogan {
+            font-family: Inter;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+            margin: 15px 0 0 0;
+            font-weight: 300;
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            font-family: Inter;
+            text-align: center;
+        }
+    </style>
+}
+
+<div class="facturacion-container">
+    <h1 class="facturacion-title">Facturación</h1>
+
+    <div class="facturacion-card">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Servicio -->
+            <div class="info-row">
+                <div class="info-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="info-content">
+                    <span class="info-label">Servicio:</span>
+                    <span class="info-value">Hotel Manzanillo Caribbean</span>
+                </div>
+            </div>
+
+            <!-- Número de reserva -->
+            <div class="info-row">
+                <div class="info-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <div class="info-content">
+                    <span class="info-label">Número de reserva:</span>
+                    <span class="info-value">1783 4597</span>
+                </div>
+            </div>
+
+            <!-- Número de habitación -->
+            <div class="info-row">
+                <div class="info-icon">
+                    <i class="fas fa-bed"></i>
+                </div>
+                <div class="info-content">
+                    <span class="info-label">Número de habitación:</span>
+                    <span class="info-value">24</span>
+                </div>
+            </div>
+
+            <!-- Fecha de entrada -->
+            <div class="info-row">
+                <div class="info-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="info-content">
+                    <span class="info-label">Fecha de entrada:</span>
+                    <span class="info-value">23/04/2025 08:00:00</span>
+                </div>
+            </div>
+
+            <!-- Número de noches -->
+            <div class="info-row">
+                <div class="info-icon">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="info-content">
+                    <span class="info-label">Número de noches:</span>
+                    <span class="info-value">2</span>
+                </div>
+            </div>
+
+            <!-- Importe total -->
+            <div class="info-row">
+                <div class="info-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="info-content">
+                    <span class="info-label">Importe total:</span>
+                    <span class="info-value">152.000 colones</span>
+                </div>
+            </div>
+
+            <!-- Método de pago -->
+            <div class="metodo-pago-row">
+                <div class="metodo-pago-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="metodo-pago-content">
+                    <span class="metodo-pago-label">Método de pago:</span>
+                    <select asp-for="FormaPago" class="metodo-pago-select" required>
+                        <option value="">Seleccione un método de pago...</option>
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                        <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+                        <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                        <option value="SINPE Móvil">SINPE Móvil</option>
+                        <option value="Cheque">Cheque</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Campos ocultos -->
+            <input asp-for="IdReserva" type="hidden" value="1783" />
+            <input asp-for="ImporteTotal" type="hidden" value="152000" />
+
+            <button type="submit" class="btn-facturar">
+                <i class="fas fa-file-invoice"></i>
+                Facturar
+            </button>
+        </form>
+    </div>
+
+    <div class="footer-brand">
+        <h2 class="brand-name">Hoteles Caribe</h2>
+        <p class="brand-slogan">La mejor plataforma para tu negocio.</p>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

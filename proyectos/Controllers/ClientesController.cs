@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace HotelesCaribe.Controllers
 {
@@ -52,8 +54,6 @@ namespace HotelesCaribe.Controllers
         }
 
         // POST: Clientes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ModeloClienteConTelefonos clienteConTelefonos)
@@ -65,7 +65,6 @@ namespace HotelesCaribe.Controllers
                     ModelState.AddModelError("", "Las contraseñas no coinciden.");
                     return View(clienteConTelefonos);
                 }
-
 
                 Cliente c = clienteConTelefonos.Cliente;
                 var parameters = new[]
@@ -87,19 +86,19 @@ namespace HotelesCaribe.Controllers
                     "EXEC SP_InsertarCliente @p_nombre, @p_apellido1, @p_apellido2, @p_fechaNacimiento, @p_tipoIdentIFicacion, @p_identIFicacion, @p_pais, @p_provincia, @p_canton, @p_distrito, @p_correo",
                     parameters);
 
+
                 var paramCedula = new SqlParameter("@cedula", c.Identificacion);
                 var info = _context.Clientes
                     .FromSqlRaw("EXEC SP_BuscarClientePorCedula @cedula", paramCedula)
                     .AsEnumerable()
                     .FirstOrDefault();
-                //.FromSqlRaw("SELECT * FROM Cliente WHERE Identificacion = @cedula", paramCedula)
 
                 var paramId = new SqlParameter("@p_idCliente", info?.IdCliente);
                 if (!string.IsNullOrEmpty(clienteConTelefonos.Telefono1))
                 {
                     var tel = new SqlParameter("@p_numero", clienteConTelefonos.Telefono1);
                     await _context.Database.ExecuteSqlRawAsync(
-                        "EXEC SP_InsertarTelefonoCliente @p_idCliente, @p_numero", 
+                        "EXEC SP_InsertarTelefonoCliente @p_idCliente, @p_numero",
                         paramId, tel);
                 }
                 if (!string.IsNullOrEmpty(clienteConTelefonos.Telefono2))
@@ -152,6 +151,44 @@ namespace HotelesCaribe.Controllers
             return View(clienteConTelefonos);
         }
 
+        // GET: Clientes/MisEmpresasHospedaje
+        public async Task<IActionResult> MisEmpresasHospedaje()
+        {
+            // Verificar si el usuario está autenticado
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            try
+            {
+                Debug.WriteLine("------------------------");
+                var correoUsuario = User.FindFirst("Correo")?.Value;
+                Debug.WriteLine(correoUsuario);
+                int idUsuario = int.Parse(User.FindFirst("UsuarioId")?.Value ?? "0");
+                Debug.WriteLine("id"  +idUsuario);
+                
+
+                var hoteles = await _context.Database
+                    .SqlQueryRaw<HotelesUsuarioResult>(
+                        "EXEC SP_MostrarHotelesUsuario @idUsuario",
+                        new SqlParameter("@idUsuario", idUsuario))
+                    .ToListAsync();
+
+                if (!hoteles.Any())
+                {
+                    ViewBag.Mensaje = "No administra ningún hotel actualmente.";
+                }
+
+                return View(hoteles);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Mensaje = $"Error al cargar los hoteles: {ex.Message}";
+                return View();
+            }
+        }
+
         // GET: Clientes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -169,8 +206,6 @@ namespace HotelesCaribe.Controllers
         }
 
         // POST: Clientes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdCliente,Nombre,Apellido1,Apellido2,FechaNacimiento,TipoIdentIficacion,IdentIficacion,Pais,Provincia,Canton,Distrito,Correo,Contrasena,ConfirmarContrasena")] Cliente cliente)
@@ -204,7 +239,6 @@ namespace HotelesCaribe.Controllers
                         "EXEC SP_ActualizarCliente @p_nombre, @p_apellido1, @p_apellido2, @p_fechaNacimiento, @p_tipoIdentIFicacion, @p_identIFicacion, @p_pais, @p_provincia, @p_canton, @p_distrito, @p_correo",
                         parameters);
 
-                    //_context.Update(cliente);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -277,4 +311,5 @@ namespace HotelesCaribe.Controllers
             return View();
         }
     }
+
 }

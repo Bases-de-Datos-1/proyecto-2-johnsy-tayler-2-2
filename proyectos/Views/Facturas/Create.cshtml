@@ -1,42 +1,200 @@
 ﻿@model HotelesCaribe.Models.Factura
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Facturación";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/panelControl.css" />
+    <style>
+        .facturacion-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            min-height: 80vh;
+        }
+
+        .facturacion-title {
+            font-family: Inter;
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .facturacion-card {
+            background-color: rgba(181, 213, 255, 0.85);
+            border-radius: 25px;
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .service-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(217, 217, 217, 0.8);
+            border-radius: 15px;
+        }
+
+        .service-icon i {
+            font-size: 32px;
+            color: #666;
+            margin-right: 15px;
+        }
+
+        .service-text {
+            font-family: Inter;
+            font-size: 20px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .service-label {
+            margin-right: 8px;
+        }
+
+        .input-container {
+            background-color: rgba(217, 217, 217, 0.8);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin: 30px 0;
+            transition: all 0.3s ease;
+        }
+
+            .input-container:hover {
+                background-color: rgba(217, 217, 217, 0.9);
+            }
+
+        .input-reserva {
+            width: 100%;
+            border: none;
+            background-color: transparent;
+            font-family: Inter;
+            font-size: 18px;
+            color: #666;
+            padding: 10px 0;
+            text-align: center;
+            outline: none;
+        }
+
+            .input-reserva::placeholder {
+                color: #999;
+                font-style: italic;
+            }
+
+        .btn-consultar {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 20px;
+            font-family: Inter;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px auto 0;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+        }
+
+            .btn-consultar:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+                background: linear-gradient(135deg, #357abd, #2968a3);
+            }
+
+            .btn-consultar i {
+                font-size: 20px;
+            }
+
+        .footer-brand {
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .brand-name {
+            font-family: 'Rancho', cursive;
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+            margin: 0;
+        }
+
+        .brand-slogan {
+            font-family: Inter;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+            margin: 15px 0 0 0;
+            font-weight: 300;
+        }
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            font-family: Inter;
+        }
+    </style>
 }
 
-<h1>Create</h1>
+<div class="facturacion-container">
+    <h1 class="facturacion-title">Facturación</h1>
 
-<h4>Factura</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="facturacion-card">
+        <div class="service-info">
+            <i class="fas fa-building service-icon"></i>
+            <span class="service-text">
+                <span class="service-label">Servicio:</span>
+                Hotel Manzanillo Caribbean
+            </span>
+        </div>
+
+        <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdReserva" class="control-label"></label>
-                <select asp-for="IdReserva" class ="form-control" asp-items="ViewBag.IdReserva"></select>
+
+            <!-- Campo visible para el número de reserva -->
+            <div class="input-container">
+                <input asp-for="IdReserva"
+                       class="input-reserva"
+                       type="text"
+                       placeholder="Escriba el número de reserva..."
+                       required />
+                <span asp-validation-for="IdReserva" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ImporteTotal" class="control-label"></label>
-                <input asp-for="ImporteTotal" class="form-control" />
-                <span asp-validation-for="ImporteTotal" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FormaPago" class="control-label"></label>
-                <input asp-for="FormaPago" class="form-control" />
-                <span asp-validation-for="FormaPago" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+
+            <!-- Campos ocultos -->
+            <input asp-for="ImporteTotal" type="hidden" value="0" />
+            <input asp-for="FormaPago" type="hidden" value="" />
+
+            <button type="submit" class="btn-consultar">
+                <i class="fas fa-search"></i>
+                Consultar
+            </button>
         </form>
+    </div>
+
+    <div class="footer-brand">
+        <h2 class="brand-name">Hoteles Caribe</h2>
+        <p class="brand-slogan">La mejor plataforma para tu negocio.</p>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HotelesCaribe.Models;
+using Microsoft.Data.SqlClient;
 
 namespace HotelesCaribe.Controllers
 {
@@ -30,12 +31,9 @@ namespace HotelesCaribe.Controllers
                     .ThenInclude(r => r.IdHabitacionNavigation)
                         .ThenInclude(h => h.IdTipoHabitacionNavigation);
 
-            // Si se proporciona un ID de empresa, filtrar por esa empresa
             if (empresaId.HasValue)
             {
                 facturas = facturas.Where(f => f.IdReservaNavigation.IdEmpresaHospedaje == empresaId.Value);
-
-                // Obtener información de la empresa para mostrar en la vista
                 var empresa = await _context.EmpresaHospedajes
                     .Where(e => e.IdEmpresaHospedaje == empresaId.Value)
                     .FirstOrDefaultAsync();
@@ -62,9 +60,12 @@ namespace HotelesCaribe.Controllers
                 return NotFound();
             }
 
+            var param = new SqlParameter("@idFactura", id);
             var factura = await _context.Facturas
-                .Include(f => f.IdReservaNavigation)
-                .FirstOrDefaultAsync(m => m.IdFactura == id);
+                .FromSqlRaw("EXEC SP_InfoFacturaPorId @idFactura", param)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
             if (factura == null)
             {
                 return NotFound();
@@ -73,30 +74,171 @@ namespace HotelesCaribe.Controllers
             return View(factura);
         }
 
-        // GET: Facturas/Create
+        // GET: Facturas/Create - Mostrar formulario para ingresar número de reserva
         public IActionResult Create()
         {
-            ViewData["IdReserva"] = new SelectList(_context.Reservas, "IdReserva", "IdReserva");
             return View();
         }
 
-        // POST: Facturas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Facturas/Create - Buscar reserva y mostrar detalles para facturar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdFactura,IdReserva,Fecha,ImporteTotal,FormaPago")] Factura factura)
+        public async Task<IActionResult> Create(string IdReserva)
+        {
+            // Validar que se proporcionó un número de reserva
+            if (string.IsNullOrEmpty(IdReserva))
+            {
+                ModelState.AddModelError("IdReserva", "Debe ingresar un número de reserva");
+                return View();
+            }
+
+            // Convertir a int si es posible
+            if (!int.TryParse(IdReserva, out int reservaId))
+            {
+                ModelState.AddModelError("IdReserva", "El número de reserva debe ser un valor numérico");
+                return View();
+            }
+
+            // Buscar la reserva con toda la información relacionada
+            var reserva = await _context.Reservas
+                .Include(r => r.IdClienteNavigation)
+                .Include(r => r.IdEmpresaHospedajeNavigation)
+                .Include(r => r.IdHabitacionNavigation)
+                    .ThenInclude(h => h.IdTipoHabitacionNavigation)
+                .FirstOrDefaultAsync(r => r.IdReserva == reservaId);
+
+            if (reserva == null)
+            {
+                ModelState.AddModelError("IdReserva", "No se encontró ninguna reserva con ese número");
+                return View();
+            }
+
+            // Verificar si ya existe una factura para esta reserva
+            var facturaExistente = await _context.Facturas
+                .FirstOrDefaultAsync(f => f.IdReserva == reservaId);
+
+            if (facturaExistente != null)
+            {
+                ModelState.AddModelError("IdReserva", "Esta reserva ya tiene una factura generada");
+                return View();
+            }
+
+            // Redirigir a la vista de confirmación con los datos de la reserva
+            return RedirectToAction("Facturar", new { id = reservaId });
+        }
+
+        // GET: Facturas/Facturar/5 - Mostrar detalles de la reserva para facturar
+        public async Task<IActionResult> Facturar(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Buscar la reserva con toda la información
+            var reserva = await _context.Reservas
+                .Include(r => r.IdClienteNavigation)
+                .Include(r => r.IdEmpresaHospedajeNavigation)
+                .Include(r => r.IdHabitacionNavigation)
+                    .ThenInclude(h => h.IdTipoHabitacionNavigation)
+                .FirstOrDefaultAsync(r => r.IdReserva == id);
+
+            if (reserva == null)
+            {
+                return NotFound();
+            }
+
+            // Calcular el importe total
+            var noches = (reserva.FechaSalida.ToDateTime(TimeOnly.MinValue) - reserva.FechaIngreso).Days;
+            var importeTotal = noches * reserva.IdHabitacionNavigation.IdTipoHabitacionNavigation.Precio;
+
+            // Crear el modelo para la vista
+            var factura = new Factura
+            {
+                IdReserva = reserva.IdReserva,
+                ImporteTotal = importeTotal,
+                Fecha = DateTime.Now
+            };
+
+            // Pasar información adicional a la vista
+            ViewBag.Reserva = reserva;
+            ViewBag.Noches = noches;
+            ViewBag.NombreHotel = reserva.IdEmpresaHospedajeNavigation.Nombre;
+            ViewBag.NumeroHabitacion = reserva.IdHabitacionNavigation.Numero;
+            ViewBag.TipoHabitacion = reserva.IdHabitacionNavigation.IdTipoHabitacionNavigation.Nombre;
+
+            return View(factura);
+        }
+
+        // POST: Facturas/Facturar - Procesar la facturación
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Facturar([Bind("IdReserva,ImporteTotal,FormaPago")] Factura factura)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(factura);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                // Establecer la fecha actual
+                factura.Fecha = DateTime.Now;
+
+                var parameters = new[]
+                {
+                    new SqlParameter("@p_idReserva", factura.IdReserva),
+                    new SqlParameter("@p_importeTotal", factura.ImporteTotal),
+                    new SqlParameter("@p_formaPaGO", factura.FormaPago)
+                };
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC SP_InsertarFactura @p_idReserva, @p_importeTotal, @p_formaPaGO", parameters);
+
+
+                // Redirigir a la vista de confirmación con el ID de la factura
+                return RedirectToAction("Comprobante", new { id = factura.IdFactura });
             }
+
+            // Si hay errores, recargar la vista con los datos
+            var reserva = await _context.Reservas
+                .Include(r => r.IdClienteNavigation)
+                .Include(r => r.IdEmpresaHospedajeNavigation)
+                .Include(r => r.IdHabitacionNavigation)
+                    .ThenInclude(h => h.IdTipoHabitacionNavigation)
+                .FirstOrDefaultAsync(r => r.IdReserva == factura.IdReserva);
+
+            if (reserva != null)
+            {
+                var noches = (reserva.FechaSalida.ToDateTime(TimeOnly.MinValue) - reserva.FechaIngreso).Days;
+                ViewBag.Reserva = reserva;
+                ViewBag.Noches = noches;
+                ViewBag.NombreHotel = reserva.IdEmpresaHospedajeNavigation.Nombre;
+                ViewBag.NumeroHabitacion = reserva.IdHabitacionNavigation.Numero;
+                ViewBag.TipoHabitacion = reserva.IdHabitacionNavigation.IdTipoHabitacionNavigation.Nombre;
+            }
+
+            return View(factura);
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var param = new SqlParameter("@idFactura", id);
+            var factura = await _context.Facturas
+                .FromSqlRaw("EXEC SP_InfoFacturaPorId @idFactura", param)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (factura == null)
+            {
+                return NotFound();
+            }
+
             ViewData["IdReserva"] = new SelectList(_context.Reservas, "IdReserva", "IdReserva", factura.IdReserva);
             return View(factura);
         }
 
+        /*
         // GET: Facturas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -113,10 +255,9 @@ namespace HotelesCaribe.Controllers
             ViewData["IdReserva"] = new SelectList(_context.Reservas, "IdReserva", "IdReserva", factura.IdReserva);
             return View(factura);
         }
+        */
 
         // POST: Facturas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdFactura,IdReserva,Fecha,ImporteTotal,FormaPago")] Factura factura)
@@ -130,8 +271,16 @@ namespace HotelesCaribe.Controllers
             {
                 try
                 {
-                    _context.Update(factura);
-                    await _context.SaveChangesAsync();
+                    var parameters = new[]
+                    {
+                        new SqlParameter("@idFactura", factura.IdFactura),
+                        new SqlParameter("@idReserva", factura.IdReserva),
+                        new SqlParameter("@importeTotal", factura.ImporteTotal),
+                        new SqlParameter("@formaPaGO", factura.FormaPago)
+                    };
+
+                    await _context.Database.ExecuteSqlRawAsync("EXEC SP_ActualizarFactura @idFactura, @idReserva, @importeTotal, @formaPaGO", parameters);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -158,9 +307,12 @@ namespace HotelesCaribe.Controllers
                 return NotFound();
             }
 
+            var param = new SqlParameter("@idFactura", id);
             var factura = await _context.Facturas
-                .Include(f => f.IdReservaNavigation)
-                .FirstOrDefaultAsync(m => m.IdFactura == id);
+                .FromSqlRaw("EXEC SP_InfoFacturaPorId @idFactura", param)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
             if (factura == null)
             {
                 return NotFound();
@@ -174,13 +326,8 @@ namespace HotelesCaribe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var factura = await _context.Facturas.FindAsync(id);
-            if (factura != null)
-            {
-                _context.Facturas.Remove(factura);
-            }
-
-            await _context.SaveChangesAsync();
+            var param = new SqlParameter("@idFactura", id);
+            await _context.Database.ExecuteSqlRawAsync("EXEC SP_EliminarFactura @idFactura", param);
             return RedirectToAction(nameof(Index));
         }
 

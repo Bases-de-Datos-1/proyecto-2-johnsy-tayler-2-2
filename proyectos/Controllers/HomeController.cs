@@ -13,8 +13,9 @@ namespace HotelesCaribe.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string tipoBusqueda = "hospedaje")
         {
+            ViewBag.TipoBusqueda = tipoBusqueda;
             return View();
         }
 
